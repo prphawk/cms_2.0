@@ -4,8 +4,11 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "next dev",
-    "postinstall": "prisma generate",
+    "postinstall": "npx prisma generate",
+    "dbpush": "npx prisma db push",
+    "studio": "npx prisma studio",
     "lint": "next lint",
     "start": "next start"
   },

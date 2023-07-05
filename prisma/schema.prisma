@@ -7,19 +7,16 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+    provider      = "mysql"
+    relationMode  = "prisma"
+    url           = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
+// model Example {
+//     id        String   @id @default(cuid())
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+// }
 
 // Necessary for Next auth
 model Account {
@@ -28,12 +25,12 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -64,4 +61,55 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Employee {
+  id    			Int     			@default(autoincrement()) @id
+  name  			String
+  is_active 	Boolean 			@default(true)
+  committees 	Membership[]
+}
+
+model Committee {
+  id    						Int     				@default(autoincrement()) @id
+  bond  						String 				//Vínculo 
+  name  						String 				//Órgão
+  begin_date 				DateTime?
+  end_date 					DateTime?
+  ordinance 				String? 				//Portaria 
+  observations 			String?
+  is_active 				Boolean 				@default(true)
+  members 					Membership[]
+  committee_template 	CommitteeTemplate? @relation(fields: [committee_template_id], references: [id])
+  committee_template_id Int? 					// relation scalar field (used in the `@relation` attribute above) @map("committee_template_id")
+}
+
+model Membership {
+  employee 		Employee 	@relation(fields: [employee_id], references: [id])
+  employee_id 	Int 			// relation scalar field (used in the `@relation` attribute above) @map("employee_id")
+  committee 	Committee 	@relation(fields: [committee_id], references: [id])
+  committee_id Int 			// relation scalar field (used in the `@relation` attribute above)
+  role         String?   	@default("Membro") //Cargo
+  begin_date   DateTime? 	@default(now())
+  term         Int?      	@default(1) //Ordem do mandato
+  observations String?
+  is_active    Boolean   	@default(true)
+
+  @@id([employee_id, committee_id])
+}
+
+model RoleTemplate {
+	id                    Int               @id @default(autoincrement())
+	role                  String
+	committee_template    CommitteeTemplate @relation(fields: [committee_template_id], references: [id])
+	committee_template_id Int
+}
+
+model CommitteeTemplate {
+  id    			Int            @id @default(autoincrement())
+  bond  			String 			//Vínculo 
+  name  			String 			//Órgão
+  is_singleton Boolean 			@default(true)
+  roles 			RoleTemplate[]
+  committees 	Committee[]
 }
