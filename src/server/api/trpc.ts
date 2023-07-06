@@ -12,7 +12,7 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { getServerAuthSession } from "~/server/auth";
+import { getServerAuthSession } from "~/server/auth/auth";
 import { prisma } from "~/server/db";
 
 /**
