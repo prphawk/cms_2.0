@@ -8,7 +8,7 @@ import {
 import { prisma } from '~/server/db';
 import GoogleProvider from 'next-auth/providers/google';
 import EmailProvider from 'next-auth/providers/email';
-import { _sendVerificationRequest } from './email';
+import { sendVerificationRequest } from './email';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -64,13 +64,11 @@ export const authOptions: NextAuthOptions = {
       },
       from: process.env.EMAIL_FROM,
       // maxAge: 24 * 60 * 60, // How long email links are valid for (default 24h)
-      sendVerificationRequest(params) {
-        _sendVerificationRequest(params);
-      },
+      sendVerificationRequest,
       normalizeIdentifier(identifier: string): string {
         // Get the first two elements only,
         // separated by `@` from user input.
-        let [local, domain] = identifier
+        let [_local, _domain] = identifier
           .toLowerCase()
           .trim()
           .split('@');
@@ -84,8 +82,8 @@ export const authOptions: NextAuthOptions = {
 
         // The part before "@" can contain a ","
         // but we remove it on the domain part
-        domain = domain?.split(',')[0];
-        return `${local}@${domain}`;
+        _domain = _domain?.split(',')[0];
+        return `${_local}@${_domain}`;
       },
     }),
     /**

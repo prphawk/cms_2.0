@@ -6,7 +6,7 @@ import {
 } from 'next-auth/providers';
 import { createTransport } from 'nodemailer';
 
-export async function _sendVerificationRequest(
+export async function sendVerificationRequest(
   params: SendVerificationRequestParams,
 ) {
   const { identifier, url, provider, theme } = params;
