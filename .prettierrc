@@ -1,7 +1,7 @@
 {
-   "singleQuote": true,
-   "trailingComma": "all",
-   "tabWidth": 2,
-   "proseWrap": "preserve",
-   "printWidth": 60
+  "singleQuote": true,
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "proseWrap": "preserve",
+  "printWidth": 100
 }
