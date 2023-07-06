@@ -35,18 +35,13 @@ const config = {
       'warn',
       { argsIgnorePattern: '^_' },
     ],
-    '@typescript-eslint/prefer-const': [
-      'warn',
-      { argsIgnorePattern: '^_' },
-    ],
+    '@typescript-eslint/prefer-as-const': 'warn',
     '@typescript-eslint/no-floating-promises': [
       'warn',
-      { argsIgnorePattern: '^_' },
+      { ignoreVoid: true },
     ],
-    '@typescript-eslint/restrict-template-expressions': [
-      'warn',
-      { argsIgnorePattern: '^_' },
-    ],
+    '@typescript-eslint/restrict-template-expressions':
+      'off',
   },
 };
 
