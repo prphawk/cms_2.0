@@ -34,6 +34,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -42,6 +43,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+    @@index([userId])
 }
 
 model User {
@@ -70,24 +73,26 @@ model Employee {
 }
 
 model Committee {
-  id    						Int     				@default(autoincrement()) @id
-  bond  						String 				//Vínculo 
-  name  						String 				//Órgão
-  begin_date 				DateTime?
-  end_date 					DateTime?
-  ordinance 				String? 				//Portaria 
-  observations 			String?
-  is_active 				Boolean 				@default(true)
-  members 					Membership[]
-  committee_template 	CommitteeTemplate? @relation(fields: [committee_template_id], references: [id])
-  committee_template_id Int? 					// relation scalar field (used in the `@relation` attribute above) @map("committee_template_id")
+  id    						    Int                 @default(autoincrement()) @id
+  bond  						    String              //Vínculo 
+  name  						    String              //Órgão
+  begin_date 				    DateTime?
+  end_date 					    DateTime?
+  ordinance 				    String?             //Portaria 
+  observations 			    String?
+  is_active 				    Boolean             @default(true)
+  members 					    Membership[]
+  committee_template 	  CommitteeTemplate?  @relation(fields: [committee_template_id], references: [id])
+  committee_template_id Int?                // relation scalar field (used in the `@relation` attribute above) @map("committee_template_id")
+  
+  @@index([committee_template_id])
 }
 
 model Membership {
-  employee 		Employee 	@relation(fields: [employee_id], references: [id])
+  employee 		Employee 	  @relation(fields: [employee_id], references: [id])
   employee_id 	Int 			// relation scalar field (used in the `@relation` attribute above) @map("employee_id")
   committee 	Committee 	@relation(fields: [committee_id], references: [id])
-  committee_id Int 			// relation scalar field (used in the `@relation` attribute above)
+  committee_id Int 			  // relation scalar field (used in the `@relation` attribute above)
   role         String?   	@default("Membro") //Cargo
   begin_date   DateTime? 	@default(now())
   term         Int?      	@default(1) //Ordem do mandato
@@ -95,6 +100,8 @@ model Membership {
   is_active    Boolean   	@default(true)
 
   @@id([employee_id, committee_id])
+  @@index([employee_id])
+  @@index([committee_id])
 }
 
 model RoleTemplate {
@@ -102,13 +109,15 @@ model RoleTemplate {
 	role                  String
 	committee_template    CommitteeTemplate @relation(fields: [committee_template_id], references: [id])
 	committee_template_id Int
+
+	@@index([committee_template_id])
 }
 
 model CommitteeTemplate {
-  id    			Int            @id @default(autoincrement())
-  bond  			String 			//Vínculo 
-  name  			String 			//Órgão
-  is_singleton Boolean 			@default(true)
-  roles 			RoleTemplate[]
-  committees 	Committee[]
+  id    			 Int      @id @default(autoincrement())
+  bond  			 String   //Vínculo 
+  name  			 String   //Órgão
+  is_singleton Boolean  @default(true)
+  roles 			 RoleTemplate[]
+  committees 	 Committee[]
 }

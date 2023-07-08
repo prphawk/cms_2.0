@@ -7,11 +7,12 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "next dev",
     "postinstall": "npx prisma generate",
-    "dbpush": "npx prisma db push",
+    "dbpush": "npx prisma validate && npx prisma db push",
     "studio": "npx prisma studio",
     "start": "next start"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@prisma/client": "^4.14.0",
     "@t3-oss/env-nextjs": "^0.3.1",

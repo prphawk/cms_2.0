@@ -1,14 +1,8 @@
 import { Theme } from 'next-auth/core/types';
-import {
-  EmailUserConfig,
-  EmailConfig,
-  SendVerificationRequestParams,
-} from 'next-auth/providers';
+import { EmailUserConfig, EmailConfig, SendVerificationRequestParams } from 'next-auth/providers';
 import { createTransport } from 'nodemailer';
 
-export async function sendVerificationRequest(
-  params: SendVerificationRequestParams,
-) {
+export async function sendVerificationRequest(params: SendVerificationRequestParams) {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
   // NOTE: You are not required to use `nodemailer`, use whatever you want.
@@ -20,53 +14,10 @@ export async function sendVerificationRequest(
     text: text({ url, host }),
     html: html({ url, host, theme }),
   });
-  const failed = result.rejected
-    .concat(result.pending)
-    .filter(Boolean);
+  const failed = result.rejected.concat(result.pending).filter(Boolean);
   if (failed.length) {
-    throw new Error(
-      `Email(s) (${failed.join(', ')}) could not be sent`,
-    );
+    throw new Error(`Email(s) (${failed.join(', ')}) could not be sent`);
   }
-}
-
-export default function Email(
-  options: EmailUserConfig,
-): EmailConfig {
-  return {
-    id: 'email',
-    type: 'email',
-    name: 'Email',
-    // Server can be an SMTP connection string or a nodemailer config object
-    server: {
-      host: 'localhost',
-      port: 25,
-      auth: { user: '', pass: '' },
-    },
-    from: 'NextAuth <no-reply@example.com>',
-    maxAge: 24 * 60 * 60, //1 day
-    async sendVerificationRequest(params) {
-      const { identifier, url, provider, theme } = params;
-      const { host } = new URL(url);
-      const transport = createTransport(provider.server);
-      const result = await transport.sendMail({
-        to: identifier,
-        from: provider.from,
-        subject: `Sign in to ${host}`,
-        text: text({ url, host }),
-        html: html({ url, host, theme }),
-      });
-      const failed = result.rejected
-        .concat(result.pending)
-        .filter(Boolean);
-      if (failed.length) {
-        throw new Error(
-          `Email (${failed.join(', ')}) could not be sent`,
-        );
-      }
-    },
-    options,
-  };
 }
 
 /**
@@ -77,11 +28,7 @@ export default function Email(
  *
  * @note We don't add the email address to avoid needing to escape it, if you do, remember to sanitize it!
  */
-function html(params: {
-  url: string;
-  host: string;
-  theme: Theme;
-}) {
+function html(params: { url: string; host: string; theme: Theme }) {
   const { url, host, theme } = params;
 
   const escapedHost = host.replace(/\./g, '&#8203;.');
@@ -134,12 +81,6 @@ function html(params: {
 }
 
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
-function text({
-  url,
-  host,
-}: {
-  url: string;
-  host: string;
-}) {
+function text({ url, host }: { url: string; host: string }) {
   return `Sign in to ${host}\n${url}\n\n`;
 }
