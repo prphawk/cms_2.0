@@ -1,7 +1,10 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
-import { TextLayout } from '~/components/layout';
+import Link from 'next/link';
+import { TextLayout } from '~/layout';
 import { AuthButton, LoginComponent } from '~/components/login';
+import Button, { DecorativeButton } from '~/components/button';
+import { Routes } from '~/constants/routes';
 
 export default function Home() {
   const { status } = useSession();
@@ -19,9 +22,15 @@ export default function Home() {
         ) : status === 'unauthenticated' ? (
           <LoginComponent />
         ) : (
-          <div>
+          <div className="flex flex-col items-center justify-center gap-3">
             <TextLayout>Home?</TextLayout>
             <AuthButton />
+            <Link href={Routes.COMMITEES}>
+              <DecorativeButton>Committee</DecorativeButton>
+            </Link>
+            <Link href={Routes.EMPLOYEES}>
+              <DecorativeButton>Employees</DecorativeButton>
+            </Link>
           </div>
         )}
       </main>

@@ -1,5 +1,6 @@
 import { useSession, signOut, signIn } from 'next-auth/react';
 import { useMemo } from 'react';
+import Button from '../button';
 
 export function AuthButton() {
   const { status } = useSession();
@@ -11,14 +12,9 @@ export function AuthButton() {
     return { text: 'Sign Out', handleOnClick: () => void signOut() };
   }, [status]);
 
-  return (
-    <button
-      className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-      onClick={handleOnClick}
-    >
-      {text}
-    </button>
-  );
+  const props = { onClick: handleOnClick };
+
+  return <Button {...props}>{text}</Button>;
 }
 
 export const LoginComponent = () => {
