@@ -6,7 +6,7 @@ export default function Employees() {
     <AuthenticatedPage>
       <Layout>
         <TextLayout>
-          <h3>Employees !</h3>
+          <h3>Employees page!</h3>
         </TextLayout>
       </Layout>
     </AuthenticatedPage>
