@@ -31,3 +31,5 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
 https://www.prisma.io/docs/concepts/components/prisma-schema/relations/relation-mode#indexes
 https://www.prisma.io/docs/guides/database/planetscale#differences-to-consider
+
+`npx prisma db seed`

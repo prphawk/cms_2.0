@@ -9,7 +9,11 @@
     "postinstall": "npx prisma generate",
     "dbpush": "npx prisma validate && npx prisma db push",
     "studio": "npx prisma studio",
-    "start": "next start"
+    "start": "next start",
+    "seed": " npx prisma db seed"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",

@@ -27,7 +27,10 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
-    "**/*.mjs"
+    "**/*.mjs",
+    "prisma/data.js",
+    "prisma/seed.js",
+    "prisma/data.factory.js"
   ],
   "exclude": ["node_modules"]
 }
