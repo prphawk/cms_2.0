@@ -4,7 +4,7 @@ import PageLayout, { TextLayout } from '~/layout';
 import { api } from '~/utils/api';
 
 export default function Employees() {
-  const { data, isLoading } = api.employee.getAll.useQuery();
+  const { data, isLoading } = api.employee.getAllActive.useQuery();
 
   return (
     <AuthenticatedPage>

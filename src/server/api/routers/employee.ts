@@ -1,6 +1,7 @@
 import { Committee, Employee } from '@prisma/client';
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { deactivateMembershipsByEmployee } from './membership';
 
 type commType = {
   role: string | null;
@@ -23,7 +24,7 @@ export const employeeRouter = createTRPCRouter({
     });
   }),
 
-  getAll: protectedProcedure.query(({ ctx }) => {
+  getAllActive: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.employee.findMany({
       where: { is_active: true },
       orderBy: { name: 'asc' },
@@ -46,18 +47,16 @@ export const employeeRouter = createTRPCRouter({
     });
   }),
 
-  create: protectedProcedure
-    .input(z.object({ name: z.string(), is_active: z.boolean() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.employee.create({ data: input });
-    }),
+  create: protectedProcedure.input(z.object({ name: z.string() })).mutation(({ ctx, input }) => {
+    return ctx.prisma.employee.create({ data: input });
+  }),
 
   update: protectedProcedure
     .input(
       z.object({
         id: z.number(),
-        name: z.string(),
-        is_active: z.boolean(),
+        name: z.optional(z.string()),
+        is_active: z.optional(z.boolean()),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -65,9 +64,23 @@ export const employeeRouter = createTRPCRouter({
       return ctx.prisma.employee.update({ where: { id }, data });
     }),
 
-  delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
-    return ctx.prisma.employee.delete({ where: input });
-  }),
+  // delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
+  //   return ctx.prisma.employee.delete({ where: input });
+  // }),
+
+  deactivate: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+
+      await deactivateMembershipsByEmployee(id);
+
+      return await ctx.prisma.employee.update({ where: { id }, data: { is_active: false } });
+    }),
 
   //get (Active Employee only) Membership History per Employee
   getHistory: protectedProcedure.query(async ({ ctx }) => {
