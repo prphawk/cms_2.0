@@ -1,14 +1,14 @@
 import AuthenticatedPage from '~/components/authenticated-page';
-import Layout, { TextLayout } from '~/layout';
+import PageLayout, { TextLayout } from '~/layout';
 
 export default function Committees() {
   return (
     <AuthenticatedPage>
-      <Layout>
+      <PageLayout>
         <TextLayout>
           <h3>Committees page!</h3>
         </TextLayout>
-      </Layout>
+      </PageLayout>
     </AuthenticatedPage>
   );
 }

@@ -5,7 +5,7 @@ import { TextLayout } from '~/layout';
 import { AuthButton, LoginComponent } from '~/components/login';
 import Button, { DecorativeButton } from '~/components/button';
 import { Routes } from '~/constants/routes';
-import LoadingPage from '~/components/loading-page';
+import LoadingLayout from '~/components/loading-page';
 
 export default function Home() {
   const { status } = useSession();
@@ -19,7 +19,7 @@ export default function Home() {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#6d0202] to-[#15162c]">
         {status === 'loading' ? (
-          <LoadingPage />
+          <LoadingLayout />
         ) : status === 'unauthenticated' ? (
           <LoginComponent />
         ) : (

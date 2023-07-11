@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 
-export default function Layout(props: PropsWithChildren) {
+export default function PageLayout(props: PropsWithChildren) {
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#590202] to-[#15162c] text-5xl">

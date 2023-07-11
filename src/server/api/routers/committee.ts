@@ -6,11 +6,18 @@ export const committeeRouter = createTRPCRouter({
     return ctx.prisma.committee.findMany();
   }),
 
-  hello: publicProcedure.input(z.object({ text: z.string() })).query(({ input }) => {
-    return {
-      greeting: `Hello ${input.text}`,
-    };
-  }),
+  hello: publicProcedure
+    .input(z.object({ text: z.string() }))
+    .output(
+      z.object({
+        greeting: z.string(),
+      }),
+    )
+    .query(({ input }) => {
+      return {
+        greeting: `Hello ${input.text}`,
+      };
+    }),
 
   getSecretMessage: protectedProcedure.query(() => {
     return 'you can now see this secret message!';

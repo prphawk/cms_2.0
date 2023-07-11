@@ -2,8 +2,8 @@ import { useSession, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { PropsWithChildren } from 'react';
 import { Routes } from '~/constants/routes';
-import LoadingPage from '../loading-page';
-import Layout from '~/layout';
+import LoadingLayout from '../loading-page';
+import PageLayout from '~/layout';
 
 export default function AuthenticatedPage(props: PropsWithChildren) {
   const { data: session, status } = useSession();
@@ -11,9 +11,9 @@ export default function AuthenticatedPage(props: PropsWithChildren) {
 
   if (status === 'loading') {
     return (
-      <Layout>
-        <LoadingPage />
-      </Layout>
+      <PageLayout>
+        <LoadingLayout />
+      </PageLayout>
     );
   } else if (status === 'unauthenticated') {
     router.replace(Routes.SIGN_IN);
