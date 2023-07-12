@@ -1,14 +1,15 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 import { prisma } from '~/server/db';
+import { _findUniqueCommittee } from './committee';
 
-export const deactivateMembershipsByCommittee = async (committee_id: number) => {
+export const _deactivateMembershipsByCommittee = async (committee_id: number) => {
   return await prisma.membership.updateMany({
     where: { committee: { id: committee_id } },
     data: { is_active: false },
   });
 };
-export const deactivateMembershipsByEmployee = async (employee_id: number) => {
+export const _deactivateMembershipsByEmployee = async (employee_id: number) => {
   return await prisma.membership.updateMany({
     where: { employee: { id: employee_id } },
     data: { is_active: false },
@@ -32,14 +33,21 @@ export const membershipRouter = createTRPCRouter({
         employee_id: z.number(),
         committee_id: z.number(),
         role: z.optional(z.string()),
+        begin_date: z.optional(z.date()),
         term: z.optional(z.number()),
         observations: z.optional(z.string()),
       }),
     )
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const { employee_id, committee_id, ...rest } = input;
 
-      return ctx.prisma.membership.create({
+      // TODO test it
+      if (!rest.begin_date) {
+        const committee = await _findUniqueCommittee(committee_id);
+        rest.begin_date = committee?.begin_date ?? undefined;
+      }
+
+      return await ctx.prisma.membership.create({
         data: {
           employee: { connect: { id: employee_id } },
           committee: { connect: { id: committee_id } },

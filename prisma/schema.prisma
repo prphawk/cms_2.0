@@ -94,7 +94,7 @@ model Membership {
   committee 	Committee 	@relation(fields: [committee_id], references: [id])
   committee_id Int 			  // relation scalar field (used in the `@relation` attribute above)
   role         String?   	@default("Membro") //Cargo
-  begin_date   DateTime? 	@default(now())
+  begin_date   DateTime? 	@default(now()) // default: begin_date da comissão
   term         Int?      	@default(1) //Ordem do mandato
   observations String?
   is_active    Boolean   	@default(true)

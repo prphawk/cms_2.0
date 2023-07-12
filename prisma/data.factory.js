@@ -17,10 +17,10 @@ class DataFactory {
     return mock;
   }
 
-  newMockCommittee() {
+  newMockCommittee(name, bond) {
     return {
-      name: 'Órgão ' + faker.person.fullName(),
-      bond: 'Vínculo ' + faker.commerce.department(),
+      name: name || 'Órgão ' + faker.person.fullName(),
+      bond: bond || 'Vínculo ' + faker.commerce.department(),
       begin_date: faker.date.past(),
       end_date: faker.date.future(),
       ordinance: 'Portaria ' + faker.string.alphanumeric(5),

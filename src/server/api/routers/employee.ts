@@ -1,7 +1,7 @@
 import { Committee, Employee } from '@prisma/client';
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
-import { deactivateMembershipsByEmployee } from './membership';
+import { _deactivateMembershipsByEmployee } from './membership';
 
 type commType = {
   role: string | null;
@@ -77,7 +77,7 @@ export const employeeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
 
-      await deactivateMembershipsByEmployee(id);
+      await _deactivateMembershipsByEmployee(id);
 
       return await ctx.prisma.employee.update({ where: { id }, data: { is_active: false } });
     }),

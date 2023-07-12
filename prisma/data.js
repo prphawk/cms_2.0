@@ -10,12 +10,15 @@ const employees = [
 ];
 
 const committees = [
-  factory.newMockCommittee(), //1
-  factory.newMockCommittee(), //2
-  factory.newMockCommittee(), //3
-  factory.newMockCommittee(), //4
-  factory.newMockCommittee(), //5
-  factory.newMockCommittee(), //6
+  factory.newMockCommittee('CAPPADJ/INF', 'INF'), //1
+  factory.newMockCommittee('INF', 'Comissão para banca de Professor Substituto'), //2
+  factory.newMockCommittee('UFRGS', 'DIREÇÃO/CONIN'), //3
+  factory.newMockCommittee('UFRGS', 'Comissão YZ'), //4
+  factory.newMockCommittee('UFRGS', 'DEP. INA'), //5
+  factory.newMockCommittee('INF', 'COMGRAD CIC'), //6
+  factory.newMockCommittee('INF', 'COMGRAD ECP'), //7
+  factory.newMockCommittee('UFRGS', 'PPGC'), //8
+  factory.newMockCommittee('INF', 'Comissão representante para congresso X'), //9
 ];
 
 const memberships = [
@@ -34,6 +37,16 @@ const memberships = [
   factory.newMockMembershipJSON(4, 1),
   factory.newMockMembershipJSON(4, 2),
   factory.newMockMembershipJSON(5, 1),
+  factory.newMockMembershipJSON(1, 6),
+  factory.newMockMembershipJSON(1, 6),
+  factory.newMockMembershipJSON(1, 6),
+  factory.newMockMembershipJSON(1, 6),
+  factory.newMockMembershipJSON(1, 7),
+  factory.newMockMembershipJSON(2, 7),
+  factory.newMockMembershipJSON(2, 7),
+  factory.newMockMembershipJSON(2, 8),
+  factory.newMockMembershipJSON(2, 8),
+  factory.newMockMembershipJSON(3, 9),
 ];
 
 module.exports = {

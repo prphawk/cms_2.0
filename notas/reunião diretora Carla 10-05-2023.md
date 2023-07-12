@@ -2,7 +2,7 @@ exportação, não importação (ou talvez apenas na primeira vez)
 2º mandato para o 3º mandato
 desativar um membro fica no historico
 
-não é necessário mandato na comissão
+não é necessário mandato na comissão ✅
 
 pessoas herdam periodo da comissão?
 

@@ -1,6 +1,13 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc';
-import { deactivateMembershipsByCommittee, membershipRouter } from './membership';
+import { _deactivateMembershipsByCommittee, membershipRouter } from './membership';
+import { prisma } from '~/server/db';
+
+export const _findUniqueCommittee = async (committee_id: number) => {
+  return await prisma.committee.findUnique({
+    where: { id: committee_id },
+  });
+};
 
 export const committeeRouter = createTRPCRouter({
   getOne: protectedProcedure.input(z.object({ id: z.number() })).query(({ ctx, input }) => {
@@ -89,7 +96,7 @@ export const committeeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
 
-      await deactivateMembershipsByCommittee(id);
+      await _deactivateMembershipsByCommittee(id);
 
       return await ctx.prisma.committee.update({
         where: { id },
