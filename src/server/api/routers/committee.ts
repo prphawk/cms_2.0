@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc';
 import { _deactivateMembershipsByCommittee, membershipRouter } from './membership';
 import { prisma } from '~/server/db';
+import { now } from 'next-auth/client/_utils';
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({
@@ -59,6 +60,10 @@ export const committeeRouter = createTRPCRouter({
       }),
     )
     .mutation(({ ctx, input }) => {
+      if (!input.end_date) {
+        input.begin_date = input.end_date = input.begin_date || new Date();
+        input.end_date.setFullYear(input.begin_date.getFullYear() + 2);
+      }
       return ctx.prisma.committee.create({ data: input });
     }),
 

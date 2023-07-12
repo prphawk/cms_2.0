@@ -12,8 +12,8 @@ const employees = [
 const committees = [
   factory.newMockCommittee('CAPPADJ/INF', 'INF'), //1
   factory.newMockCommittee('INF', 'Comissão para banca de Professor Substituto'), //2
-  factory.newMockCommittee('UFRGS', 'DIREÇÃO/CONIN'), //3
-  factory.newMockCommittee('UFRGS', 'Comissão YZ'), //4
+  factory.newMockCommittee('UFRGS', 'DIREÇÃO'), //3
+  factory.newMockCommittee('INF', 'CONINF'), //4
   factory.newMockCommittee('UFRGS', 'DEP. INA'), //5
   factory.newMockCommittee('INF', 'COMGRAD CIC'), //6
   factory.newMockCommittee('INF', 'COMGRAD ECP'), //7

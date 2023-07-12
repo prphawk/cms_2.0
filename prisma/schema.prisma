@@ -3,7 +3,6 @@
 
 generator client {
     provider = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
@@ -95,29 +94,15 @@ model Membership {
   committee_id Int 			  // relation scalar field (used in the `@relation` attribute above)
   role         String?   	@default("Membro") //Cargo
   begin_date   DateTime? 	// default: begin_date da comissão
-  term         Int?      	@default(1) //Ordem do mandato
-  observations String?
+  is_temporary Boolean    @default(false)
   is_active    Boolean   	@default(true)
+  observations String?
 
   @@id([employee_id, committee_id])
   @@index([employee_id])
   @@index([committee_id])
 }
-
-model RoleTemplate {
-	id                    Int               @id @default(autoincrement())
-	role                  String
-	committee_template    CommitteeTemplate @relation(fields: [committee_template_id], references: [id])
-	committee_template_id Int
-
-	@@index([committee_template_id])
-}
-
 model CommitteeTemplate {
   id    			 Int      @id @default(autoincrement())
-  bond  			 String   //Vínculo 
-  name  			 String   //Órgão
-  is_singleton Boolean  @default(true)
-  roles 			 RoleTemplate[]
   committees 	 Committee[]
 }
