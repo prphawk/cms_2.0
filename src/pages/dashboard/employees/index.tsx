@@ -5,7 +5,11 @@ import PageLayout, { TextLayout } from '~/layout';
 import { api } from '~/utils/api';
 
 export default function Employees() {
-  const { data, isLoading } = api.employee.getAllActive.useQuery();
+  const { data, isLoading, isError } = api.employee.getAllActive.useQuery();
+
+  if (isError) {
+    return <span>Error: sowwyyyy</span>;
+  }
 
   return (
     <AuthenticatedPage>
