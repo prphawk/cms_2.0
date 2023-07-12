@@ -17,16 +17,6 @@ export const _deactivateMembershipsByEmployee = async (employee_id: number) => {
 };
 
 export const membershipRouter = createTRPCRouter({
-  /**
-    role?: string | null | undefined;
-    begin_date?: string | Date | null | undefined;
-    term?: number | null | undefined;
-    observations?: string | null | undefined;
-    is_active?: boolean | undefined;
-    employee: EmployeeCreateNestedOneWithoutCommitteesInput;
-    committee: CommitteeCreateNestedOneWithoutMembersInput;
-   */
-
   create: protectedProcedure
     .input(
       z.object({
@@ -34,7 +24,7 @@ export const membershipRouter = createTRPCRouter({
         committee_id: z.number(),
         role: z.optional(z.string()),
         begin_date: z.optional(z.date()),
-        term: z.optional(z.number()),
+        is_temporary: z.optional(z.boolean()),
         observations: z.optional(z.string()),
       }),
     )
@@ -62,7 +52,7 @@ export const membershipRouter = createTRPCRouter({
         employee_id: z.number(),
         committee_id: z.number(),
         role: z.optional(z.string()),
-        term: z.optional(z.number()),
+        is_temporary: z.optional(z.boolean()),
         observations: z.optional(z.string()),
       }),
     )
@@ -112,7 +102,7 @@ export const membershipRouter = createTRPCRouter({
         select: {
           role: true,
           begin_date: true,
-          term: true,
+          is_temporary: true,
           observations: true,
           employee: {
             select: {
