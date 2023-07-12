@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import AuthenticatedPage from '~/components/authenticated-page';
 import LoadingLayout from '~/components/loading-page';
 import PageLayout, { TextLayout } from '~/layout';
@@ -15,12 +16,13 @@ export default function Employees() {
             <TextLayout>
               <h3>Employees page!</h3>
             </TextLayout>
-            {data?.map((e) => (
-              <div>
-                Employee: {e.name} - Committees:{' '}
-                {e.committees.map((c) => c.committee.name).toString()}
-              </div>
-            ))}
+            <div className="text-white">
+              {data?.map((e, index) => (
+                <p key={index}>
+                  Employee: {e.name} - Committees: {e.committees.length}
+                </p>
+              ))}
+            </div>
           </div>
         </LoadingLayout>
       </PageLayout>
