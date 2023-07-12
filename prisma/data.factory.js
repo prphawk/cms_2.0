@@ -39,7 +39,7 @@ class DataFactory {
     return {
       employee_id: mockEmployeeId,
       committee_id: mockCommitteeId,
-      //begin_date: faker.date.past(),
+      begin_date: null,
       term: +faker.number.int({ min: 1, max: 5 }),
       observations: faker.lorem.sentence(),
       is_active: faker.datatype.boolean({ probability: 0.75 }),
