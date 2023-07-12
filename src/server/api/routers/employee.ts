@@ -56,7 +56,6 @@ export const employeeRouter = createTRPCRouter({
       z.object({
         id: z.number(),
         name: z.optional(z.string()),
-        is_active: z.optional(z.boolean()),
       }),
     )
     .mutation(({ ctx, input }) => {

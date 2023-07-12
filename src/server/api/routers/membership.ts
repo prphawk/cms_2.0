@@ -64,7 +64,6 @@ export const membershipRouter = createTRPCRouter({
         role: z.optional(z.string()),
         term: z.optional(z.number()),
         observations: z.optional(z.string()),
-        is_active: z.optional(z.boolean()),
       }),
     )
     .mutation(({ ctx, input }) => {

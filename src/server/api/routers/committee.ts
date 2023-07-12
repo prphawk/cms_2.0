@@ -75,7 +75,7 @@ export const committeeRouter = createTRPCRouter({
         end_date: z.optional(z.date()),
         ordinance: z.optional(z.string()),
         observations: z.optional(z.string()),
-        is_active: z.optional(z.boolean()),
+        // is_active: z.optional(z.boolean()),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -100,7 +100,10 @@ export const committeeRouter = createTRPCRouter({
 
       return await ctx.prisma.committee.update({
         where: { id },
-        data: { is_active: false, end_date: new Date() },
+        data: {
+          is_active: false,
+          //end_date: new Date()
+        },
       });
 
       // TODO desativar memberships dessa comissão
