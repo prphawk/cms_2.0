@@ -1,27 +1,28 @@
 'use client';
 
+import { Committee } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
+import { CommitteeHeaders } from '~/constants/headers';
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-  id: string;
-  amount: number;
-  status: 'pending' | 'processing' | 'success' | 'failed';
-  email: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Committee>[] = [
   {
-    accessorKey: 'status',
-    header: 'Status',
+    accessorKey: 'bond',
+    header: CommitteeHeaders.BOND,
   },
   {
-    accessorKey: 'email',
-    header: 'Email',
+    accessorKey: 'name',
+    header: CommitteeHeaders.NAME,
   },
   {
-    accessorKey: 'amount',
-    header: 'Amount',
+    accessorKey: 'begin_date',
+    header: CommitteeHeaders.BEGIN_DATE,
+  },
+  {
+    accessorKey: 'end_date',
+    header: CommitteeHeaders.END_DATE,
+  },
+  {
+    accessorKey: 'ordinance',
+    header: CommitteeHeaders.ORDINANCE,
   },
 ];

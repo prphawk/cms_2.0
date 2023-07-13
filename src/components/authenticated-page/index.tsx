@@ -11,7 +11,7 @@ export default function AuthenticatedPage(props: PropsWithChildren) {
 
   if (status === 'loading') {
     return (
-      <PageLayout>
+    <PageLayout>
         <LoadingLayout />
       </PageLayout>
     );
