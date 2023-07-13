@@ -1,9 +1,24 @@
-import { type Config } from "tailwindcss";
+import { shadcnPlugin } from './src/styles/shadcn-plugin';
+import { type Config } from 'tailwindcss';
+
+const headerSize = '6rem';
+const footerSize = '2.5rem';
 
 export default {
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: ['class'],
+  content: ['src/**/*.{ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      height: {
+        page: `calc(100vh - ${footerSize})`,
+        header: headerSize,
+        footer: footerSize,
+      },
+      padding: {
+        header: headerSize,
+      },
+    },
   },
-  plugins: [],
+
+  plugins: [shadcnPlugin, require('tailwindcss-animate')],
 } satisfies Config;
