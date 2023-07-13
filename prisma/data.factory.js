@@ -17,7 +17,7 @@ class DataFactory {
     return mock;
   }
 
-  newMockCommittee(name, bond) {
+  newMockCommittee(bond, name) {
     return {
       name: name || 'Órgão ' + faker.person.fullName(),
       bond: bond || 'Vínculo ' + faker.commerce.department(),
