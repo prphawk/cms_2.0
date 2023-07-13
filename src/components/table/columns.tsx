@@ -3,26 +3,43 @@
 import { Committee } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { CommitteeHeaders } from '~/constants/headers';
+import { _toLocaleString } from '~/utils/string';
 
 export const columns: ColumnDef<Committee>[] = [
   {
-    accessorKey: 'bond',
-    header: CommitteeHeaders.BOND,
+    accessorKey: 'name',
+    header: () => <strong>{CommitteeHeaders.NAME}</strong>,
   },
   {
-    accessorKey: 'name',
-    header: CommitteeHeaders.NAME,
+    accessorKey: 'bond',
+    header: () => <strong>{CommitteeHeaders.BOND}</strong>,
+    cell: ({ row }) => {
+      const value = row.getValue('bond') as string;
+      return <div className="text-center">{value}</div>;
+    },
   },
   {
     accessorKey: 'begin_date',
-    header: CommitteeHeaders.BEGIN_DATE,
+    header: () => <strong>{CommitteeHeaders.BEGIN_DATE}</strong>,
+    cell: ({ row }) => {
+      const date = row.getValue('begin_date') as Date;
+      return <div className="text-center">{_toLocaleString(date)}</div>; // pode retornar JSX tbm
+    },
   },
   {
     accessorKey: 'end_date',
-    header: CommitteeHeaders.END_DATE,
+    header: () => <strong>{CommitteeHeaders.END_DATE}</strong>,
+    cell: ({ row }) => {
+      const date = row.getValue('end_date') as Date;
+      return <div className="text-center">{_toLocaleString(date)}</div>;
+    },
   },
   {
     accessorKey: 'ordinance',
-    header: CommitteeHeaders.ORDINANCE,
+    header: () => <strong>{CommitteeHeaders.ORDINANCE}</strong>,
+    cell: ({ row }) => {
+      const value = row.getValue('ordinance') as string;
+      return <div className="text-center">{value}</div>;
+    },
   },
 ];
