@@ -20,16 +20,23 @@ import DataTableColumnHeader from '~/components/table/data-table-column-header';
 export const columns: ColumnDef<Committee>[] = [
   {
     accessorKey: 'name',
-    header: ({ column }) => <DataTableColumnHeader column={column} title={CommitteeHeaders.NAME} />,
-    cell: ({ row }) => {
-      const value = row.getValue('name') as string;
+    id: CommitteeHeaders.NAME,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string;
       const is_temporary = !row.original.committee_template_id;
+      const is_inactive = !row.original.is_active;
 
       return (
         <div>
           {is_temporary && (
             <Badge className="mr-2 text-white" variant="outline">
               Temporária
+            </Badge>
+          )}
+          {is_inactive && (
+            <Badge className="mr-2 text-white" variant="outline">
+              Inativa
             </Badge>
           )}
           <strong>{value}</strong>
@@ -39,39 +46,37 @@ export const columns: ColumnDef<Committee>[] = [
   },
   {
     accessorKey: 'bond',
-    header: ({ column }) => <DataTableColumnHeader column={column} title={CommitteeHeaders.BOND} />,
-    cell: ({ row }) => {
-      const value = row.getValue('bond') as string;
+    id: CommitteeHeaders.BOND,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string;
       return <div className="text-center">{value}</div>;
     },
   },
   {
     accessorKey: 'begin_date',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={CommitteeHeaders.BEGIN_DATE} />
-    ),
-    cell: ({ row }) => {
-      const date = row.getValue('begin_date') as Date;
+    id: CommitteeHeaders.BEGIN_DATE,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const date = row.getValue(column.id) as Date;
       return <div className="text-center">{_toLocaleString(date)}</div>; // pode retornar JSX tbm
     },
   },
   {
     accessorKey: 'end_date',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={CommitteeHeaders.END_DATE} />
-    ),
-    cell: ({ row }) => {
-      const date = row.getValue('end_date') as Date;
+    id: CommitteeHeaders.END_DATE,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const date = row.getValue(column.id) as Date;
       return <div className="text-center">{_toLocaleString(date)}</div>;
     },
   },
   {
     accessorKey: 'ordinance',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={CommitteeHeaders.ORDINANCE} />
-    ),
-    cell: ({ row }) => {
-      const value = row.getValue('ordinance') as string;
+    id: CommitteeHeaders.ORDINANCE,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string;
       return <div className="text-center">{value}</div>;
     },
   },
