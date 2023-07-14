@@ -11,12 +11,6 @@ class DataFactory {
     };
   }
 
-  newMockEmployeeWithId() {
-    const mock = this.newMockEmployee();
-    mock.id = +faker.number.int(3);
-    return mock;
-  }
-
   newMockCommittee(bond, name) {
     return {
       name: name || 'Órgão ' + faker.person.fullName(),
@@ -29,10 +23,14 @@ class DataFactory {
     };
   }
 
-  newMockCommitteeWithId() {
-    const mock = this.newMockCommittee();
-    mock.id = +faker.number.int(3);
-    return mock;
+  newTemplateCommittee(mockCommitteeIds) {
+    return {
+      committees: {
+        connect: mockCommitteeIds.map((c) => {
+          return { id: c };
+        }),
+      },
+    };
   }
 
   newMockMembershipJSON(mockEmployeeId, mockCommitteeId) {

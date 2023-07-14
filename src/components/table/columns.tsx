@@ -19,6 +19,12 @@ export const columns: ColumnDef<Committee>[] = [
   {
     accessorKey: 'name',
     header: () => <strong>{CommitteeHeaders.NAME}</strong>,
+    cell: ({ row }) => {
+      const value = row.getValue('name') as string;
+      const committee_template_id = row.original.committee_template_id as number | undefined;
+
+      return <div>{value + (committee_template_id ? '' : '*')}</div>;
+    },
   },
   {
     accessorKey: 'bond',
@@ -61,21 +67,24 @@ export const columns: ColumnDef<Committee>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="default" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Abrir menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(committee.id.toString())}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuItem>Ver membros</DropdownMenuItem>
+            <DropdownMenuItem>Ver histórico</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            {committee.committee_template_id && (
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(committee.id.toString())}
+              >
+                Suceder comissão
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem>Desativar comissão</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

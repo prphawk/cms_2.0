@@ -41,7 +41,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead className="text-white" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -86,7 +86,7 @@ function DataTablePagination<TData>({ table }: { table: TableType<TData> }) {
         onClick={() => table.previousPage()}
         disabled={!table.getCanPreviousPage()}
       >
-        Previous
+        Anterior
       </Button>
       <Button
         variant="ghost"
@@ -94,7 +94,7 @@ function DataTablePagination<TData>({ table }: { table: TableType<TData> }) {
         onClick={() => table.nextPage()}
         disabled={!table.getCanNextPage()}
       >
-        Next
+        Próximo
       </Button>
     </div>
   );

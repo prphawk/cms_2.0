@@ -1,26 +1,33 @@
+// @ts-nocheck
 const { PrismaClient } = require('@prisma/client');
-const { employees, committees, memberships } = require('./data.js');
+const { employees, committees, memberships, committeesFromTemplates } = require('./data.js');
 const prisma = new PrismaClient();
 
 const load = async () => {
   try {
     await prisma.membership.deleteMany();
-    console.log('Deleted records in membership table');
+    console.log('Deleted records in Membership table');
+
+    await prisma.committeeTemplate.deleteMany();
+    console.log('Deleted records in CommitteeTemplate table');
 
     await prisma.employee.deleteMany();
-    console.log('Deleted records in employee table');
+    console.log('Deleted records in Employee table');
 
     await prisma.committee.deleteMany();
-    console.log('Deleted records in committee table');
+    console.log('Deleted records in Committee table');
 
     await prisma.$queryRaw`ALTER TABLE Employee AUTO_INCREMENT = 1`;
-    console.log('reset category auto increment to 1');
+    console.log('reset Employee auto increment to 1');
 
     await prisma.$queryRaw`ALTER TABLE Committee AUTO_INCREMENT = 1`;
-    console.log('reset product auto increment to 1');
+    console.log('reset Committee auto increment to 1');
 
     await prisma.$queryRaw`ALTER TABLE Membership AUTO_INCREMENT = 1`;
-    console.log('reset product auto increment to 1');
+    console.log('reset Membership auto increment to 1');
+
+    await prisma.$queryRaw`ALTER TABLE CommitteeTemplate AUTO_INCREMENT = 1`;
+    console.log('reset CommitteeTemplate auto increment to 1');
 
     await prisma.employee.createMany({
       data: employees,
@@ -36,6 +43,16 @@ const load = async () => {
       data: memberships,
     });
     console.log('Added membership data');
+
+    await prisma.committeeTemplate.create({
+      data: committeesFromTemplates[0],
+    });
+
+    await prisma.committeeTemplate.create({
+      data: committeesFromTemplates[1],
+    });
+
+    console.log('Added committeeTemplate data');
   } catch (e) {
     console.error(e);
     process.exit(1);

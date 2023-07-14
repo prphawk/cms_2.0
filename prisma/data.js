@@ -19,6 +19,21 @@ const committees = [
   factory.newMockCommittee('INF', 'COMGRAD ECP'), //7
   factory.newMockCommittee('UFRGS', 'PPGC'), //8
   factory.newMockCommittee('INF', 'Comissão representante para congresso X'), //9
+  factory.newMockCommittee('INF', 'Comissão A 2022/1'), //10
+  factory.newMockCommittee('INF', 'Comissão A 2022/2'), //11
+  factory.newMockCommittee('INF', 'Comissão B 2022/1'), //12
+  factory.newMockCommittee('INF', 'Comissão B 2022/2'), //13
+  factory.newMockCommittee('INF', 'Comissão C'), //14
+  factory.newMockCommittee('INF', 'Comissão D'), //15
+  factory.newMockCommittee('INF', 'Comissão E'), //16
+  factory.newMockCommittee('INF', 'Comissão F'), //17
+  factory.newMockCommittee('INF', 'Comissão G'), //18
+  factory.newMockCommittee('INF', 'Comissão H'), //19
+];
+
+const committeesFromTemplates = [
+  factory.newTemplateCommittee([10, 11]),
+  factory.newTemplateCommittee([12, 13]),
 ];
 
 const memberships = [
@@ -53,4 +68,5 @@ module.exports = {
   employees,
   committees,
   memberships,
+  committeesFromTemplates,
 };
