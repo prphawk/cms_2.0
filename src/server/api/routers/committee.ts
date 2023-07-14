@@ -20,17 +20,23 @@ export const committeeRouter = createTRPCRouter({
     });
   }),
 
-  getAllActive: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.committee.findMany({
-      where: { is_active: true },
-      orderBy: { name: 'asc' },
-      include: {
-        members: {
-          select: { employee: true },
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        is_active: z.optional(z.boolean()),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.committee.findMany({
+        where: { is_active: input.is_active },
+        orderBy: { name: 'asc' },
+        include: {
+          members: {
+            select: { employee: true },
+          },
         },
-      },
-    });
-  }),
+      });
+    }),
 
   getOptions: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.committee.findMany({
