@@ -1,13 +1,21 @@
 import * as React from 'react';
 // import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons"
 import { Column } from '@tanstack/react-table';
-
 import { cn } from '@/lib/utils';
 import { Check, PlusCircleIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@/components/ui/command';
 
 interface DataTableFacetedFilter<TData, TValue> {
   column?: Column<TData, TValue>;
@@ -30,7 +38,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
+        <Button variant="outline" size="sm" className="h-8 border-dashed bg-transparent">
           <PlusCircleIcon className="mr-2 h-4 w-4" />
           {title}
           {selectedValues?.size > 0 && (
@@ -63,7 +71,7 @@ export function DataTableFacetedFilter<TData, TValue>({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
-        {/* <Command>
+        <Command>
           <CommandInput placeholder={title} />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
@@ -118,7 +126,7 @@ export function DataTableFacetedFilter<TData, TValue>({
               </>
             )}
           </CommandList>
-        </Command> */}
+        </Command>
       </PopoverContent>
     </Popover>
   );

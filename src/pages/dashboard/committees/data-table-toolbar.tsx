@@ -1,10 +1,9 @@
 'use client';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { X } from 'lucide-react';
-import { DataTableViewOptions } from './data-table-view-options';
-import { DataTableFacetedFilter } from './data-table-faceted-filter';
+import { XIcon } from 'lucide-react';
+import { DataTableViewOptions } from '../../../components/table/data-table-view-options';
+import { DataTableFacetedFilter } from '../../../components/table/data-table-faceted-filter';
 import { Table } from '@tanstack/react-table';
 
 interface DataTableToolbarProps<TData> {
@@ -18,14 +17,14 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter tasks..."
-          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('title')?.setFilterValue(event.target.value)}
-          className="h-8 w-[150px] lg:w-[250px]"
+          placeholder="Filter..."
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+          className="h-8 w-[150px]  bg-transparent lg:w-[250px]"
         />
-        {table.getColumn('status') && (
+        {/* {table.getColumn('bond') && (
           <DataTableFacetedFilter
-            column={table.getColumn('status')}
+            column={table.getColumn('bond')}
             title="Status"
             options={[{ label: 'status 1', value: '1' }]}
           />
@@ -36,7 +35,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
             title="Priority"
             options={[{ label: 'priority 1', value: '1' }]}
           />
-        )}
+        )} 
         {isFiltered && (
           <Button
             variant="ghost"
@@ -44,9 +43,10 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
             className="h-8 px-2 lg:px-3"
           >
             Reset
-            <X className="ml-2 h-4 w-4" />
+            <XIcon className="ml-2 h-4 w-4" />
           </Button>
         )}
+        */}
       </div>
       <DataTableViewOptions table={table} />
     </div>

@@ -2,9 +2,11 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   SortingState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
@@ -20,7 +22,7 @@ import {
 } from '@/components/ui/table';
 import DataTablePagination from './data-table-pagination';
 import { useState } from 'react';
-import { DataTableToolbar } from './data-table-toolbar';
+import { DataTableToolbar } from '../../pages/dashboard/committees/data-table-toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,6 +46,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
     // https://tanstack.com/table/v8/docs/api/features/pagination
     data,
@@ -52,15 +55,20 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    enableGlobalFilter: true,
     state: {
       sorting,
+      columnFilters,
+      globalFilter: '',
     },
   });
 
   return (
     <>
       <DataTableToolbar table={table} />
-      <div className="rounded-md border">
+      <div className="mt-3 rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
