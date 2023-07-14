@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import AuthenticatedPage from '~/components/authenticated-page';
 import LoadingLayout from '~/components/loading-layout';
 import PageLayout, { TextLayout } from '~/layout';

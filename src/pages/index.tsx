@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { TextLayout } from '~/layout';
 import { AuthButton, LoginComponent } from '~/components/login';
-import Button, { DecorativeButton } from '~/components/button';
+import MyButton, { DecorativeButton } from '~/components/button';
 import { Routes } from '~/constants/routes';
 import LoadingLayout from '~/components/loading-layout';
 
