@@ -4,7 +4,7 @@ import { Committee } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { CommitteeHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
-import { ArrowUpDown, EyeIcon, MoreHorizontal } from 'lucide-react';
+import { EyeIcon, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

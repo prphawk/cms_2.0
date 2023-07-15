@@ -2,8 +2,8 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { XIcon } from 'lucide-react';
-import { DataTableViewOptions } from '../../../components/table/data-table-view-options';
-import { DataTableFacetedFilter } from '../../../components/table/data-table-faceted-filter';
+import { DataTableViewOptions } from '../data-table-view-options';
+import { DataTableFacetedFilter } from '../data-table-faceted-filter';
 import { Table } from '@tanstack/react-table';
 import { CommitteeHeaders } from '~/constants/headers';
 import { PropsWithChildren } from 'react';

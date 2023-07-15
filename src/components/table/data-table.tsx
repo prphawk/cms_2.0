@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/table';
 import DataTablePagination from './data-table-pagination';
 import { ReactNode, useState } from 'react';
-import { DataTableToolbar } from '../../pages/dashboard/committees/data-table-toolbar';
+import { DataTableToolbar } from './committees/data-table-toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

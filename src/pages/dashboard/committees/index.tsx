@@ -1,11 +1,11 @@
 import AuthenticatedPage from '~/components/authenticated-page';
 import LoadingLayout from '~/components/loading-layout';
-import { columns } from '~/pages/dashboard/committees/columns';
+import { columns } from '~/components/table/committees/columns';
 import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TextLayout } from '~/layout';
 import { api } from '~/utils/api';
 import { useState } from 'react';
-import { DataTableToolbarFilter } from './data-table-toolbar';
+import { DataTableToolbarFilter } from '../../../components/table/committees/data-table-toolbar';
 
 export default function Committees() {
   const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
