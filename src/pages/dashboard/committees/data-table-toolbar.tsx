@@ -71,11 +71,13 @@ export const DataTableToolbarFilter = ({
         setFiltersValue={_setIsTemporaryFilterValues}
       />
 
-      {(isTemporaryFilters?.length || isActiveFilters?.length) && (
+      {isTemporaryFilters?.length || isActiveFilters?.length ? (
         <Button variant="ghost" onClick={handleResetFilters} className="h-8 px-2 lg:px-3">
           Resetar filtros
           <XIcon className="ml-2 h-4 w-4" />
         </Button>
+      ) : (
+        <></>
       )}
     </>
   );
