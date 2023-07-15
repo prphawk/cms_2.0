@@ -50,7 +50,7 @@ export const columns: ColumnDef<Committee>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
-      return <div className="text-center">{value}</div>;
+      return <div>{value}</div>;
     },
   },
   {
@@ -59,7 +59,7 @@ export const columns: ColumnDef<Committee>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = row.getValue(column.id) as Date;
-      return <div className="text-center">{_toLocaleString(date)}</div>; // pode retornar JSX tbm
+      return <div>{_toLocaleString(date)}</div>; // pode retornar JSX tbm
     },
   },
   {
@@ -68,7 +68,7 @@ export const columns: ColumnDef<Committee>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = row.getValue(column.id) as Date;
-      return <div className="text-center">{_toLocaleString(date)}</div>;
+      return <div>{_toLocaleString(date)}</div>;
     },
   },
   {
@@ -77,7 +77,7 @@ export const columns: ColumnDef<Committee>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
-      return <div className="text-center">{value}</div>;
+      return <div>{value}</div>;
     },
   },
   {

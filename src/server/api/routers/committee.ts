@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc';
 import { _deactivateMembershipsByCommittee, membershipRouter } from './membership';
 import { prisma } from '~/server/db';
-import { now } from 'next-auth/client/_utils';
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({
@@ -24,11 +23,16 @@ export const committeeRouter = createTRPCRouter({
     .input(
       z.object({
         is_active: z.optional(z.boolean()),
+        is_temporary: z.optional(z.boolean()),
       }),
     )
     .query(({ ctx, input }) => {
       return ctx.prisma.committee.findMany({
-        where: { is_active: input.is_active },
+        where: {
+          is_active: input.is_active,
+          committee_template:
+            input.is_temporary === false ? { isNot: null } : input.is_temporary && { is: null },
+        },
         orderBy: { name: 'asc' },
         include: {
           members: {

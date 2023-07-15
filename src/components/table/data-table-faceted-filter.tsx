@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/command';
 
 interface DataTableFacetedFilter<TData, TValue> {
-  column?: Column<TData, TValue>;
   title?: string;
   options: {
     label: string;
@@ -28,12 +27,15 @@ interface DataTableFacetedFilter<TData, TValue> {
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
-  column,
   title,
   options,
-}: DataTableFacetedFilter<TData, TValue>) {
-  const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
+  filters,
+  setFiltersValue,
+}: DataTableFacetedFilter<TData, TValue> & {
+  filters?: string[];
+  setFiltersValue: (values?: string[]) => void;
+}) {
+  const selectedValues = new Set<string>(filters);
 
   return (
     <Popover>
@@ -72,9 +74,7 @@ export function DataTableFacetedFilter<TData, TValue>({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command>
-          <CommandInput placeholder={title} />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
@@ -83,12 +83,14 @@ export function DataTableFacetedFilter<TData, TValue>({
                     key={option.value}
                     onSelect={() => {
                       if (isSelected) {
+                        console.log('delete');
                         selectedValues.delete(option.value);
                       } else {
+                        console.log('add');
                         selectedValues.add(option.value);
                       }
                       const filterValues = Array.from(selectedValues);
-                      column?.setFilterValue(filterValues.length ? filterValues : undefined);
+                      setFiltersValue(filterValues.length ? filterValues : undefined);
                     }}
                   >
                     <div
@@ -103,11 +105,6 @@ export function DataTableFacetedFilter<TData, TValue>({
                     </div>
                     {option.icon && <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
                     <span>{option.label}</span>
-                    {facets?.get(option.value) && (
-                      <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
-                        {facets.get(option.value)}
-                      </span>
-                    )}
                   </CommandItem>
                 );
               })}
@@ -117,7 +114,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={() => setFiltersValue(undefined)}
                     className="justify-center text-center"
                   >
                     Clear filters

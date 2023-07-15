@@ -21,7 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import DataTablePagination from './data-table-pagination';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { DataTableToolbar } from '../../pages/dashboard/committees/data-table-toolbar';
 
 interface DataTableProps<TData, TValue> {
@@ -44,7 +44,12 @@ interface DataTableProps<TData, TValue> {
 //   };
 // };
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  children,
+  isLoading,
+}: DataTableProps<TData, TValue> & any) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
@@ -57,17 +62,16 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    enableGlobalFilter: true,
+    //enableGlobalFilter: true,
     state: {
       sorting,
       columnFilters,
-      globalFilter: '',
     },
   });
 
   return (
     <>
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table}>{children}</DataTableToolbar>
       <div className="mt-3 rounded-md border">
         <Table>
           <TableHeader>
@@ -99,7 +103,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {isLoading ? 'Loading...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}
