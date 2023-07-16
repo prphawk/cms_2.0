@@ -47,6 +47,7 @@ export const committeeRouter = createTRPCRouter({
         include: {
           members: {
             select: { employee: true },
+            where: { is_active: true },
           },
         },
       });

@@ -26,7 +26,7 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center gap-3">
             <TextLayout>Home?</TextLayout>
             <AuthButton />
-            <Link href={Routes.COMMITEES}>
+            <Link href={Routes.COMMITTEES}>
               <DecorativeButton>Committee</DecorativeButton>
             </Link>
             <Link href={Routes.EMPLOYEES}>

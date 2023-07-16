@@ -17,6 +17,7 @@ import DataTableColumnHeader from '~/components/table/data-table-column-header';
 
 export const getColumns = (
   handleDeactivateCommittees: (ids: number[]) => void,
+  handleViewCommittee: (id: number) => void,
 ): ColumnDef<Committee>[] => [
   {
     accessorKey: 'name',
@@ -81,6 +82,15 @@ export const getColumns = (
     },
   },
   {
+    accessorKey: 'members',
+    id: CommitteeHeaders.MEMBERS,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string;
+      return <div className="text-center">{value.length}</div>;
+    },
+  },
+  {
     accessorKey: 'observations',
     id: CommitteeHeaders.OBSERVATIONS,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
@@ -97,7 +107,11 @@ export const getColumns = (
 
       return (
         <>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <Button
+            onClick={() => handleViewCommittee(committee.id)}
+            variant="ghost"
+            className="h-8 w-8 p-0"
+          >
             <span className="sr-only">Ver detalhes</span>
             <EyeIcon className="h-4 w-4" />
           </Button>

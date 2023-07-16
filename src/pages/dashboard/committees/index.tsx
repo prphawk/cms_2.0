@@ -6,8 +6,11 @@ import PageLayout from '~/layout';
 import { api } from '~/utils/api';
 import { useState } from 'react';
 import { DataTableToolbarFilter } from '../../../components/table/committees/data-table-toolbar';
+import { useRouter } from 'next/router';
+import { Routes } from '~/constants/routes';
 
 export default function Committees() {
+  const router = useRouter();
   const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
   const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
   const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
@@ -32,6 +35,10 @@ export default function Committees() {
 
   function handleDeactivateCommittees(ids: number[]) {
     ids.forEach((id) => deactivate.mutate({ id }));
+  }
+
+  function handleViewCommittee(id: number) {
+    router.push(`${Routes.COMMITTEES}/${id}`);
   }
 
   const _setIsActiveFilterValues = (values?: string[]) => {
@@ -71,9 +78,9 @@ export default function Committees() {
         {/* <LoadingLayout loading={isLoading}> */}
         <div className="committee container my-10 mb-auto text-white ">
           <DataTable
-            columns={getColumns(handleDeactivateCommittees)}
             data={data || []}
             isLoading={isFetching || isLoading}
+            columns={getColumns(handleDeactivateCommittees, handleViewCommittee)}
           >
             <DataTableToolbarFilter {...props} />
           </DataTable>
