@@ -77,7 +77,7 @@ export default function Committees() {
     <AuthenticatedPage>
       <PageLayout>
         {/* <LoadingLayout loading={isLoading}> */}
-        <div className="committee container my-10 mb-auto text-white ">
+        <div className="committees container my-10 mb-auto text-white ">
           <DataTable
             data={data || []}
             isLoading={isFetching || isLoading}

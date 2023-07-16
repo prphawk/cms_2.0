@@ -19,3 +19,12 @@ export function TextLayout(props: PropsWithChildren) {
     </>
   );
 }
+export function TitleLayout(props: PropsWithChildren) {
+  return (
+    <>
+      <main className="font-extrabold tracking-tight text-white sm:text-[2rem]">
+        {props.children}
+      </main>
+    </>
+  );
+}

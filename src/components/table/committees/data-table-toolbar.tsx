@@ -5,7 +5,7 @@ import { XIcon } from 'lucide-react';
 import { DataTableViewOptions } from '../data-table-view-options';
 import { DataTableFacetedFilter } from '../data-table-faceted-filter';
 import { Table } from '@tanstack/react-table';
-import { CommitteeHeaders } from '~/constants/headers';
+import { CommitteesHeaders } from '~/constants/headers';
 import { PropsWithChildren } from 'react';
 
 interface DataTableToolbarProps<TData> {
@@ -18,9 +18,9 @@ export function DataTableToolbar<TData>(props: DataTableToolbarProps<TData> & Pr
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Buscar..."
-          value={(props.table.getColumn(CommitteeHeaders.NAME)?.getFilterValue() as string) ?? ''}
+          value={(props.table.getColumn(CommitteesHeaders.NAME)?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            props.table.getColumn(CommitteeHeaders.NAME)?.setFilterValue(event.target.value)
+            props.table.getColumn(CommitteesHeaders.NAME)?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] bg-transparent text-muted-foregroundPage lg:w-[250px]"
         />

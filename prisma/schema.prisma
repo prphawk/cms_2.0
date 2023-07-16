@@ -92,7 +92,7 @@ model Membership {
   employee_id 	Int 			// relation scalar field (used in the `@relation` attribute above) @map("employee_id")
   committee 	Committee 	@relation(fields: [committee_id], references: [id])
   committee_id Int 			  // relation scalar field (used in the `@relation` attribute above)
-  role         String?   	@default("Membro") //Cargo
+  role         String?   	@default("Membro(a)") //Cargo
   begin_date   DateTime? 	// default: begin_date da comissão
   is_temporary Boolean    @default(false)
   is_active    Boolean   	@default(true)
