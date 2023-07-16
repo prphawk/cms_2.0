@@ -1,18 +1,28 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { XIcon } from 'lucide-react';
-import { DataTableViewOptions } from '../data-table-view-options';
-import { DataTableFacetedFilter } from '../data-table-faceted-filter';
-import { Table } from '@tanstack/react-table';
+import { PencilIcon, XIcon } from 'lucide-react';
+import { DataTableFacetedFilter } from './data-table-faceted-filter';
 import { CommitteesHeaders } from '~/constants/headers';
-import { PropsWithChildren } from 'react';
+import { Table } from '@tanstack/react-table';
+import { SlidersHorizontalIcon } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export function DataTableToolbar<TData>(props: DataTableToolbarProps<TData> & PropsWithChildren) {
+export function DataTableToolbar<TData>(
+  props: DataTableToolbarProps<TData> & {
+    tableFilters: JSX.Element;
+    tableActions?: JSX.Element;
+  },
+) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
@@ -24,9 +34,9 @@ export function DataTableToolbar<TData>(props: DataTableToolbarProps<TData> & Pr
           }
           className="h-8 w-[150px] bg-transparent text-muted-foregroundPage lg:w-[250px]"
         />
-
-        {props.children}
+        {props.tableFilters}
       </div>
+      {props.tableActions}
       <DataTableViewOptions table={props.table} />
     </div>
   );
@@ -82,3 +92,51 @@ export const DataTableToolbarFilter = ({
     </>
   );
 };
+
+export function DataTableToolbarActions(props: { handleEdit: () => void }) {
+  return (
+    <Button
+      onClick={props.handleEdit}
+      variant="outline"
+      size="sm"
+      className="ml-auto mr-2 hidden h-8 bg-transparent lg:flex"
+    >
+      <PencilIcon className="mr-2 h-4 w-4" />
+      Editar
+    </Button>
+  );
+}
+
+interface DataTableViewOptionsProps<TData> {
+  table: Table<TData>;
+}
+
+export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm" className="ml-auto hidden h-8 bg-transparent lg:flex">
+          <SlidersHorizontalIcon className="mr-2 h-4 w-4" />
+          Exibir
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[150px]">
+        {table
+          .getAllColumns()
+          .filter((column) => typeof column.accessorFn !== 'undefined' && column.getCanHide())
+          .map((column) => {
+            return (
+              <DropdownMenuCheckboxItem
+                key={column.id}
+                className="capitalize"
+                checked={column.getIsVisible()}
+                onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              >
+                {column.id}
+              </DropdownMenuCheckboxItem>
+            );
+          })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}

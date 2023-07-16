@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/table';
 import DataTablePagination from './data-table-pagination';
 import { ReactNode, useState } from 'react';
-import { DataTableToolbar } from './committees/data-table-toolbar';
+import { DataTableToolbar } from './data-table-toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -47,9 +47,14 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
-  children,
   isLoading,
-}: DataTableProps<TData, TValue> & any) {
+  tableFilters,
+  tableActions,
+}: DataTableProps<TData, TValue> & {
+  tableFilters: JSX.Element;
+  isLoading?: boolean;
+  tableActions?: JSX.Element;
+}) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
@@ -71,7 +76,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <DataTableToolbar table={table}>{children}</DataTableToolbar>
+      <DataTableToolbar table={table} tableFilters={tableFilters} tableActions={tableActions} />
       <div className="mt-3 rounded-md border">
         <Table>
           <TableHeader>

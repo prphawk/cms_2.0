@@ -1,6 +1,6 @@
-import { Committee, Employee, Membership } from '@prisma/client';
+import { Employee, Membership } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { CommitteeHeaders } from '~/constants/headers';
+import { MembershipHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
 import { EyeIcon, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,12 +15,13 @@ import {
 import { Badge } from '@/components/ui/badge';
 import DataTableColumnHeader from '~/components/table/data-table-column-header';
 
-export const getColumns = (): // handleDeactivateCommittees: (ids: number[]) => void,
+export const getMembershipColumns = (): // handleDeactivateCommittees: (ids: number[]) => void,
 // handleViewCommittee: (id: number) => void,
 ColumnDef<Membership & { employee: Employee }>[] => [
   {
-    accessorKey: 'employee',
-    id: CommitteeHeaders.NAME,
+    accessorKey: 'employee.name',
+    accessorFn: (row) => row.employee.name,
+    id: MembershipHeaders.NAME,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row }) => {
       const value = row.original.employee?.name as string;
@@ -46,7 +47,7 @@ ColumnDef<Membership & { employee: Employee }>[] => [
   },
   {
     accessorKey: 'role',
-    id: CommitteeHeaders.ROLE,
+    id: MembershipHeaders.ROLE,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
@@ -55,7 +56,7 @@ ColumnDef<Membership & { employee: Employee }>[] => [
   },
   {
     accessorKey: 'begin_date',
-    id: CommitteeHeaders.BEGIN_DATE,
+    id: MembershipHeaders.BEGIN_DATE,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = row.getValue(column.id) as Date;
@@ -64,7 +65,7 @@ ColumnDef<Membership & { employee: Employee }>[] => [
   },
   {
     accessorKey: 'observations',
-    id: CommitteeHeaders.OBSERVATIONS,
+    id: MembershipHeaders.OBSERVATIONS,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;

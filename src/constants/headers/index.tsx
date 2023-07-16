@@ -7,9 +7,9 @@ export class CommitteesHeaders {
   public static OBSERVATIONS = 'Observações';
   public static MEMBERS = 'Membros';
 }
-export class CommitteeHeaders {
-  public static ROLE = 'Cargo';
+export class MembershipHeaders {
   public static NAME = 'Nome';
+  public static ROLE = 'Cargo';
   public static BEGIN_DATE = 'Data de Início';
   public static OBSERVATIONS = 'Observações';
 }

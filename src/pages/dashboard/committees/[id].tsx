@@ -4,18 +4,20 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import AuthenticatedPage from '~/components/authenticated-page';
-import { getColumns } from '~/components/table/committee/columns';
-import { DataTableToolbarFilter } from '~/components/table/committees/data-table-toolbar';
+import { getMembershipColumns } from '~/components/table/membership/membership-columns';
+import {
+  DataTableToolbarActions,
+  DataTableToolbarFilter,
+} from '~/components/table/data-table-toolbar';
 import { DataTable } from '~/components/table/data-table';
-import PageLayout, { TextLayout, TitleLayout } from '~/layout';
+import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
 import { _isNumeric, _toLocaleString } from '~/utils/string';
 
-export default function Committee() {
+export default function CommitteeMembership() {
   const router = useRouter();
   const param_id = router.query.id;
   const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
@@ -79,46 +81,28 @@ export default function Committee() {
     return <span>Error: sowwyyyy</span>;
   }
 
-  const props = {
+  const propsFilters = {
     _setIsTemporaryFilterValues,
     _setIsActiveFilterValues,
     isActiveFilters: filterLabelsA,
     isTemporaryFilters: filterLabelsT,
   };
+
+  const propsActions = {
+    handleEdit: () => {},
+  };
   return (
     <AuthenticatedPage>
       <PageLayout>
         <div className="committee container my-10 mb-auto text-white ">
-          <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
-            <AccordionItem value="item-1">
-              <AccordionTrigger>
-                <TitleLayout>{data?.name}</TitleLayout>
-              </AccordionTrigger>
-              <AccordionContent className="tracking-wide">
-                <strong> Vínculo: </strong> {data?.bond} <Dot /> <strong>Portaria: </strong>
-                {data?.ordinance}
-                <Dot />
-                <strong>Data de Início: </strong>
-                {_toLocaleString(data?.begin_date)} <Dot /> <strong>Data de Fim: </strong>
-                {_toLocaleString(data?.end_date)}
-                <Dot />
-                <strong> Duração: </strong>Comissão{' '}
-                {data?.committee_template_id ? 'Permanente' : 'Temporária'} <Dot />
-                <strong> Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
-                {/* <Dot />
-                <strong>Membros ativos: </strong> {data?.members.length} <Dot />
-                <strong>Membros inativos: </strong> ? */}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
+          <CommitteeDetails data={data} />
           <DataTable
             data={data?.members || []}
             isLoading={isFetching || isLoading}
-            columns={getColumns()}
-          >
-            <DataTableToolbarFilter {...props} />
-          </DataTable>
+            columns={getMembershipColumns()}
+            tableFilters={<DataTableToolbarFilter {...propsFilters} />}
+            tableActions={<DataTableToolbarActions {...propsActions} />}
+          />
         </div>
       </PageLayout>
     </AuthenticatedPage>
@@ -126,3 +110,30 @@ export default function Committee() {
 }
 
 const Dot = () => <span className="mx-1">•</span>;
+
+const CommitteeDetails = ({ data }: any) => {
+  return (
+    <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>
+          <TitleLayout>{data?.name}</TitleLayout>
+        </AccordionTrigger>
+        <AccordionContent className="tracking-wide">
+          <strong> Vínculo: </strong> {data?.bond} <Dot /> <strong>Portaria: </strong>
+          {data?.ordinance}
+          <Dot />
+          <strong>Data de Início: </strong>
+          {_toLocaleString(data?.begin_date)} <Dot /> <strong>Data de Fim: </strong>
+          {_toLocaleString(data?.end_date)}
+          <Dot />
+          <strong> Duração: </strong>Comissão{' '}
+          {data?.committee_template_id ? 'Permanente' : 'Temporária'} <Dot />
+          <strong> Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
+          {/* <Dot />
+                <strong>Membros ativos: </strong> {data?.members.length} <Dot />
+                <strong>Membros inativos: </strong> ? */}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};

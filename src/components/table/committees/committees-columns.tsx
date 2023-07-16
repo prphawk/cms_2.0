@@ -15,7 +15,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import DataTableColumnHeader from '~/components/table/data-table-column-header';
 
-export const getColumns = (
+export const getCommitteesColumns = (
   handleDeactivateCommittees: (ids: number[]) => void,
   handleViewCommittee: (id: number) => void,
 ): ColumnDef<Committee>[] => [

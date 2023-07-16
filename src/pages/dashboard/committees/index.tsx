@@ -1,11 +1,11 @@
 import AuthenticatedPage from '~/components/authenticated-page';
 import LoadingLayout from '~/components/loading-layout';
-import { getColumns } from '~/components/table/committees/columns';
+import { getCommitteesColumns } from '~/components/table/committees/committees-columns';
 import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
 import { useState } from 'react';
-import { DataTableToolbarFilter } from '../../../components/table/committees/data-table-toolbar';
+import { DataTableToolbarFilter } from '../../../components/table/data-table-toolbar';
 import { useRouter } from 'next/router';
 import { Routes } from '~/constants/routes';
 import { Separator } from '@/components/ui/separator';
@@ -84,10 +84,9 @@ export default function Committees() {
           <DataTable
             data={data || []}
             isLoading={isFetching || isLoading}
-            columns={getColumns(handleDeactivateCommittees, handleViewCommittee)}
-          >
-            <DataTableToolbarFilter {...props} />
-          </DataTable>
+            columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
+            tableFilters={<DataTableToolbarFilter {...props} />}
+          />
         </div>
         {/* </LoadingLayout> */}
       </PageLayout>
