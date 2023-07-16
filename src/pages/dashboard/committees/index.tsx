@@ -1,8 +1,8 @@
 import AuthenticatedPage from '~/components/authenticated-page';
 import LoadingLayout from '~/components/loading-layout';
-import { columns } from '~/components/table/committees/columns';
+import { getColumns } from '~/components/table/committees/columns';
 import { DataTable } from '~/components/table/data-table';
-import PageLayout, { TextLayout } from '~/layout';
+import PageLayout from '~/layout';
 import { api } from '~/utils/api';
 import { useState } from 'react';
 import { DataTableToolbarFilter } from '../../../components/table/committees/data-table-toolbar';
@@ -12,10 +12,27 @@ export default function Committees() {
   const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
   const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
 
-  const { data, isLoading, isError } = api.committee.getAll.useQuery({
+  const utils = api.useContext();
+
+  const { data, isFetching, isLoading, isError } = api.committee.getAll.useQuery({
     is_active: filters?.is_active,
     is_temporary: filters?.is_temporary,
   });
+
+  const deactivate = api.committee.deactivate.useMutation({
+    onMutate() {
+      return utils.committee.getAll.cancel();
+    },
+    // TODO onError
+    onSettled(data) {
+      console.log(data);
+      return utils.committee.getAll.invalidate();
+    },
+  });
+
+  function handleDeactivateCommittees(ids: number[]) {
+    ids.forEach((id) => deactivate.mutate({ id }));
+  }
 
   const _setIsActiveFilterValues = (values?: string[]) => {
     if (!values?.length || values.length >= 2) {
@@ -37,7 +54,7 @@ export default function Committees() {
     }
   };
 
-  if (isError) {
+  if (isError || deactivate.isError) {
     return <span>Error: sowwyyyy</span>;
   }
 
@@ -53,7 +70,11 @@ export default function Committees() {
       <PageLayout>
         {/* <LoadingLayout loading={isLoading}> */}
         <div className="committee container my-10 mb-auto text-white ">
-          <DataTable columns={columns} data={data || []} isLoading={isLoading}>
+          <DataTable
+            columns={getColumns(handleDeactivateCommittees)}
+            data={data || []}
+            isLoading={isFetching || isLoading}
+          >
             <DataTableToolbarFilter {...props} />
           </DataTable>
         </div>

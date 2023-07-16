@@ -9,6 +9,16 @@ export const _findUniqueCommittee = async (committee_id: number) => {
   });
 };
 
+export const _deactivateCommittee = async (committee_id: number) => {
+  return await prisma.committee.update({
+    where: { id: committee_id },
+    data: {
+      is_active: false,
+      //end_date: new Date()
+    },
+  });
+};
+
 export const committeeRouter = createTRPCRouter({
   getOne: protectedProcedure.input(z.object({ id: z.number() })).query(({ ctx, input }) => {
     return ctx.prisma.committee.findUnique({
@@ -112,34 +122,6 @@ export const committeeRouter = createTRPCRouter({
       const { id } = input;
 
       await _deactivateMembershipsByCommittee(id);
-
-      return await ctx.prisma.committee.update({
-        where: { id },
-        data: {
-          is_active: false,
-          //end_date: new Date()
-        },
-      });
-    }),
-
-  deactivateMany: protectedProcedure
-    .input(
-      z.object({
-        ids: z.number().array(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { ids } = input;
-
-      return ids.map(async (id) => {
-        await _deactivateMembershipsByCommittee(id);
-        await ctx.prisma.committee.update({
-          where: { id },
-          data: {
-            is_active: false,
-            //end_date: new Date()
-          },
-        });
-      });
+      await _deactivateCommittee(id);
     }),
 });

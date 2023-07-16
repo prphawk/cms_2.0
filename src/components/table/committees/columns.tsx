@@ -1,5 +1,3 @@
-'use client';
-
 import { Committee } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { CommitteeHeaders } from '~/constants/headers';
@@ -17,7 +15,9 @@ import {
 import { Badge } from '@/components/ui/badge';
 import DataTableColumnHeader from '~/components/table/data-table-column-header';
 
-export const columns: ColumnDef<Committee>[] = [
+export const getColumns = (
+  handleDeactivateCommittees: (ids: number[]) => void,
+): ColumnDef<Committee>[] => [
   {
     accessorKey: 'name',
     id: CommitteeHeaders.NAME,
@@ -81,6 +81,15 @@ export const columns: ColumnDef<Committee>[] = [
     },
   },
   {
+    accessorKey: 'observations',
+    id: CommitteeHeaders.OBSERVATIONS,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string;
+      return <div className="max-w-xs truncate">{value}</div>;
+    },
+  },
+  {
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
@@ -111,7 +120,14 @@ export const columns: ColumnDef<Committee>[] = [
                   Suceder comissão
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem>Desativar comissão</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  handleDeactivateCommittees([committee.id]);
+                  committee.is_active = false;
+                }}
+              >
+                Desativar comissão
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </>
