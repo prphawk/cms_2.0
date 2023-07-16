@@ -18,19 +18,18 @@ import { _isNumeric, _toLocaleString } from '~/utils/string';
 export default function Committee() {
   const router = useRouter();
   const param_id = router.query.id;
+  const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
+  const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
+  const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
   const { data, isFetching, isLoading, isError } = api.committee.getOne.useQuery(
     {
       //TODO useMemo
       id: Number(param_id),
-      // is_active: filters?.is_active,
-      // is_temporary: filters?.is_temporary,
+      is_active: filters?.is_active,
+      is_temporary: filters?.is_temporary,
     },
     { enabled: _isNumeric(param_id) },
   );
-
-  const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
-  const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
-  const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
 
   const utils = api.useContext();
 
@@ -106,9 +105,9 @@ export default function Committee() {
                 <strong> Duração: </strong>Comissão{' '}
                 {data?.committee_template_id ? 'Permanente' : 'Temporária'} <Dot />
                 <strong> Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
-                <Dot />
+                {/* <Dot />
                 <strong>Membros ativos: </strong> {data?.members.length} <Dot />
-                <strong>Membros inativos: </strong> ?
+                <strong>Membros inativos: </strong> ? */}
               </AccordionContent>
             </AccordionItem>
           </Accordion>

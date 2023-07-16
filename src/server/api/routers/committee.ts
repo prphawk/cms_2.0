@@ -20,14 +20,30 @@ export const _deactivateCommittee = async (committee_id: number) => {
 };
 
 export const committeeRouter = createTRPCRouter({
-  getOne: protectedProcedure.input(z.object({ id: z.number() })).query(({ ctx, input }) => {
-    return ctx.prisma.committee.findUnique({
-      where: { id: input.id },
-      include: {
-        members: { include: { employee: true }, where: { is_active: true } },
-      },
-    });
-  }),
+  getOne: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        is_active: z.optional(z.boolean()),
+        is_temporary: z.optional(z.boolean()),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.committee.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          members: {
+            include: { employee: true },
+            where: {
+              is_active: input.is_active,
+              is_temporary: input.is_temporary,
+            },
+          },
+        },
+      });
+    }),
 
   getAll: protectedProcedure
     .input(

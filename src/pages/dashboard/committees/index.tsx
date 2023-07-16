@@ -2,12 +2,13 @@ import AuthenticatedPage from '~/components/authenticated-page';
 import LoadingLayout from '~/components/loading-layout';
 import { getColumns } from '~/components/table/committees/columns';
 import { DataTable } from '~/components/table/data-table';
-import PageLayout from '~/layout';
+import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
 import { useState } from 'react';
 import { DataTableToolbarFilter } from '../../../components/table/committees/data-table-toolbar';
 import { useRouter } from 'next/router';
 import { Routes } from '~/constants/routes';
+import { Separator } from '@/components/ui/separator';
 
 export default function Committees() {
   const router = useRouter();
@@ -78,6 +79,8 @@ export default function Committees() {
       <PageLayout>
         {/* <LoadingLayout loading={isLoading}> */}
         <div className="committees container my-10 mb-auto text-white ">
+          <TitleLayout>Comissões</TitleLayout>
+          <Separator className="mb-4" />
           <DataTable
             data={data || []}
             isLoading={isFetching || isLoading}
