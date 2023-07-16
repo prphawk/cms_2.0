@@ -53,7 +53,7 @@ export const DataTableToolbarFilter = ({
   return (
     <>
       <DataTableFacetedFilter
-        title="Atividade"
+        title="Status"
         options={[
           { label: 'Ativa', value: 'is_active' },
           { label: 'Inativa', value: 'is_inactive' },

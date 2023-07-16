@@ -1,4 +1,4 @@
-export const _toLocaleString = (date?: Date) => {
+export const _toLocaleString = (date?: Date | null) => {
   if (!date) return '-';
   return date.toLocaleString('pt-BR', { dateStyle: 'short' });
 };

@@ -13,7 +13,7 @@ import { DataTableToolbarFilter } from '~/components/table/committees/data-table
 import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TextLayout, TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
-import { _isNumeric } from '~/utils/string';
+import { _isNumeric, _toLocaleString } from '~/utils/string';
 
 export default function Committee() {
   const router = useRouter();
@@ -90,12 +90,26 @@ export default function Committee() {
     <AuthenticatedPage>
       <PageLayout>
         <div className="committee container my-10 mb-auto text-white ">
-          <Accordion className="mb-4" type="single" collapsible>
+          <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger>
                 <TitleLayout>{data?.name}</TitleLayout>
               </AccordionTrigger>
-              <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+              <AccordionContent className="tracking-wide">
+                <strong> Vínculo: </strong> {data?.bond} <Dot /> <strong>Portaria: </strong>
+                {data?.ordinance}
+                <Dot />
+                <strong>Data de Início: </strong>
+                {_toLocaleString(data?.begin_date)} <Dot /> <strong>Data de Fim: </strong>
+                {_toLocaleString(data?.end_date)}
+                <Dot />
+                <strong> Duração: </strong>Comissão{' '}
+                {data?.committee_template_id ? 'Permanente' : 'Temporária'} <Dot />
+                <strong> Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
+                <Dot />
+                <strong>Membros ativos: </strong> {data?.members.length} <Dot />
+                <strong>Membros inativos: </strong> ?
+              </AccordionContent>
             </AccordionItem>
           </Accordion>
 
@@ -111,3 +125,5 @@ export default function Committee() {
     </AuthenticatedPage>
   );
 }
+
+const Dot = () => <span className="mx-1">•</span>;
