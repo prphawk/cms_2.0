@@ -120,7 +120,26 @@ export const committeeRouter = createTRPCRouter({
           //end_date: new Date()
         },
       });
+    }),
 
-      // TODO desativar memberships dessa comissão
+  deactivateMany: protectedProcedure
+    .input(
+      z.object({
+        ids: z.number().array(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { ids } = input;
+
+      return ids.map(async (id) => {
+        await _deactivateMembershipsByCommittee(id);
+        await ctx.prisma.committee.update({
+          where: { id },
+          data: {
+            is_active: false,
+            //end_date: new Date()
+          },
+        });
+      });
     }),
 });
