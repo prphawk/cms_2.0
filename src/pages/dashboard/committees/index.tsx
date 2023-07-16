@@ -18,6 +18,7 @@ export default function Committees() {
   const utils = api.useContext();
 
   const { data, isFetching, isLoading, isError } = api.committee.getAll.useQuery({
+    //TODO useMemo
     is_active: filters?.is_active,
     is_temporary: filters?.is_temporary,
   });

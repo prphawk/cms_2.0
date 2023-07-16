@@ -24,7 +24,7 @@ export const committeeRouter = createTRPCRouter({
     return ctx.prisma.committee.findUnique({
       where: { id: input.id },
       include: {
-        members: { include: { employee: true } },
+        members: { include: { employee: true }, where: { is_active: true } },
       },
     });
   }),
@@ -46,7 +46,7 @@ export const committeeRouter = createTRPCRouter({
         orderBy: { name: 'asc' },
         include: {
           members: {
-            select: { employee: true },
+            select: { employee: true }, //TODO just count here
             where: { is_active: true },
           },
         },
