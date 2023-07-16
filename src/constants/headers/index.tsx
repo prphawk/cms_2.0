@@ -4,4 +4,5 @@ export class CommitteeHeaders {
   public static BEGIN_DATE = 'Data de Início';
   public static END_DATE = 'Data de Fim';
   public static ORDINANCE = 'Portaria';
+  public static OBSERVATIONS = 'Observações';
 }

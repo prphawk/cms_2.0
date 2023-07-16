@@ -17,7 +17,7 @@ export function DataTableToolbar<TData>(props: DataTableToolbarProps<TData> & Pr
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter..."
+          placeholder="Buscar..."
           value={(props.table.getColumn(CommitteeHeaders.NAME)?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
             props.table.getColumn(CommitteeHeaders.NAME)?.setFilterValue(event.target.value)
@@ -62,7 +62,7 @@ export const DataTableToolbarFilter = ({
         setFiltersValue={_setIsActiveFilterValues}
       />
       <DataTableFacetedFilter
-        title="Tipo"
+        title="Duração"
         options={[
           { label: 'Permanente', value: 'is_permanent' },
           { label: 'Temporária', value: 'is_temporary' },
@@ -73,8 +73,8 @@ export const DataTableToolbarFilter = ({
 
       {isTemporaryFilters?.length || isActiveFilters?.length ? (
         <Button variant="ghost" onClick={handleResetFilters} className="h-8 px-2 lg:px-3">
-          Resetar filtros
-          <XIcon className="ml-2 h-4 w-4" />
+          Limpar
+          <XIcon className="ml-1 mt-1 h-4 w-4" />
         </Button>
       ) : (
         <></>
