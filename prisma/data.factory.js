@@ -4,17 +4,11 @@ const { faker } = require('@faker-js/faker');
 class DataFactory {
   constructor() {}
 
-  newMockEmployee() {
+  newMockEmployee(name) {
     return {
-      name: faker.person.fullName(),
+      name: name || faker.person.fullName(),
       is_active: true,
     };
-  }
-
-  newMockEmployeeWithId() {
-    const mock = this.newMockEmployee();
-    mock.id = +faker.number.int(3);
-    return mock;
   }
 
   newMockCommittee(bond, name) {
@@ -29,17 +23,22 @@ class DataFactory {
     };
   }
 
-  newMockCommitteeWithId() {
-    const mock = this.newMockCommittee();
-    mock.id = +faker.number.int(3);
-    return mock;
+  newTemplateCommittee(mockCommitteeIds) {
+    return {
+      committees: {
+        connect: mockCommitteeIds.map((c) => {
+          return { id: c };
+        }),
+      },
+    };
   }
 
-  newMockMembershipJSON(mockEmployeeId, mockCommitteeId) {
+  newMockMembershipJSON(mockEmployeeId, mockCommitteeId, mockRole) {
     return {
       employee_id: mockEmployeeId,
       committee_id: mockCommitteeId,
       begin_date: null,
+      role: mockRole,
       is_temporary: faker.datatype.boolean({ probability: 0.05 }),
       observations: faker.lorem.sentence(),
       is_active: faker.datatype.boolean({ probability: 0.75 }),

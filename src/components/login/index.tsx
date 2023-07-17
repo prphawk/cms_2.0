@@ -1,6 +1,6 @@
 import { useSession, signOut, signIn } from 'next-auth/react';
 import { useMemo } from 'react';
-import Button from '../button';
+import { MyButton } from '../button';
 
 export function AuthButton() {
   const { status } = useSession();
@@ -14,7 +14,7 @@ export function AuthButton() {
 
   const props = { onClick: handleOnClick };
 
-  return <Button {...props}>{text}</Button>;
+  return <MyButton {...props}>{text}</MyButton>;
 }
 
 export const LoginComponent = () => {
