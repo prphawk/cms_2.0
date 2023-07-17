@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import DataTableColumnHeader from '~/components/table/data-table-column-header';
+import { Separator } from '@radix-ui/react-dropdown-menu';
 
 export const getCommitteesColumns = (
   handleDeactivateCommittees: (ids: number[]) => void,
@@ -115,37 +116,51 @@ export const getCommitteesColumns = (
             <span className="sr-only">Ver detalhes</span>
             <EyeIcon className="h-4 w-4" />
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Ações</DropdownMenuLabel>
-              <DropdownMenuItem>Ver membros</DropdownMenuItem>
-              <DropdownMenuItem>Ver histórico</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {committee.committee_template_id && (
-                <DropdownMenuItem
-                  onClick={() => navigator.clipboard.writeText(committee.id.toString())}
-                >
-                  Suceder comissão
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem
-                onClick={() => {
-                  handleDeactivateCommittees([committee.id]);
-                  committee.is_active = false;
-                }}
-              >
-                Desativar comissão
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <CommitteeActionsMenuColumn
+            committee={committee}
+            handleDeactivateCommittees={handleDeactivateCommittees}
+          />
         </>
       );
     },
   },
 ];
+
+export const CommitteeActionsMenuColumn = ({
+  committee,
+  handleDeactivateCommittees,
+}: {
+  committee: Committee;
+  handleDeactivateCommittees: (ids: number[]) => void;
+}) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Abrir menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Ações</DropdownMenuLabel>
+        <Separator />
+        <DropdownMenuItem>Ver membros</DropdownMenuItem>
+        <DropdownMenuItem>Suceder comissão</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        {committee.committee_template_id && (
+          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(committee.id.toString())}>
+            Suceder comissão
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem
+          onClick={() => {
+            handleDeactivateCommittees([committee.id]);
+            committee.is_active = false;
+          }}
+        >
+          Desativar comissão
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};

@@ -8,14 +8,13 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import AuthenticatedPage from '~/components/authenticated-page';
 import { getMembershipColumns } from '~/components/table/membership/membership-columns';
-import {
-  DataTableToolbarActions,
-  DataTableToolbarFilter,
-} from '~/components/table/data-table-toolbar';
+import { DataTableToolbarFilter } from '~/components/table/data-table-toolbar';
 import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
 import { _isNumeric, _toLocaleString } from '~/utils/string';
+import { Committee, Membership } from '@prisma/client';
+import DataTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 
 export default function CommitteeMembership() {
   const router = useRouter();
@@ -89,51 +88,66 @@ export default function CommitteeMembership() {
   };
 
   const propsActions = {
-    handleEdit: () => {},
+    committee: data!,
+    handleAddMembership: () => {},
+    handleDeactivateCommittees: () => {},
   };
   return (
     <AuthenticatedPage>
       <PageLayout>
         <div className="committee container my-10 mb-auto text-white ">
-          <CommitteeDetails data={data} />
-          <DataTable
-            data={data?.members || []}
-            isLoading={isFetching || isLoading}
-            columns={getMembershipColumns()}
-            tableFilters={<DataTableToolbarFilter {...propsFilters} />}
-            tableActions={<DataTableToolbarActions {...propsActions} />}
-          />
+          {data && (
+            <>
+              <CommitteeDetails data={data} />
+              <DataTable
+                data={data?.members || []}
+                isLoading={isFetching || isLoading}
+                columns={getMembershipColumns()}
+                tableFilters={<DataTableToolbarFilter {...propsFilters} />}
+                tableActions={<DataTableToolbarActions {...propsActions} />}
+              />
+            </>
+          )}
         </div>
       </PageLayout>
     </AuthenticatedPage>
   );
 }
 
-const Dot = () => <span className="mx-1">•</span>;
+const Dot = () => <span className="mx-1.5">•</span>;
 
-const CommitteeDetails = ({ data }: any) => {
+export type CommitteeDataType = Committee & { members: Membership[] };
+
+const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
   return (
-    <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
-      <AccordionItem value="item-1">
-        <AccordionTrigger>
-          <TitleLayout>{data?.name}</TitleLayout>
-        </AccordionTrigger>
-        <AccordionContent className="tracking-wide">
-          <strong> Vínculo: </strong> {data?.bond} <Dot /> <strong>Portaria: </strong>
-          {data?.ordinance}
-          <Dot />
-          <strong>Data de Início: </strong>
-          {_toLocaleString(data?.begin_date)} <Dot /> <strong>Data de Fim: </strong>
-          {_toLocaleString(data?.end_date)}
-          <Dot />
-          <strong> Duração: </strong>Comissão{' '}
-          {data?.committee_template_id ? 'Permanente' : 'Temporária'} <Dot />
-          <strong> Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
-          {/* <Dot />
+    data && (
+      <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger>
+            <TitleLayout>{data?.name}</TitleLayout>
+          </AccordionTrigger>
+          <AccordionContent className="tracking-wide">
+            <strong> Vínculo: </strong> {data?.bond}
+            <Dot />
+            <strong>Portaria: </strong>
+            {data?.ordinance}
+            <Dot />
+            <strong>Data de Início: </strong>
+            {_toLocaleString(data?.begin_date)}
+            <Dot />
+            <strong>Data de Fim: </strong>
+            {_toLocaleString(data?.end_date)}
+            <Dot />
+            <strong>Duração: </strong>Comissão
+            {data?.committee_template_id ? ' Permanente' : ' Temporária'}
+            <Dot />
+            <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
+            {/* <Dot />
                 <strong>Membros ativos: </strong> {data?.members.length} <Dot />
                 <strong>Membros inativos: </strong> ? */}
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    )
   );
 };

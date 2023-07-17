@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { PencilIcon, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
 import { CommitteesHeaders } from '~/constants/headers';
 import { Table } from '@tanstack/react-table';
@@ -92,20 +92,6 @@ export const DataTableToolbarFilter = ({
     </>
   );
 };
-
-export function DataTableToolbarActions(props: { handleEdit: () => void }) {
-  return (
-    <Button
-      onClick={props.handleEdit}
-      variant="outline"
-      size="sm"
-      className="ml-auto mr-2 hidden h-8 bg-transparent lg:flex"
-    >
-      <PencilIcon className="mr-2 h-4 w-4" />
-      Editar
-    </Button>
-  );
-}
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;

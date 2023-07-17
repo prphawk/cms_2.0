@@ -1,8 +1,8 @@
-import { Employee, Membership } from '@prisma/client';
+import { Committee, Employee, Membership } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { MembershipHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
-import { EyeIcon, MoreHorizontal } from 'lucide-react';
+import { EyeIcon, MoreHorizontal, MoreHorizontalIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import DataTableColumnHeader from '~/components/table/data-table-column-header';
+import { Separator } from '@/components/ui/separator';
 
 export const getMembershipColumns = (): // handleDeactivateCommittees: (ids: number[]) => void,
 // handleViewCommittee: (id: number) => void,
@@ -80,14 +81,6 @@ ColumnDef<Membership & { employee: Employee }>[] => [
 
       return (
         <>
-          <Button
-            // onClick={() => handleViewCommittee(committee.id)}
-            variant="ghost"
-            className="h-8 w-8 p-0"
-          >
-            <span className="sr-only">Ver detalhes</span>
-            <EyeIcon className="h-4 w-4" />
-          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -97,24 +90,12 @@ ColumnDef<Membership & { employee: Employee }>[] => [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
-              <DropdownMenuItem>Ver membros</DropdownMenuItem>
-              <DropdownMenuItem>Ver histórico</DropdownMenuItem>
+              {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              {/* {committee.committee_template_id && (
-                <DropdownMenuItem
-                  onClick={() => navigator.clipboard.writeText(committee.id.toString())}
-                >
-                  Suceder comissão
-                </DropdownMenuItem>
-              )} */}
-              <DropdownMenuItem
-              // onClick={() => {
-              //   handleDeactivateCommittees([committee.id]);
-              //   committee.is_active = false;
-              // }}
-              >
-                Desativar comissão
-              </DropdownMenuItem>
+              <DropdownMenuItem>Editar</DropdownMenuItem>
+              <DropdownMenuItem>Suceder cargo</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Encerrar participação</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </>
