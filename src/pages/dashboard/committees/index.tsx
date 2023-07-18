@@ -107,6 +107,10 @@ export default function Committees() {
 }
 
 const Header = () => {
+  const { data: countData, isLoading } = api.committee.groupByActivity.useQuery();
+
+  const { active_count, total_count } = formatCount(isLoading, countData);
+
   return (
     <>
       <Accordion className="mb-6" type="single" collapsible>
@@ -115,11 +119,27 @@ const Header = () => {
             <TitleLayout>Órgãos Colegiados</TitleLayout>
           </AccordionTrigger>
           <AccordionContent className="tracking-wide">
-            <strong>ÓC ativos: </strong>X<Dot />
-            <strong>ÓC inativos: </strong>Y
+            <strong>Órgãos ativos: </strong>
+            {active_count}
+            <Dot />
+            <strong>Órgãos: </strong>
+            {total_count}
           </AccordionContent>
         </AccordionItem>
       </Accordion>
     </>
   );
+};
+
+export const formatCount = (
+  isLoading: boolean,
+  data: any[] | undefined,
+): { active_count: string; total_count: string } => {
+  let active, inactive;
+  if (isLoading || !data) active = inactive = 0;
+  else {
+    active = data.at(0)._count.is_active;
+    inactive = data.at(1)._count.is_active;
+  }
+  return { active_count: active || 'Loading...', total_count: active + inactive || 'Loading...' };
 };

@@ -16,6 +16,7 @@ import { _isNumeric, _toLocaleString } from '~/utils/string';
 import { Committee, Membership } from '@prisma/client';
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { Dot } from '~/components/dot';
+import { formatCount } from '.';
 
 export default function CommitteeMembership() {
   const router = useRouter();
@@ -118,35 +119,37 @@ export default function CommitteeMembership() {
 export type CommitteeDataType = Committee & { members: Membership[] };
 
 const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
+  const { data: countData, isLoading } = api.committee.groupByActivity.useQuery();
+
+  const { active_count, total_count } = formatCount(isLoading, countData);
   return (
-    data && (
-      <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
-        <AccordionItem value="item-1">
-          <AccordionTrigger>
-            <TitleLayout>{data?.name}</TitleLayout>
-          </AccordionTrigger>
-          <AccordionContent className="tracking-wide">
-            <strong> Vínculo: </strong> {data?.bond}
-            <Dot />
-            <strong>Portaria: </strong>
-            {data?.ordinance}
-            <Dot />
-            <strong>Data de Início: </strong>
-            {_toLocaleString(data?.begin_date)}
-            <Dot />
-            <strong>Data de Fim: </strong>
-            {_toLocaleString(data?.end_date)}
-            <Dot />
-            <strong>Tipo: </strong>Comissão
-            {data?.committee_template_id ? ' Permanente' : ' Temporária'}
-            <Dot />
-            <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
-            {/* <Dot />
-                <strong>Membros ativos: </strong> {data?.members.length} <Dot />
-                <strong>Membros inativos: </strong> ? */}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    )
+    <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>
+          <TitleLayout>{data?.name}</TitleLayout>
+        </AccordionTrigger>
+        <AccordionContent className="tracking-wide">
+          <strong> Vínculo: </strong> {data?.bond}
+          <Dot />
+          <strong>Portaria: </strong>
+          {data?.ordinance}
+          <Dot />
+          <strong>Data de Início: </strong>
+          {_toLocaleString(data?.begin_date)}
+          <Dot />
+          <strong>Data de Fim: </strong>
+          {_toLocaleString(data?.end_date)}
+          <Dot />
+          <strong>Tipo: </strong>Órgão
+          {data?.committee_template_id ? ' Permanente' : ' Temporário'}
+          <Dot />
+          <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
+          <Dot />
+          <strong>Membros ativos: </strong> {active_count}
+          <Dot />
+          <strong>Membros: </strong> {total_count}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 };

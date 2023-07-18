@@ -45,6 +45,18 @@ export const committeeRouter = createTRPCRouter({
       });
     }),
 
+  groupByActivity: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.committee.groupBy({
+      by: ['is_active'],
+      _count: {
+        is_active: true,
+      },
+      orderBy: {
+        is_active: 'desc',
+      },
+    });
+  }),
+
   getAll: protectedProcedure
     .input(
       z.object({
