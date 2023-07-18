@@ -56,9 +56,8 @@ export const CommitteeActionsMenuButton = ({
       <DropdownMenuContent align="end">
         <DropdownMenuItem>Editar comissão</DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
-        <DropdownMenuItem>Suceder comissão</DropdownMenuItem>
-        <DropdownMenuSeparator />
         {committee.committee_template_id && <DropdownMenuItem>Suceder comissão</DropdownMenuItem>}
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
             handleDeactivateCommittees([committee.id]);

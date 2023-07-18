@@ -65,8 +65,8 @@ export const DataTableToolbarFilter = ({
       <DataTableFacetedFilter
         title="Status"
         options={[
-          { label: 'Ativa', value: 'is_active' },
-          { label: 'Inativa', value: 'is_inactive' },
+          { label: 'Ativo(a)', value: 'is_active' },
+          { label: 'Inativo(a)', value: 'is_inactive' },
         ]}
         filters={isActiveFilters}
         setFiltersValue={_setIsActiveFilterValues}
@@ -75,7 +75,7 @@ export const DataTableToolbarFilter = ({
         title="Duração"
         options={[
           { label: 'Permanente', value: 'is_permanent' },
-          { label: 'Temporária', value: 'is_temporary' },
+          { label: 'Temporário(a)', value: 'is_temporary' },
         ]}
         filters={isTemporaryFilters}
         setFiltersValue={_setIsTemporaryFilterValues}

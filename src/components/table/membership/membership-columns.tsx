@@ -1,8 +1,8 @@
-import { Committee, Employee, Membership } from '@prisma/client';
+import { Employee, Membership } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { MembershipHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
-import { EyeIcon, MoreHorizontal, MoreHorizontalIcon } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,9 +14,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import DataTableColumnHeader from '~/components/table/data-table-column-header';
-import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
+import { Router } from 'next/router';
+import { Routes } from '~/constants/routes';
 
-export const getMembershipColumns = (): // handleDeactivateCommittees: (ids: number[]) => void,
+export const getMembershipColumns = (
+  committee_begin_date?: Date | null,
+): // handleDeactivateCommittees: (ids: number[]) => void,
 // handleViewCommittee: (id: number) => void,
 ColumnDef<Membership & { employee: Employee }>[] => [
   {
@@ -52,7 +56,13 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
-      return <div>{value}</div>;
+      const committee_id = row.original.committee_id;
+      const role = row.original.role;
+      return (
+        <Link className="underline" href={`${Routes.COMMITTEES}/${committee_id}/${role}`}>
+          {value}
+        </Link>
+      );
     },
   },
   {
@@ -60,7 +70,7 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     id: MembershipHeaders.BEGIN_DATE,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const date = row.getValue(column.id) as Date;
+      const date = (row.getValue(column.id) as Date) || committee_begin_date;
       return <div>{_toLocaleString(date)}</div>; // pode retornar JSX tbm
     },
   },
@@ -77,8 +87,8 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const committee = row.original;
-
+      const committee_id = row.original.committee_id;
+      const role = row.original.role;
       return (
         <>
           <DropdownMenu>
@@ -92,8 +102,13 @@ ColumnDef<Membership & { employee: Employee }>[] => [
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Editar</DropdownMenuItem>
+              <DropdownMenuItem>Editar participação</DropdownMenuItem>
               <DropdownMenuItem>Suceder cargo</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href={`${Routes.COMMITTEES}/${committee_id}/${role}`}>
+                  Ver histórico do cargo
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Encerrar participação</DropdownMenuItem>
             </DropdownMenuContent>

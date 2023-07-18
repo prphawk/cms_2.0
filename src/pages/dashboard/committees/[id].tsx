@@ -102,7 +102,7 @@ export default function CommitteeMembership() {
               <DataTable
                 data={data?.members || []}
                 isLoading={isFetching || isLoading}
-                columns={getMembershipColumns()}
+                columns={getMembershipColumns(data.begin_date)}
                 tableFilters={<DataTableToolbarFilter {...propsFilters} />}
                 tableActions={<DataTableToolbarActions {...propsActions} />}
               />
