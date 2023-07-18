@@ -23,12 +23,15 @@ class DataFactory {
     };
   }
 
-  newTemplateCommittee(mockCommitteeIds) {
+  newTemplateCommittee(name, mockCommitteeIds) {
     return {
-      committees: {
-        connect: mockCommitteeIds.map((c) => {
-          return { id: c };
-        }),
+      data: {
+        name,
+        committees: {
+          connect: mockCommitteeIds.map((c) => {
+            return { id: c };
+          }),
+        },
       },
     };
   }

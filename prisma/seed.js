@@ -44,13 +44,9 @@ const load = async () => {
     });
     console.log('Added membership data');
 
-    await prisma.committeeTemplate.create({
-      data: committeesFromTemplates[0],
-    });
+    await prisma.committeeTemplate.create(committeesFromTemplates[0]);
 
-    await prisma.committeeTemplate.create({
-      data: committeesFromTemplates[1],
-    });
+    await prisma.committeeTemplate.create(committeesFromTemplates[1]);
 
     console.log('Added committeeTemplate data');
   } catch (e) {

@@ -48,9 +48,9 @@ const committees = [
 ];
 
 const committeesFromTemplates = [
-  factory.newTemplateCommittee([1]),
-  factory.newTemplateCommittee([10, 11]),
-  factory.newTemplateCommittee([12, 13]),
+  factory.newTemplateCommittee('Direção', [1]),
+  factory.newTemplateCommittee('Comissão A', [10, 11]),
+  factory.newTemplateCommittee('Comissão B', [12, 13]),
 ];
 
 const memberships = [

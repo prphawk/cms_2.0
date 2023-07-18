@@ -1,6 +1,6 @@
 exportação, não importação (ou talvez apenas na primeira vez)
 2º mandato para o 3º mandato
-desativar um membro fica no historico
+desativar um membro fica no historico ✅
 
 não é necessário mandato na comissão ✅
 
@@ -14,7 +14,7 @@ mandato => trocar por permanente ou temporário ✅ TODO tirar duvida, precisa m
 
 ---
 
-histórico de uma comissão => tirar duvida, histórico da comissão INF 2022 é pra aparecer em comissão INF 2023?
+histórico de uma comissão => tirar duvida, histórico da comissão INF 2022 é pra aparecer em comissão INF 2023? sim
 
 cargos
 
