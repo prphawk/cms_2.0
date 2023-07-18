@@ -145,11 +145,11 @@ export const CommitteeActionsMenuColumn = ({
         <DropdownMenuLabel>Ações</DropdownMenuLabel>
         <Separator />
         <DropdownMenuItem>Ver membros</DropdownMenuItem>
-        <DropdownMenuItem>Suceder comissão</DropdownMenuItem>
+        <DropdownMenuItem>Suceder órgão</DropdownMenuItem>
         <DropdownMenuSeparator />
         {committee.committee_template_id && (
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(committee.id.toString())}>
-            Suceder comissão
+            Suceder órgão
           </DropdownMenuItem>
         )}
         <DropdownMenuItem
@@ -158,7 +158,7 @@ export const CommitteeActionsMenuColumn = ({
             committee.is_active = false;
           }}
         >
-          Desativar comissão
+          Desativar órgão
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -129,10 +129,10 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
           <TitleLayout>{data?.name}</TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">
-          <strong> Vínculo: </strong> {data?.bond}
+          <strong>Vínculo: </strong> {data?.bond}
           <Dot />
           <strong>Portaria: </strong>
-          {data?.ordinance}
+          {data?.ordinance || '-'}
           <Dot />
           <strong>Data de Início: </strong>
           {_toLocaleString(data?.begin_date)}
@@ -140,14 +140,20 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
           <strong>Data de Fim: </strong>
           {_toLocaleString(data?.end_date)}
           <Dot />
+          {data.observations && (
+            <>
+              <strong>Observações: </strong> "{data.observations}"
+              <Dot />
+            </>
+          )}
           <strong>Tipo: </strong>Órgão
           {data?.committee_template_id ? ' Permanente' : ' Temporário'}
           <Dot />
           <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
           <Dot />
-          <strong>Membros ativos: </strong> {active_count}
-          <Dot />
           <strong>Membros: </strong> {total_count}
+          <Dot />
+          <strong>Membros ativos: </strong> {active_count}
         </AccordionContent>
       </AccordionItem>
     </Accordion>

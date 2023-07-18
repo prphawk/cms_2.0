@@ -54,9 +54,9 @@ const ActionsMenuButton = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>Editar comissão</DropdownMenuItem>
+        <DropdownMenuItem>Editar órgão</DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
-        {committee.committee_template_id && <DropdownMenuItem>Suceder comissão</DropdownMenuItem>}
+        {committee.committee_template_id && <DropdownMenuItem>Suceder órgão</DropdownMenuItem>}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
@@ -64,7 +64,7 @@ const ActionsMenuButton = ({
             committee.is_active = false;
           }}
         >
-          Desativar comissão
+          Desativar órgão
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

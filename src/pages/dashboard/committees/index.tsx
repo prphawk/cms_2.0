@@ -1,5 +1,4 @@
 import AuthenticatedPage from '~/components/authenticated-page';
-import LoadingLayout from '~/components/loading-layout';
 import { getCommitteesColumns } from '~/components/table/committees/committees-columns';
 import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
@@ -8,7 +7,6 @@ import { useState } from 'react';
 import { TableToolbarFilter } from '../../../components/table/data-table-toolbar';
 import { useRouter } from 'next/router';
 import { Routes } from '~/constants/routes';
-import { Separator } from '@/components/ui/separator';
 import {
   Accordion,
   AccordionContent,
@@ -119,11 +117,11 @@ const Header = () => {
             <TitleLayout>Órgãos Colegiados</TitleLayout>
           </AccordionTrigger>
           <AccordionContent className="tracking-wide">
-            <strong>Órgãos ativos: </strong>
-            {active_count}
-            <Dot />
             <strong>Órgãos: </strong>
             {total_count}
+            <Dot />
+            <strong>Órgãos ativos: </strong>
+            {active_count}
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -141,5 +139,5 @@ export const formatCount = (
     active = data.at(0)._count.is_active;
     inactive = data.at(1)._count.is_active;
   }
-  return { active_count: active || 'Loading...', total_count: active + inactive || 'Loading...' };
+  return { active_count: active ?? 'Loading...', total_count: active + inactive ?? 'Loading...' };
 };

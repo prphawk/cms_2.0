@@ -112,13 +112,13 @@ ColumnDef<Membership & { employee: Employee }>[] => [
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Editar participação</DropdownMenuItem>
-              <DropdownMenuItem>Suceder cargo</DropdownMenuItem>
               <DropdownMenuItem>
                 <Link href={`${Routes.COMMITTEES}/${committee_id}/${role}`}>
                   Ver histórico do cargo
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem>Suceder cargo</DropdownMenuItem>
+              <DropdownMenuItem>Editar participação</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Encerrar participação</DropdownMenuItem>
             </DropdownMenuContent>
