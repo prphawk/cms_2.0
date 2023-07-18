@@ -8,13 +8,14 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import AuthenticatedPage from '~/components/authenticated-page';
 import { getMembershipColumns } from '~/components/table/membership/membership-columns';
-import { DataTableToolbarFilter } from '~/components/table/data-table-toolbar';
+import { TableToolbarFilter } from '~/components/table/data-table-toolbar';
 import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
 import { _isNumeric, _toLocaleString } from '~/utils/string';
 import { Committee, Membership } from '@prisma/client';
-import DataTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
+import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
+import { Dot } from '~/components/dot';
 
 export default function CommitteeMembership() {
   const router = useRouter();
@@ -89,7 +90,7 @@ export default function CommitteeMembership() {
 
   const propsActions = {
     committee: data!,
-    handleAddMembership: () => {},
+    handleCreateMembership: () => {},
     handleDeactivateCommittees: () => {},
   };
   return (
@@ -102,9 +103,9 @@ export default function CommitteeMembership() {
               <DataTable
                 data={data?.members || []}
                 isLoading={isFetching || isLoading}
-                columns={getMembershipColumns(data.begin_date)}
-                tableFilters={<DataTableToolbarFilter {...propsFilters} />}
-                tableActions={<DataTableToolbarActions {...propsActions} />}
+                columns={getMembershipColumns(data.begin_date, data.end_date)}
+                tableFilters={<TableToolbarFilter {...propsFilters} />}
+                tableActions={<MembershipTableToolbarActions {...propsActions} />}
               />
             </>
           )}
@@ -113,8 +114,6 @@ export default function CommitteeMembership() {
     </AuthenticatedPage>
   );
 }
-
-const Dot = () => <span className="mx-1.5">•</span>;
 
 export type CommitteeDataType = Committee & { members: Membership[] };
 
@@ -138,7 +137,7 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
             <strong>Data de Fim: </strong>
             {_toLocaleString(data?.end_date)}
             <Dot />
-            <strong>Duração: </strong>Comissão
+            <strong>Tipo: </strong>Comissão
             {data?.committee_template_id ? ' Permanente' : ' Temporária'}
             <Dot />
             <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}

@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/table';
 import DataTablePagination from './data-table-pagination';
 import { ReactNode, useState } from 'react';
-import { DataTableToolbar } from './data-table-toolbar';
+import { TableToolbar } from './data-table-toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <DataTableToolbar table={table} tableFilters={tableFilters} tableActions={tableActions} />
+      <TableToolbar table={table} tableFilters={tableFilters} tableActions={tableActions} />
       <div className="mt-3 rounded-md border">
         <Table>
           <TableHeader>

@@ -10,15 +10,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export default function DataTableToolbarActions(props: {
+export default function MembershipTableToolbarActions(props: {
   committee: CommitteeDataType;
-  handleAddMembership: () => void;
+  handleCreateMembership: () => void;
   handleDeactivateCommittees: () => void;
 }) {
   return (
     <>
       <Button
-        onClick={props.handleAddMembership}
+        onClick={props.handleCreateMembership}
         variant="outline"
         size="sm"
         className="ml-auto mr-2 hidden h-8 bg-transparent lg:flex"
@@ -26,7 +26,7 @@ export default function DataTableToolbarActions(props: {
         <PlusIcon className="mr-2 h-5 w-5" />
         Adicionar membro(a)
       </Button>
-      <CommitteeActionsMenuButton
+      <ActionsMenuButton
         committee={props.committee}
         handleDeactivateCommittees={props.handleDeactivateCommittees}
       />
@@ -34,7 +34,7 @@ export default function DataTableToolbarActions(props: {
   );
 }
 
-export const CommitteeActionsMenuButton = ({
+const ActionsMenuButton = ({
   committee,
   handleDeactivateCommittees,
 }: {

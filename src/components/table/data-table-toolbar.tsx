@@ -13,12 +13,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-interface DataTableToolbarProps<TData> {
+interface TableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export function DataTableToolbar<TData>(
-  props: DataTableToolbarProps<TData> & {
+export function TableToolbar<TData>(
+  props: TableToolbarProps<TData> & {
     tableFilters: JSX.Element;
     tableActions?: JSX.Element;
   },
@@ -37,7 +37,7 @@ export function DataTableToolbar<TData>(
         {props.tableFilters}
       </div>
       {props.tableActions}
-      <DataTableViewOptions table={props.table} />
+      <TableViewOptions table={props.table} />
     </div>
   );
 }
@@ -49,7 +49,7 @@ interface Filters {
   _setIsTemporaryFilterValues: (values?: string[]) => void;
 }
 
-export const DataTableToolbarFilter = ({
+export const TableToolbarFilter = ({
   isActiveFilters,
   _setIsActiveFilterValues,
   isTemporaryFilters,
@@ -72,7 +72,7 @@ export const DataTableToolbarFilter = ({
         setFiltersValue={_setIsActiveFilterValues}
       />
       <DataTableFacetedFilter
-        title="Duração"
+        title="Tipo"
         options={[
           { label: 'Permanente', value: 'is_permanent' },
           { label: 'Temporário(a)', value: 'is_temporary' },
@@ -97,7 +97,7 @@ interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
 }
 
-export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
+export function TableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

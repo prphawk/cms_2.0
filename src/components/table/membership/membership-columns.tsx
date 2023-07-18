@@ -20,6 +20,7 @@ import { Routes } from '~/constants/routes';
 
 export const getMembershipColumns = (
   committee_begin_date?: Date | null,
+  committee_end_date?: Date | null,
 ): // handleDeactivateCommittees: (ids: number[]) => void,
 // handleViewCommittee: (id: number) => void,
 ColumnDef<Membership & { employee: Employee }>[] => [
@@ -71,6 +72,15 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = (row.getValue(column.id) as Date) || committee_begin_date;
+      return <div>{_toLocaleString(date)}</div>; // pode retornar JSX tbm
+    },
+  },
+  {
+    accessorKey: 'end_date',
+    id: MembershipHeaders.END_DATE,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const date = (row.getValue(column.id) as Date) || committee_end_date;
       return <div>{_toLocaleString(date)}</div>; // pode retornar JSX tbm
     },
   },

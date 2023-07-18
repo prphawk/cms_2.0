@@ -5,10 +5,19 @@ import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
 import { useState } from 'react';
-import { DataTableToolbarFilter } from '../../../components/table/data-table-toolbar';
+import { TableToolbarFilter } from '../../../components/table/data-table-toolbar';
 import { useRouter } from 'next/router';
 import { Routes } from '~/constants/routes';
 import { Separator } from '@/components/ui/separator';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { _toLocaleString } from '~/utils/string';
+import { Dot } from '~/components/dot';
+import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions';
 
 export default function Committees() {
   const router = useRouter();
@@ -67,11 +76,14 @@ export default function Committees() {
     return <span>Error: sowwyyyy</span>;
   }
 
-  const props = {
+  const filterProps = {
     _setIsTemporaryFilterValues,
     _setIsActiveFilterValues,
     isActiveFilters: filterLabelsA,
     isTemporaryFilters: filterLabelsT,
+  };
+  const actionProps = {
+    handleCreateCommittee: () => {},
   };
 
   return (
@@ -79,13 +91,13 @@ export default function Committees() {
       <PageLayout>
         {/* <LoadingLayout loading={isLoading}> */}
         <div className="committees container my-10 mb-auto text-white ">
-          <TitleLayout>Comissões</TitleLayout>
-          <Separator className="mb-4" />
+          <Header />
           <DataTable
             data={data || []}
             isLoading={isFetching || isLoading}
             columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
-            tableFilters={<DataTableToolbarFilter {...props} />}
+            tableFilters={<TableToolbarFilter {...filterProps} />}
+            tableActions={<CommitteesTableToolbarActions {...actionProps} />}
           />
         </div>
         {/* </LoadingLayout> */}
@@ -93,3 +105,21 @@ export default function Committees() {
     </AuthenticatedPage>
   );
 }
+
+const Header = () => {
+  return (
+    <>
+      <Accordion className="mb-6" type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger>
+            <TitleLayout>Órgãos Colegiados</TitleLayout>
+          </AccordionTrigger>
+          <AccordionContent className="tracking-wide">
+            <strong>ÓC ativos: </strong>X<Dot />
+            <strong>ÓC inativos: </strong>Y
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </>
+  );
+};
