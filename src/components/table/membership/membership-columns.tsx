@@ -17,6 +17,7 @@ import DataTableColumnHeader from '~/components/table/data-table-column-header';
 import Link from 'next/link';
 import { Router } from 'next/router';
 import { Routes } from '~/constants/routes';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const getMembershipColumns = (
   committee_begin_date?: Date | null,
@@ -90,7 +91,16 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
-      return <div className="max-w-xs truncate">{value}</div>;
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="w-60 truncate">{value}</div>
+            </TooltipTrigger>
+            <TooltipContent>{value}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
     },
   },
   {
