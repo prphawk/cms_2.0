@@ -17,6 +17,16 @@ import { Committee, Membership } from '@prisma/client';
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { Dot } from '~/components/dot';
 import { formatCount } from '.';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import CommitteeDialog from '~/components/table/committees/committee-dialog';
 
 export default function CommitteeMembership() {
   const router = useRouter();
@@ -88,12 +98,22 @@ export default function CommitteeMembership() {
     isActiveFilters: filterLabelsA,
     isTemporaryFilters: filterLabelsT,
   };
+  const [open, setOpen] = useState(false);
 
+  const handleOpenDialog = (open: boolean) => {
+    setOpen(open);
+  };
+  const handleSave = (committee: Committee) => {
+    //TODO onSave
+    handleOpenDialog(false);
+  };
   const propsActions = {
     committee: data!,
     handleCreateMembership: () => {},
     handleDeactivateCommittees: () => {},
+    handleOpenDialog,
   };
+
   return (
     <AuthenticatedPage>
       <PageLayout>
@@ -107,6 +127,12 @@ export default function CommitteeMembership() {
                 columns={getMembershipColumns(data.begin_date, data.end_date)}
                 tableFilters={<TableToolbarFilter {...propsFilters} />}
                 tableActions={<MembershipTableToolbarActions {...propsActions} />}
+              />
+              <CommitteeDialog
+                committee={data}
+                open={open}
+                handleOpenDialog={handleOpenDialog}
+                handleSave={handleSave}
               />
             </>
           )}

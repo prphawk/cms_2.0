@@ -9,11 +9,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { useState } from 'react';
 
 export default function MembershipTableToolbarActions(props: {
   committee: CommitteeDataType;
   handleCreateMembership: () => void;
   handleDeactivateCommittees: () => void;
+  handleOpenDialog: (open: boolean) => void;
 }) {
   return (
     <>
@@ -29,17 +40,16 @@ export default function MembershipTableToolbarActions(props: {
       <ActionsMenuButton
         committee={props.committee}
         handleDeactivateCommittees={props.handleDeactivateCommittees}
+        handleOpenDialog={props.handleOpenDialog}
       />
     </>
   );
 }
 
-const ActionsMenuButton = ({
-  committee,
-  handleDeactivateCommittees,
-}: {
+const ActionsMenuButton = (props: {
   committee: Committee;
   handleDeactivateCommittees: (ids: number[]) => void;
+  handleOpenDialog: (open: boolean) => void;
 }) => {
   return (
     <DropdownMenu>
@@ -54,14 +64,18 @@ const ActionsMenuButton = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>Editar órgão</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => props.handleOpenDialog(true)}>
+          Editar órgão
+        </DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
-        {committee.committee_template_id && <DropdownMenuItem>Suceder órgão</DropdownMenuItem>}
+        {props.committee.committee_template_id && (
+          <DropdownMenuItem>Suceder órgão</DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
-            handleDeactivateCommittees([committee.id]);
-            committee.is_active = false;
+            props.handleDeactivateCommittees([props.committee.id]);
+            props.committee.is_active = false;
           }}
         >
           Desativar órgão
