@@ -10,11 +10,13 @@ export const templateRouter = createTRPCRouter({
     .input(
       z.object({
         committee_ids: z.number().array(),
+        name: z.string(),
       }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.committeeTemplate.create({
         data: {
+          name: input.name,
           committees: {
             connect: input.committee_ids.map((c: number) => {
               return { id: c };
