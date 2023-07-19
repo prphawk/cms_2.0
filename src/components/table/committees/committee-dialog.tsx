@@ -18,18 +18,33 @@ import { _toLocaleString } from '~/utils/string';
 export default function CommitteeDialog(props: {
   open: boolean;
   handleOpenDialog: (open: boolean) => void;
-  committee: Committee;
-  handleSave: (committee: Committee) => void;
+  committee?: Committee;
+  handleSave: (committee: any) => void;
 }) {
-  const [committee, setcommittee] = useState(props.committee);
+  const [committee, setcommittee] = useState(
+    props.committee || {
+      name: '',
+      bond: '',
+      begin_date: new Date(),
+      end_date: new Date(),
+      ordinance: '',
+      observations: '',
+    },
+  );
 
   return (
     <Dialog open={props.open} modal={false}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Editar</DialogTitle>
+          <DialogTitle>{props.committee ? 'Editar' : 'Criar'}</DialogTitle>
           <DialogDescription>
-            Ao editar, os dados anteriores do órgão serão <strong>descartados</strong>.
+            {props.committee ? (
+              <>
+                Ao editar, os dados anteriores do órgão serão <strong>descartados</strong>.
+              </>
+            ) : (
+              <>TODO botar uma descrição aqui depois</>
+            )}
           </DialogDescription>
         </DialogHeader>
         <div
@@ -46,7 +61,7 @@ export default function CommitteeDialog(props: {
             </Label>
             <Input
               id="name"
-              value={committee.name}
+              value={committee.name || undefined}
               onChange={(e) => setcommittee({ ...committee, name: e.target.value })}
               className="col-span-3"
             />

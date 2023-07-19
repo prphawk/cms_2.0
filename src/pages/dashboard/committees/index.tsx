@@ -16,6 +16,8 @@ import {
 import { _toLocaleString } from '~/utils/string';
 import { Dot } from '~/components/dot';
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions';
+import CommitteeDialog from '~/components/table/committees/committee-dialog';
+import { Committee } from '@prisma/client';
 
 export default function Committees() {
   const router = useRouter();
@@ -74,6 +76,16 @@ export default function Committees() {
     return <span>Error: sowwyyyy</span>;
   }
 
+  const [open, setOpen] = useState(false);
+
+  const handleOpenDialog = (open: boolean) => {
+    setOpen(open);
+  };
+  const handleSave = (committee: any) => {
+    //TODO Onsave
+    handleOpenDialog(false);
+  };
+
   const filterProps = {
     _setIsTemporaryFilterValues,
     _setIsActiveFilterValues,
@@ -81,7 +93,9 @@ export default function Committees() {
     isTemporaryFilters: filterLabelsT,
   };
   const actionProps = {
-    handleCreateCommittee: () => {},
+    handleCreateCommittee: () => {
+      handleOpenDialog(true);
+    },
   };
 
   return (
@@ -96,6 +110,11 @@ export default function Committees() {
             columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
             tableFilters={<TableToolbarFilter {...filterProps} />}
             tableActions={<CommitteesTableToolbarActions {...actionProps} />}
+          />
+          <CommitteeDialog
+            open={open}
+            handleOpenDialog={handleOpenDialog}
+            handleSave={handleSave}
           />
         </div>
         {/* </LoadingLayout> */}
