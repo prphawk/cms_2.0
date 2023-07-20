@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Committee } from '@prisma/client';
-import { CalendarIcon, XIcon } from 'lucide-react';
+import { CalendarIcon, CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { CommitteesHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
@@ -29,6 +29,14 @@ import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from '@/components/ui/command';
+import { useState } from 'react';
 
 export const CommitteeSchema = z
   .object({
@@ -44,6 +52,7 @@ export const CommitteeSchema = z
     end_date: z.date({ required_error: `${CommitteesHeaders.END_DATE} é obrigatória` }),
     ordinance: z.string().optional(),
     observations: z.string().optional(),
+    template_committee: z.string().optional(),
   })
   .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
     message: `${CommitteesHeaders.END_DATE} não pode ocorrer antes de ${CommitteesHeaders.BEGIN_DATE}.`,
@@ -69,7 +78,7 @@ export default function CommitteeDialog(props: {
   return (
     <Dialog open={props.open} modal={false}>
       {props.open && (
-        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <div className="fixed inset-0 z-50 bg-background/20 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
       )}
       <DialogContent>
         <DialogHeader>
@@ -97,6 +106,8 @@ export default function CommitteeDialog(props: {
               label={CommitteesHeaders.NAME}
               defaultValue={props.committee?.name || ''}
             />
+            <TemplateSelectFormItem form={form} defaultValue={''} />
+
             <CommonFormItem
               form={form}
               fieldName="bond"
@@ -134,6 +145,96 @@ export default function CommitteeDialog(props: {
     </Dialog>
   );
 }
+
+const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => {
+  const [languages, setLanguages] = useState([
+    { label: 'English', value: 'en' },
+    { label: 'French', value: 'fr' },
+    { label: 'German', value: 'de' },
+    { label: 'Spanish', value: 'es' },
+    { label: 'Portuguese', value: 'pt' },
+    { label: 'Russian', value: 'ru' },
+    { label: 'Japanese', value: 'ja' },
+    { label: 'Korean', value: 'ko' },
+    { label: 'Chinese', value: 'zh' },
+  ]);
+
+  const [commandSearch, setCommandSearch] = useState('');
+
+  return (
+    <FormField
+      //defaultValue={props.defaultValue || ''}
+      control={props.form.control}
+      name="template_committee"
+      render={({ field }) => (
+        <FormItem className="flex flex-col">
+          <FormLabel>Language</FormLabel>
+          <Popover>
+            <PopoverTrigger asChild>
+              <FormControl>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className={cn(
+                    'w-[200px] justify-between',
+                    !field.value && 'text-muted-foreground',
+                  )}
+                >
+                  {field.value
+                    ? languages.find((language) => language.value === field.value)?.label
+                    : field.value || 'Select language'}
+                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0">
+              <Command>
+                <CommandInput
+                  placeholder={`Procurar ${CommitteesHeaders.TEMPLATE}...`}
+                  className="h-9"
+                  onValueChange={(search) => setCommandSearch(search)}
+                />
+                <CommandEmpty>
+                  No framework found.
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn('w-[200px] justify-between')}
+                    onClick={() =>
+                      setLanguages([...languages, { label: commandSearch, value: commandSearch }])
+                    }
+                  >
+                    Criar classe {commandSearch}?
+                  </Button>
+                </CommandEmpty>
+                <CommandGroup>
+                  {languages.map((language) => (
+                    <CommandItem
+                      value={language.value}
+                      key={language.value}
+                      onSelect={(value) => {
+                        props.form.setValue('template_committee', value);
+                      }}
+                    >
+                      {language.label}
+                      <CheckIcon
+                        className={cn(
+                          'ml-auto h-4 w-4',
+                          language.value === field.value ? 'opacity-100' : 'opacity-0',
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
 
 const CommonFormItem = (props: {
   form: any;
