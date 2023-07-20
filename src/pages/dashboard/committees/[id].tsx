@@ -17,21 +17,8 @@ import { Committee, Membership } from '@prisma/client';
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { Dot } from '~/components/dot';
 import { formatCount } from '.';
-import CommitteeDialog from '~/components/table/committees/committee-dialog';
+import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { z } from 'zod';
-
-export const CommitteeSchema = z
-  .object({
-    bond: z.string(),
-    name: z.string(),
-    begin_date: z.optional(z.date()),
-    end_date: z.optional(z.date()),
-    ordinance: z.optional(z.string()),
-    observations: z.optional(z.string()),
-  })
-  .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
-    message: 'Data de fim deve vir depois da data de início.',
-  });
 
 export default function CommitteeMembership() {
   const router = useRouter();
@@ -108,11 +95,12 @@ export default function CommitteeMembership() {
   const handleOpenDialog = (open: boolean) => {
     setOpen(open);
   };
-  const handleSave = (committee: z.infer<typeof CommitteeSchema>) => {
+  const handleSave = (data: z.infer<typeof CommitteeSchema>) => {
     //TODO onSave
-    console.log(committee);
-    handleOpenDialog(false);
+    console.log('data', data);
+    //handleOpenDialog(false);
   };
+
   const propsActions = {
     committee: data!,
     handleCreateMembership: () => {},
