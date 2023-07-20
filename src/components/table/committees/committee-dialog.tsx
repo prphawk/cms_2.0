@@ -20,8 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Committee } from '@prisma/client';
 import { CalendarIcon, XIcon } from 'lucide-react';
-import { useState } from 'react';
-import { UseFormReturn, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { CommitteesHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -30,15 +29,18 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { CommitteeSchema } from '~/pages/dashboard/committees/[id]';
-const FormSchema = z
+import { Textarea } from '@/components/ui/textarea';
+const CommitteeSchema = z
   .object({
-    begin_date: z.date(),
-    end_date: z.date(),
+    name: z.string({ required_error: `${CommitteesHeaders.NAME} é obrigatório` }),
+    bond: z.string({ required_error: `${CommitteesHeaders.BOND} é obrigatório` }),
+    begin_date: z.date({ required_error: `${CommitteesHeaders.BEGIN_DATE} é obrigatória` }),
+    end_date: z.date({ required_error: `${CommitteesHeaders.END_DATE} é obrigatória` }),
+    ordinance: z.string().optional(),
+    observations: z.string().optional(),
   })
-  .partial()
   .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
-    message: 'Data de fim deve vir depois da data de início.',
+    message: 'Data de fim não pode ser antes da data de início.',
     path: ['end_date'],
   });
 
@@ -48,25 +50,11 @@ export default function CommitteeDialog(props: {
   committee?: Committee;
   handleSave: (committee: z.infer<typeof CommitteeSchema>) => void;
 }) {
-  // const [committee, setCommittee] = useState(
-  //   props.committee || {
-  //     name: '',
-  //     bond: '',
-  //     begin_date: new Date(),
-  //     end_date: new Date(),
-  //     ordinance: '',
-  //     observations: '',
-  //   },
-  // );
-
-  // const form = useForm<z.infer<typeof CommitteeSchema>>({
-  //   resolver: zodResolver(CommitteeSchema),
-  // });
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof CommitteeSchema>>({
+    resolver: zodResolver(CommitteeSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: z.infer<typeof CommitteeSchema>) {
     console.log(data);
   }
 
@@ -74,7 +62,7 @@ export default function CommitteeDialog(props: {
     <Dialog open={props.open} modal={false}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{props.committee ? 'Editar' : 'Criar'}</DialogTitle>
+          <DialogTitle>{props.committee ? 'Editar' : 'Criar'} Órgão Colegiado</DialogTitle>
           <DialogDescription>
             {props.committee && (
               <>
@@ -91,7 +79,10 @@ export default function CommitteeDialog(props: {
           <span className="sr-only">Close</span>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" id="formCommittee">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" id="formCommittee">
+            <CommonFormItem form={form} fieldName="name" label={CommitteesHeaders.NAME} />
+            <CommonFormItem form={form} fieldName="bond" label={CommitteesHeaders.BOND} />
+            <CommonFormItem form={form} fieldName="ordinance" label={CommitteesHeaders.ORDINANCE} />
             <div className="flex flex-row justify-between gap-4">
               <DateForm form={form} fieldName="begin_date" label={CommitteesHeaders.BEGIN_DATE} />
               <DateForm
@@ -101,6 +92,11 @@ export default function CommitteeDialog(props: {
                 dontSelectBefore={form.getValues('begin_date')}
               />
             </div>
+            <ObservationsForm
+              form={form}
+              fieldName="observations"
+              label={CommitteesHeaders.OBSERVATIONS}
+            />
             <DialogFooter>
               <Button type="submit" form="formCommittee">
                 Salvar
@@ -113,9 +109,27 @@ export default function CommitteeDialog(props: {
   );
 }
 
+const CommonFormItem = (props: { form: any; fieldName: string; label: string }) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name={props.fieldName}
+      render={({ field }) => (
+        <FormItem className="mt-1">
+          <FormLabel>{props.label}</FormLabel>
+          <FormControl>
+            <Input {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
 const DateForm = (props: {
   form: any;
-  fieldName: 'begin_date' | 'end_date' | 'dob';
+  fieldName: 'begin_date' | 'end_date';
   label: string;
   dontSelectBefore?: Date;
 }) => {
@@ -153,16 +167,33 @@ const DateForm = (props: {
               />
             </PopoverContent>
           </Popover>
-          {/* <FormDescription>
-                    Your date of birth is used to calculate your age.
-                  </FormDescription> */}
           <FormMessage />
-          {/* //TODO botar mensagem de erro no zod */}
         </FormItem>
       )}
     ></FormField>
   );
 };
+const ObservationsForm = (props: { form: any; fieldName: string; label: string }) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name={props.fieldName}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{props.label}</FormLabel>
+          <FormControl>
+            <Textarea placeholder="Lorem ipsum" className="resize-y" {...field} />
+          </FormControl>
+          {/* <FormDescription>
+            You can <span>@mention</span> other users and organizations.
+          </FormDescription> */}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
 /*
 const DialogBody = () => {
   return (
@@ -208,26 +239,7 @@ const DialogBody = () => {
             className="col-span-3"
           />
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="date" className="text-right">
-            {CommitteesHeaders.BEGIN_DATE}
-          </Label>
-          <Input
-            value={_toLocaleString(committee.begin_date)}
-            onChange={(e) => setCommittee({ ...committee, begin_date: new Date(e.target.value) })}
-            className="col-span-3"
-          />
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="date" className="text-right">
-            {CommitteesHeaders.END_DATE}
-          </Label>
-          <Input
-            value={_toLocaleString(committee.end_date)}
-            onChange={(e) => setCommittee({ ...committee, end_date: new Date(e.target.value) })}
-            className="col-span-3"
-          />
-        </div>
+
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="name" className="text-right">
             {CommitteesHeaders.OBSERVATIONS}
