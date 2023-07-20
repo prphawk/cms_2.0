@@ -68,6 +68,9 @@ export default function CommitteeDialog(props: {
 
   return (
     <Dialog open={props.open} modal={false}>
+      {props.open && (
+        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{props.committee ? 'Editar' : 'Criar'} Órgão Colegiado</DialogTitle>
