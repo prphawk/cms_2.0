@@ -129,7 +129,6 @@ export const committeeRouter = createTRPCRouter({
         end_date: z.optional(z.date()),
         ordinance: z.optional(z.string()),
         observations: z.optional(z.string()),
-        // is_active: z.optional(z.boolean()),
       }),
     )
     .mutation(({ ctx, input }) => {

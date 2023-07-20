@@ -17,16 +17,21 @@ import { Committee, Membership } from '@prisma/client';
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { Dot } from '~/components/dot';
 import { formatCount } from '.';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import CommitteeDialog from '~/components/table/committees/committee-dialog';
+import { z } from 'zod';
+
+export const CommitteeSchema = z
+  .object({
+    bond: z.string(),
+    name: z.string(),
+    begin_date: z.optional(z.date()),
+    end_date: z.optional(z.date()),
+    ordinance: z.optional(z.string()),
+    observations: z.optional(z.string()),
+  })
+  .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
+    message: 'Data de fim deve vir depois da data de início.',
+  });
 
 export default function CommitteeMembership() {
   const router = useRouter();
@@ -34,7 +39,7 @@ export default function CommitteeMembership() {
   const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
   const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
   const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
-  const { data, isFetching, isLoading, isError } = api.committee.getOne.useQuery(
+  const { data, isLoading, isError } = api.committee.getOne.useQuery(
     {
       //TODO useMemo
       id: Number(param_id),
@@ -44,7 +49,7 @@ export default function CommitteeMembership() {
     { enabled: _isNumeric(param_id) },
   );
 
-  const utils = api.useContext();
+  //const utils = api.useContext();
 
   //   const deactivate = api.committee.deactivate.useMutation({
   //     onMutate() {
@@ -103,8 +108,9 @@ export default function CommitteeMembership() {
   const handleOpenDialog = (open: boolean) => {
     setOpen(open);
   };
-  const handleSave = (committee: Committee) => {
+  const handleSave = (committee: z.infer<typeof CommitteeSchema>) => {
     //TODO onSave
+    console.log(committee);
     handleOpenDialog(false);
   };
   const propsActions = {
@@ -122,8 +128,8 @@ export default function CommitteeMembership() {
             <>
               <CommitteeDetails data={data} />
               <DataTable
+                isLoading={isLoading}
                 data={data?.members || []}
-                isLoading={isFetching || isLoading}
                 columns={getMembershipColumns(data.begin_date, data.end_date)}
                 tableFilters={<TableToolbarFilter {...propsFilters} />}
                 tableActions={<MembershipTableToolbarActions {...propsActions} />}
