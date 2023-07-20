@@ -1,4 +1,5 @@
 'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -65,103 +66,6 @@ export default function CommitteeDialog(props: {
     form.reset();
   }
 
-  const CommonFormItem = ({
-    fieldName,
-    label,
-    defaultValue,
-  }: {
-    fieldName: 'name' | 'bond' | 'ordinance';
-    label: string;
-    defaultValue?: string;
-  }) => {
-    return (
-      <FormField
-        defaultValue={defaultValue || ''}
-        control={form.control}
-        name={fieldName}
-        render={({ field }) => (
-          <FormItem className="mt-1">
-            <FormLabel>{label}</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  };
-
-  const DateForm = ({
-    fieldName,
-    label,
-    dontSelectBefore,
-    defaultValue,
-  }: {
-    fieldName: 'begin_date' | 'end_date';
-    label: string;
-    dontSelectBefore?: Date;
-    defaultValue?: string;
-  }) => {
-    return (
-      <FormField
-        control={form.control}
-        name={fieldName}
-        render={({ field }) => (
-          <FormItem className="flex w-full flex-col" defaultValue={defaultValue || ''}>
-            <FormLabel>{label}</FormLabel>
-            <Popover>
-              <PopoverTrigger asChild>
-                <FormControl>
-                  <Button
-                    variant={'outline'}
-                    className={cn(
-                      'pl-3 text-left font-normal',
-                      !field.value && 'text-muted-foreground',
-                    )}
-                  >
-                    {field.value ? _toLocaleString(field.value) : <span>Escolha uma data</span>}
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                  </Button>
-                </FormControl>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={field.value}
-                  onSelect={field.onChange}
-                  disabled={(date: Date) =>
-                    date < (dontSelectBefore || 0) || date < new Date('1900-01-01')
-                  }
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-            <FormMessage />
-          </FormItem>
-        )}
-      ></FormField>
-    );
-  };
-
-  const ObservationsForm = ({ label }: { label: string }) => {
-    return (
-      <FormField
-        control={form.control}
-        name="observations"
-        render={({ field }) => (
-          <FormItem defaultValue={props.committee?.observations || ''}>
-            <FormLabel>{label}</FormLabel>
-            <FormControl>
-              <Textarea placeholder="Lorem ipsum" className="resize-y" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  };
-
   return (
     <Dialog open={props.open} modal={false}>
       <DialogContent>
@@ -185,29 +89,37 @@ export default function CommitteeDialog(props: {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" id="formCommittee">
             <CommonFormItem
+              form={form}
               fieldName="name"
               label={CommitteesHeaders.NAME}
               defaultValue={props.committee?.name || ''}
             />
             <CommonFormItem
+              form={form}
               fieldName="bond"
               label={CommitteesHeaders.BOND}
               defaultValue={props.committee?.bond || ''}
             />
             <CommonFormItem
+              form={form}
               fieldName="ordinance"
               label={CommitteesHeaders.ORDINANCE}
               defaultValue={props.committee?.ordinance || ''}
             />
             <div className="flex flex-row justify-between gap-4">
-              <DateForm fieldName="begin_date" label={CommitteesHeaders.BEGIN_DATE} />
+              <DateForm form={form} fieldName="begin_date" label={CommitteesHeaders.BEGIN_DATE} />
               <DateForm
+                form={form}
                 fieldName="end_date"
                 label={CommitteesHeaders.END_DATE}
                 dontSelectBefore={form.getValues('begin_date')}
               />
             </div>
-            <ObservationsForm label={CommitteesHeaders.OBSERVATIONS} />
+            <ObservationsForm
+              form={form}
+              label={CommitteesHeaders.OBSERVATIONS}
+              defaultValue={props.committee?.observations || ''}
+            />
             <DialogFooter>
               <Button type="submit" form="formCommittee">
                 Salvar
@@ -219,3 +131,93 @@ export default function CommitteeDialog(props: {
     </Dialog>
   );
 }
+
+const CommonFormItem = (props: {
+  form: any;
+  fieldName: 'name' | 'bond' | 'ordinance';
+  label: string;
+  defaultValue?: string;
+}) => {
+  return (
+    <FormField
+      defaultValue={props.defaultValue || ''}
+      control={props.form.control}
+      name={props.fieldName}
+      render={({ field }) => (
+        <FormItem className="mt-1">
+          <FormLabel>{props.label}</FormLabel>
+          <FormControl>
+            <Input {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+const DateForm = (props: {
+  form: any;
+  fieldName: 'begin_date' | 'end_date';
+  label: string;
+  dontSelectBefore?: Date;
+  defaultValue?: string;
+}) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name={props.fieldName}
+      render={({ field }) => (
+        <FormItem className="flex w-full flex-col" defaultValue={props.defaultValue || ''}>
+          <FormLabel>{props.label}</FormLabel>
+          <Popover>
+            <PopoverTrigger asChild>
+              <FormControl>
+                <Button
+                  variant={'outline'}
+                  className={cn(
+                    'pl-3 text-left font-normal',
+                    !field.value && 'text-muted-foreground',
+                  )}
+                >
+                  {field.value ? _toLocaleString(field.value) : <span>Escolha uma data</span>}
+                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={field.value}
+                onSelect={field.onChange}
+                disabled={(date: Date) =>
+                  date < (props.dontSelectBefore || 0) || date < new Date('1900-01-01')
+                }
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+          <FormMessage />
+        </FormItem>
+      )}
+    ></FormField>
+  );
+};
+
+const ObservationsForm = (props: { form: any; label: string; defaultValue?: string }) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name="observations"
+      render={({ field }) => (
+        <FormItem defaultValue={props.defaultValue || ''}>
+          <FormLabel>{props.label}</FormLabel>
+          <FormControl>
+            <Textarea placeholder="Lorem ipsum" className="resize-y" {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
