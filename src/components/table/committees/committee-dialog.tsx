@@ -24,7 +24,7 @@ import { useForm } from 'react-hook-form';
 import { CommitteesHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { number, z } from 'zod';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -147,80 +147,90 @@ export default function CommitteeDialog(props: {
 }
 
 const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => {
-  const [languages, setLanguages] = useState([
-    { label: 'English', value: 'en' },
-    { label: 'French', value: 'fr' },
-    { label: 'German', value: 'de' },
-    { label: 'Spanish', value: 'es' },
-    { label: 'Portuguese', value: 'pt' },
-    { label: 'Russian', value: 'ru' },
-    { label: 'Japanese', value: 'ja' },
-    { label: 'Korean', value: 'ko' },
-    { label: 'Chinese', value: 'zh' },
+  const [templates, setTemplates] = useState([
+    'English',
+    'French',
+    'German',
+    'Spanish',
+    'Portuguese',
+    'Russian',
+    'Japanese',
+    'Korean',
+    'Chinese',
   ]);
+
+  const [createdIndex, setCreatedIndex] = useState<number>();
 
   const [commandSearch, setCommandSearch] = useState('');
 
   return (
     <FormField
-      //defaultValue={props.defaultValue || ''}
       control={props.form.control}
       name="template_committee"
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>Language</FormLabel>
+          <FormLabel>{CommitteesHeaders.TEMPLATE}</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
                   variant="outline"
                   role="combobox"
-                  className={cn(
-                    'w-[200px] justify-between',
-                    !field.value && 'text-muted-foreground',
-                  )}
+                  className={cn('justify-between', !field.value && 'text-muted-foreground')}
                 >
                   {field.value
-                    ? languages.find((language) => language.value === field.value)?.label
-                    : field.value || 'Select language'}
+                    ? templates.find((template) => template === field.value)
+                    : field.value || 'Selecione uma classe'}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
+            <PopoverContent className="p-0">
               <Command>
                 <CommandInput
                   placeholder={`Procurar ${CommitteesHeaders.TEMPLATE}...`}
                   className="h-9"
                   onValueChange={(search) => setCommandSearch(search)}
                 />
-                <CommandEmpty>
-                  No framework found.
+                <CommandEmpty className="p-0">
                   <Button
-                    variant="outline"
-                    role="combobox"
-                    className={cn('w-[200px] justify-between')}
-                    onClick={() =>
-                      setLanguages([...languages, { label: commandSearch, value: commandSearch }])
-                    }
+                    className="max-h-full w-full "
+                    variant="ghost"
+                    onClick={() => {
+                      if (createdIndex) templates.pop();
+                      setCreatedIndex(templates.length);
+                      setTemplates([...templates, commandSearch]);
+                      props.form.setValue('template_committee', commandSearch);
+                    }}
                   >
-                    Criar classe {commandSearch}?
+                    <div className="truncate">
+                      Criar {CommitteesHeaders.TEMPLATE} "{commandSearch}"?
+                    </div>
                   </Button>
                 </CommandEmpty>
                 <CommandGroup>
-                  {languages.map((language) => (
+                  {templates.map((language) => (
                     <CommandItem
-                      value={language.value}
-                      key={language.value}
+                      value={language}
+                      key={language}
                       onSelect={(value) => {
-                        props.form.setValue('template_committee', value);
+                        let found: string | undefined;
+                        if (
+                          value === props.form.getValues('template_committee')?.toLocaleLowerCase()
+                        ) {
+                          found = undefined;
+                        } else
+                          found = templates.find(
+                            (language) => language.toLocaleLowerCase() === value,
+                          );
+                        props.form.setValue('template_committee', found);
                       }}
                     >
-                      {language.label}
+                      {language}
                       <CheckIcon
                         className={cn(
                           'ml-auto h-4 w-4',
-                          language.value === field.value ? 'opacity-100' : 'opacity-0',
+                          language === field.value ? 'opacity-100' : 'opacity-0',
                         )}
                       />
                     </CommandItem>
