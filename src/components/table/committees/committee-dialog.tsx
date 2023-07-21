@@ -36,7 +36,7 @@ import {
   CommandInput,
   CommandItem,
 } from '@/components/ui/command';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { api } from '~/utils/api';
 
 export const CommitteeSchema = z
@@ -53,7 +53,7 @@ export const CommitteeSchema = z
     end_date: z.coerce.date({ required_error: `${CommitteesHeaders.END_DATE} é obrigatória` }),
     ordinance: z.string().optional(),
     observations: z.string().optional(),
-    template_committee: z.string().optional(),
+    committee_template_name: z.string().optional(),
   })
   .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
     message: `${CommitteesHeaders.END_DATE} não pode ocorrer antes de ${CommitteesHeaders.BEGIN_DATE}.`,
@@ -63,12 +63,29 @@ export const CommitteeSchema = z
 export default function CommitteeDialog(props: {
   open: boolean;
   handleOpenDialog: (open: boolean) => void;
-  committee?: Committee;
+  committee?: Committee & { committee_template?: { name: string } | null };
   handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void;
 }) {
+  const myDefaultValues = () => {
+    return {
+      bond: props.committee?.bond || '',
+      name: props.committee?.name || '',
+      begin_date: _toString(props.committee?.begin_date || new Date()),
+      end_date: _toString(props.committee?.end_date || new Date()),
+      ordinance: props.committee?.ordinance || '',
+      observations: props.committee?.observations || '',
+      committee_template_name: props.committee?.committee_template?.name || '',
+    };
+  };
+
   const form = useForm<z.infer<typeof CommitteeSchema>>({
     resolver: zodResolver(CommitteeSchema),
   });
+
+  useEffect(() => {
+    console.log('Open close');
+    form.reset(myDefaultValues as any);
+  }, [props.open]);
 
   function onSubmit(data: z.infer<typeof CommitteeSchema>) {
     props.handleSave({ id: props.committee?.id || undefined, ...data });
@@ -76,8 +93,8 @@ export default function CommitteeDialog(props: {
   }
 
   function onClose() {
-    props.handleOpenDialog(false);
     form.reset();
+    props.handleOpenDialog(false);
   }
 
   return (
@@ -134,7 +151,7 @@ export default function CommitteeDialog(props: {
                 fieldName="end_date"
                 defaultValue={props.committee?.end_date || _addYears(new Date(), 1)}
                 label={CommitteesHeaders.END_DATE}
-                dontSelectBefore={form.getValues('begin_date')}
+                //dontSelectBefore={form.getValues('begin_date')}
                 required
               />
             </div>
@@ -150,7 +167,10 @@ export default function CommitteeDialog(props: {
               label={CommitteesHeaders.OBSERVATIONS}
               defaultValue={props.committee?.observations || ''}
             />
-            <TemplateSelectFormItem form={form} defaultValue={''} />
+            <TemplateSelectFormItem
+              form={form}
+              defaultValue={props.committee?.committee_template?.name}
+            />
             <DialogFooter>
               <Button type="submit" form="formCommittee">
                 Salvar
@@ -176,10 +196,12 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
 
   const [commandSearch, setCommandSearch] = useState('');
 
+  console.log(props.form.getValues('committee_template_name'), props.defaultValue);
   return (
     <FormField
+      defaultValue={props.defaultValue || ''}
       control={props.form.control}
-      name="template_committee"
+      name="committee_template_name"
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel className="pb-1">{CommitteesHeaders.TEMPLATE}</FormLabel>
@@ -194,9 +216,11 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                     !field.value && 'text-muted-foregroundPage',
                   )}
                 >
-                  {field.value
+                  {isLoading
+                    ? 'Loading...'
+                    : field.value
                     ? templates.find((template) => template === field.value)
-                    : field.value || 'ex: Direção INF'}
+                    : 'ex: Direção INF'}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
@@ -219,7 +243,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                             if (createdIndex) templates.pop();
                             setCreatedIndex(templates.length);
                             setTemplates([...templates, commandSearch]);
-                            props.form.setValue('template_committee', commandSearch);
+                            props.form.setValue('committee_template_name', commandSearch);
                           }}
                         >
                           <div className="truncate">
@@ -236,11 +260,12 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                       onSelect={(value) => {
                         let found: string | undefined;
                         if (
-                          value === props.form.getValues('template_committee')?.toLocaleLowerCase()
+                          value ===
+                          props.form.getValues('committee_template_name')?.toLocaleLowerCase()
                         ) {
                           found = undefined;
                         } else found = templates.find((t) => t.toLocaleLowerCase() === value);
-                        props.form.setValue('template_committee', found);
+                        props.form.setValue('committee_template_name', found || '');
                       }}
                     >
                       {template}
@@ -311,15 +336,15 @@ const DateForm = (props: {
   form: any;
   fieldName: 'begin_date' | 'end_date';
   label: string;
-  dontSelectBefore?: Date;
   defaultValue?: Date;
   required?: boolean;
 }) => {
+  console.log(props.defaultValue, _toString(props.defaultValue));
   return (
     <FormField
       control={props.form.control}
       name={props.fieldName}
-      defaultValue={_toString(props.defaultValue) || ''}
+      defaultValue={_toString(props.defaultValue)}
       render={({ field }) => (
         <FormItem className="flex w-full flex-col">
           <MyLabel required={props.required}>{props.label}</MyLabel>

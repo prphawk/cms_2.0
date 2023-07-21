@@ -4,7 +4,8 @@ import { _deactivateMembershipsByCommittee, membershipRouter } from './membershi
 import { prisma } from '~/server/db';
 import { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { _getTemplateByName } from './template';
-import { Prisma } from '.prisma/client';
+import { api } from '~/utils/api';
+import { Prisma } from '@prisma/client';
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({
@@ -44,6 +45,7 @@ export const committeeRouter = createTRPCRouter({
               is_temporary: input.is_temporary,
             },
           },
+          committee_template: true,
         },
       });
     }),
@@ -106,11 +108,11 @@ export const committeeRouter = createTRPCRouter({
       is_active: true,
     } as Prisma.CommitteeCreateInput;
 
-    if (input.template_committee) {
-      const templateSearch = await _getTemplateByName(input.template_committee);
+    if (input.committee_template_name) {
+      const templateSearch = await _getTemplateByName(input.committee_template_name);
       committee.committee_template = templateSearch
         ? { connect: { id: templateSearch.id } }
-        : { create: { name: input.template_committee } };
+        : { create: { name: input.committee_template_name } };
     }
     return ctx.prisma.committee.create({ data: committee });
   }),
@@ -120,9 +122,26 @@ export const committeeRouter = createTRPCRouter({
   // committee_template?: CommitteeTemplateCreateNestedOneWithoutCommitteesInput
   update: protectedProcedure
     .input(CommitteeSchema.innerType().merge(z.object({ id: z.number() })))
-    .mutation(({ ctx, input }) => {
-      const { id, ...data } = input;
-      return ctx.prisma.committee.update({ where: { id }, data });
+    .mutation(async ({ ctx, input }) => {
+      const committee: Prisma.CommitteeUpdateInput = {
+        bond: input.bond,
+        name: input.name,
+        begin_date: input.begin_date,
+        end_date: input.end_date,
+        ordinance: input.ordinance,
+        observations: input.observations,
+      };
+
+      if (!input.committee_template_name) {
+        committee.committee_template = { disconnect: true };
+      } else {
+        const templateSearch = await _getTemplateByName(input.committee_template_name);
+        committee.committee_template = templateSearch
+          ? { connect: { id: templateSearch.id } }
+          : { create: { name: input.committee_template_name } };
+      }
+
+      return ctx.prisma.committee.update({ where: { id: input.id }, data: committee });
     }),
 
   // delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {

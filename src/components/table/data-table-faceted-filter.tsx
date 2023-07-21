@@ -83,10 +83,8 @@ export function DataTableFacetedFilter<TData, TValue>({
                     key={option.value}
                     onSelect={() => {
                       if (isSelected) {
-                        console.log('delete');
                         selectedValues.delete(option.value);
                       } else {
-                        console.log('add');
                         selectedValues.add(option.value);
                       }
                       const filterValues = Array.from(selectedValues);

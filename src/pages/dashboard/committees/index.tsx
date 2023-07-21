@@ -40,7 +40,6 @@ export default function Committees() {
     },
     // TODO onError
     onSettled(data) {
-      console.log(data);
       return utils.committee.getAll.invalidate();
     },
   });
@@ -48,7 +47,6 @@ export default function Committees() {
   const create = api.committee.create.useMutation({
     // TODO onError
     onSettled(data) {
-      console.log(data);
       return utils.committee.getAll.invalidate();
     },
   });
@@ -93,9 +91,7 @@ export default function Committees() {
     setOpen(open);
   };
   const handleSave = (data: z.infer<typeof CommitteeSchema>) => {
-    console.log('ok foi...');
     create.mutate(data);
-    //TODO Onsave
   };
 
   const filterProps = {
