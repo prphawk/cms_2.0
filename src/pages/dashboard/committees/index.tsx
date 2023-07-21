@@ -167,8 +167,8 @@ export const formatCount = (
   let active, inactive;
   if (isLoading || !data || !data.length) active = inactive = 0;
   else {
-    active = data.at(0)._count.is_active;
-    inactive = data.at(1)._count.is_active;
+    active = data.at(0) ? data.at(0)._count?.is_active : 0;
+    inactive = data.at(1) ? data.at(1)._count?.is_active : 0;
   }
   return { active_count: active ?? 'Loading...', total_count: active + inactive ?? 'Loading...' };
 };
