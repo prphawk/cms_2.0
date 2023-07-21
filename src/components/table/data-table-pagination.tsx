@@ -13,7 +13,7 @@ export default function DataTablePagination<TData>({ table }: { table: TableType
   return (
     <div className=" flex items-center justify-between p-2">
       <div className="flex-1 text-sm text-muted-foregroundPage">
-        {/* {table.getFilteredSelectedRowModel().rows.length} of{' '}
+        {/* TODO bulk {table.getFilteredSelectedRowModel().rows.length} of{' '}
         {table.getFilteredRowModel().rows.length} row(s) selected. */}
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
