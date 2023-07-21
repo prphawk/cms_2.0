@@ -16,6 +16,8 @@ import { Badge } from '@/components/ui/badge';
 import DataTableColumnHeader from '~/components/table/data-table-column-header';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
+import { Routes } from '~/constants/routes';
 
 export const getCommitteesColumns = (
   handleDeactivateCommittees: (ids: number[]) => void,
@@ -154,11 +156,15 @@ export const CommitteeActionsMenuColumn = ({
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Ações</DropdownMenuLabel>
         <Separator />
-        <DropdownMenuItem>Ver membros</DropdownMenuItem>
-        <DropdownMenuItem>Suceder órgão</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={`${Routes.COMMITTEES}/${committee.id}`}>Ver membros</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         {committee.committee_template_id && (
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(committee.id.toString())}>
+          <DropdownMenuItem
+            disabled
+            onClick={() => navigator.clipboard.writeText(committee.id.toString())}
+          >
             Suceder órgão
           </DropdownMenuItem>
         )}

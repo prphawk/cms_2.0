@@ -23,7 +23,8 @@ export const membershipRouter = createTRPCRouter({
         employee_id: z.number(),
         committee_id: z.number(),
         role: z.optional(z.string()),
-        begin_date: z.optional(z.date()),
+        begin_date: z.date(),
+        end_date: z.date(),
         is_temporary: z.optional(z.boolean()),
         observations: z.optional(z.string()),
       }),
@@ -31,11 +32,10 @@ export const membershipRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { employee_id, committee_id, ...rest } = input;
 
-      // TODO test it
-      if (!rest.begin_date) {
-        const committee = await _findUniqueCommittee(committee_id);
-        rest.begin_date = committee?.begin_date ?? undefined;
-      }
+      // if (!rest.begin_date) {
+      //   const committee = await _findUniqueCommittee(committee_id);
+      //   rest.begin_date = committee?.begin_date ?? undefined;
+      // }
 
       return await ctx.prisma.membership.create({
         data: {
@@ -50,8 +50,8 @@ export const membershipRouter = createTRPCRouter({
     .input(z.object({ committee_id: z.number() }))
     .query(({ ctx, input }) => {
       return ctx.prisma.membership.groupBy({
-        where: { committee_id: input.committee_id },
         by: ['is_active'],
+        where: { committee_id: input.committee_id },
         _count: {
           is_active: true,
         },
@@ -117,6 +117,7 @@ export const membershipRouter = createTRPCRouter({
         select: {
           role: true,
           begin_date: true,
+          end_date: true,
           is_temporary: true,
           observations: true,
           employee: {

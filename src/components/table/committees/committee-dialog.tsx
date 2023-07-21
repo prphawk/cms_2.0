@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -7,120 +9,347 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Committee } from '@prisma/client';
-import { XIcon } from 'lucide-react';
-import { useState } from 'react';
+import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 import { CommitteesHeaders } from '~/constants/headers';
-import { _toLocaleString } from '~/utils/string';
+import { _addYears, _toLocaleString, _toString } from '~/utils/string';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { cn } from '@/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from '@/components/ui/command';
+import { PropsWithChildren, useEffect, useState } from 'react';
+import { api } from '~/utils/api';
+
+export const CommitteeSchema = z
+  .object({
+    name: z
+      .string({ required_error: `${CommitteesHeaders.NAME} é obrigatório` })
+      .trim()
+      .min(1, { message: `${CommitteesHeaders.NAME} é obrigatório` }),
+    bond: z
+      .string({ required_error: `${CommitteesHeaders.BOND} é obrigatório` })
+      .trim()
+      .min(1, { message: `${CommitteesHeaders.BOND} é obrigatório` }),
+    begin_date: z.coerce.date({ required_error: `${CommitteesHeaders.BEGIN_DATE} é obrigatória` }),
+    end_date: z.coerce.date({ required_error: `${CommitteesHeaders.END_DATE} é obrigatória` }),
+    ordinance: z.string().optional(),
+    observations: z.string().optional(),
+    template_committee: z.string().optional(),
+  })
+  .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
+    message: `${CommitteesHeaders.END_DATE} não pode ocorrer antes de ${CommitteesHeaders.BEGIN_DATE}.`,
+    path: ['end_date'],
+  });
 
 export default function CommitteeDialog(props: {
   open: boolean;
   handleOpenDialog: (open: boolean) => void;
   committee?: Committee;
-  handleSave: (committee: any) => void;
+  handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void;
 }) {
-  const [committee, setcommittee] = useState(
-    props.committee || {
-      name: '',
-      bond: '',
-      begin_date: new Date(),
-      end_date: new Date(),
-      ordinance: '',
-      observations: '',
-    },
-  );
+  const form = useForm<z.infer<typeof CommitteeSchema>>({
+    resolver: zodResolver(CommitteeSchema),
+  });
+
+  function onSubmit(data: z.infer<typeof CommitteeSchema>) {
+    props.handleSave({ id: props.committee?.id || undefined, ...data });
+    onClose();
+  }
+
+  function onClose() {
+    props.handleOpenDialog(false);
+    form.reset();
+  }
 
   return (
     <Dialog open={props.open} modal={false}>
+      {props.open && (
+        <div className="fixed inset-0 z-50 bg-background/20 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+      )}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{props.committee ? 'Editar' : 'Criar'}</DialogTitle>
+          <DialogTitle>{props.committee ? 'Editar' : 'Criar'} Órgão Colegiado</DialogTitle>
           <DialogDescription>
-            {props.committee ? (
+            {props.committee && (
               <>
                 Ao editar, os dados anteriores do órgão serão <strong>descartados</strong>.
               </>
-            ) : (
-              <>TODO botar uma descrição aqui depois</>
             )}
           </DialogDescription>
         </DialogHeader>
         <div
-          onClick={() => props.handleOpenDialog(false)}
-          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 hover:outline-2 hover:ring-2 hover:ring-ring hover:ring-offset-2 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
         >
           <XIcon className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </div>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              {CommitteesHeaders.NAME}
-            </Label>
-            <Input
-              id="name"
-              value={committee.name || undefined}
-              onChange={(e) => setcommittee({ ...committee, name: e.target.value })}
-              className="col-span-3"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" id="formCommittee">
+            <CommonFormItem
+              form={form}
+              fieldName="name"
+              label={CommitteesHeaders.NAME}
+              defaultValue={props.committee?.name || ''}
+              placeholder="ex: Direção INF (2023)"
+              required
             />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              {CommitteesHeaders.BOND}
-            </Label>
-            <Input
-              value={committee.bond}
-              onChange={(e) => setcommittee({ ...committee, bond: e.target.value })}
-              className="col-span-3"
+            <CommonFormItem
+              form={form}
+              fieldName="bond"
+              label={CommitteesHeaders.BOND}
+              defaultValue={props.committee?.bond || ''}
+              placeholder="ex: Órgão"
+              required
             />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              {CommitteesHeaders.ORDINANCE}
-            </Label>
-            <Input
-              value={committee.ordinance || undefined}
-              onChange={(e) => setcommittee({ ...committee, ordinance: e.target.value })}
-              className="col-span-3"
+            <div className="flex flex-row justify-between gap-x-4 pt-2">
+              <DateForm
+                form={form}
+                fieldName="begin_date"
+                label={CommitteesHeaders.BEGIN_DATE}
+                defaultValue={props.committee?.begin_date || new Date()}
+                required
+              />
+              <DateForm
+                form={form}
+                fieldName="end_date"
+                defaultValue={props.committee?.end_date || _addYears(new Date(), 1)}
+                label={CommitteesHeaders.END_DATE}
+                dontSelectBefore={form.getValues('begin_date')}
+                required
+              />
+            </div>
+            <CommonFormItem
+              form={form}
+              fieldName="ordinance"
+              label={CommitteesHeaders.ORDINANCE}
+              defaultValue={props.committee?.ordinance || ''}
+              placeholder="ex: Portaria"
             />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              {CommitteesHeaders.BEGIN_DATE}
-            </Label>
-            <Input
-              value={_toLocaleString(committee.begin_date)}
-              onChange={(e) => setcommittee({ ...committee, begin_date: new Date(e.target.value) })}
-              className="col-span-3"
+            <ObservationsForm
+              form={form}
+              label={CommitteesHeaders.OBSERVATIONS}
+              defaultValue={props.committee?.observations || ''}
             />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              {CommitteesHeaders.END_DATE}
-            </Label>
-            <Input
-              value={_toLocaleString(committee.end_date)}
-              onChange={(e) => setcommittee({ ...committee, end_date: new Date(e.target.value) })}
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              {CommitteesHeaders.OBSERVATIONS}
-            </Label>
-            <Input
-              value={committee.observations || undefined}
-              onChange={(e) => setcommittee({ ...committee, observations: e.target.value })}
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button onClick={() => props.handleSave(committee)}>Salvar</Button>
-        </DialogFooter>
+            <TemplateSelectFormItem form={form} defaultValue={''} />
+            <DialogFooter>
+              <Button type="submit" form="formCommittee">
+                Salvar
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
 }
+
+const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => {
+  const [templates, setTemplates] = useState<string[]>([]);
+
+  const { data, isLoading } = api.template.getAll.useQuery();
+
+  useEffect(() => {
+    if (data) setTemplates(data.map((e) => e.name));
+  }, [data]);
+
+  const [createdIndex, setCreatedIndex] = useState<number>();
+
+  const [commandSearch, setCommandSearch] = useState('');
+
+  return (
+    <FormField
+      control={props.form.control}
+      name="template_committee"
+      render={({ field }) => (
+        <FormItem className="flex flex-col">
+          <FormLabel className="pb-1">{CommitteesHeaders.TEMPLATE}</FormLabel>
+          <Popover>
+            <PopoverTrigger asChild>
+              <FormControl>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className={cn(
+                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+                    !field.value && 'text-muted-foregroundPage',
+                  )}
+                >
+                  {field.value
+                    ? templates.find((template) => template === field.value)
+                    : field.value || 'ex: Direção INF'}
+                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="offset min-w-max p-0">
+              <Command>
+                <CommandInput
+                  placeholder={`Digite sua ${CommitteesHeaders.TEMPLATE}...`}
+                  className="h-9"
+                  onValueChange={(search) => setCommandSearch(search)}
+                />
+                <CommandEmpty className="p-0">
+                  {isLoading
+                    ? 'Loading...'
+                    : commandSearch && (
+                        <Button
+                          className="max-h-full w-full "
+                          variant="ghost"
+                          onClick={() => {
+                            if (createdIndex) templates.pop();
+                            setCreatedIndex(templates.length);
+                            setTemplates([...templates, commandSearch]);
+                            props.form.setValue('template_committee', commandSearch);
+                          }}
+                        >
+                          <div className="truncate">
+                            Criar {CommitteesHeaders.TEMPLATE} "{commandSearch}"?
+                          </div>
+                        </Button>
+                      )}
+                </CommandEmpty>
+                <CommandGroup>
+                  {templates.map((template) => (
+                    <CommandItem
+                      value={template}
+                      key={template}
+                      onSelect={(value) => {
+                        let found: string | undefined;
+                        if (
+                          value === props.form.getValues('template_committee')?.toLocaleLowerCase()
+                        ) {
+                          found = undefined;
+                        } else found = templates.find((t) => t.toLocaleLowerCase() === value);
+                        props.form.setValue('template_committee', found);
+                      }}
+                    >
+                      {template}
+                      <CheckIcon
+                        className={cn(
+                          'ml-auto h-4 w-4',
+                          template === field.value ? 'opacity-100' : 'opacity-0',
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <FormDescription className="-mb-1.5">
+            Instâncias de comissões <strong>permanentes</strong> devem pertencer a sua{' '}
+            {CommitteesHeaders.TEMPLATE}.
+          </FormDescription>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+const MyLabel = (props: { required?: boolean } & PropsWithChildren) => {
+  return (
+    <FormLabel>
+      {props.children}
+      {props.required ? <span className="ml-1 text-red-700">*</span> : <></>}
+    </FormLabel>
+  );
+};
+
+const CommonFormItem = (props: {
+  form: any;
+  fieldName: 'name' | 'bond' | 'ordinance';
+  label: string;
+  defaultValue?: string;
+  placeholder?: string;
+  required?: boolean;
+}) => {
+  return (
+    <FormField
+      defaultValue={props.defaultValue || ''}
+      control={props.form.control}
+      name={props.fieldName}
+      render={({ field }) => (
+        <FormItem className="mt-1">
+          <MyLabel required={props.required}>{props.label}</MyLabel>
+          <FormControl>
+            <Input
+              // required={props.required}
+              className="placeholder:text-muted-foregroundPage"
+              {...field}
+              placeholder={props.placeholder}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+const DateForm = (props: {
+  form: any;
+  fieldName: 'begin_date' | 'end_date';
+  label: string;
+  dontSelectBefore?: Date;
+  defaultValue?: Date;
+  required?: boolean;
+}) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name={props.fieldName}
+      defaultValue={_toString(props.defaultValue) || ''}
+      render={({ field }) => (
+        <FormItem className="flex w-full flex-col">
+          <MyLabel required={props.required}>{props.label}</MyLabel>
+          <Input type="date" {...field} />
+          <FormMessage />
+        </FormItem>
+      )}
+    ></FormField>
+  );
+};
+
+const ObservationsForm = (props: { form: any; label: string; defaultValue?: string }) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name="observations"
+      render={({ field }) => (
+        <FormItem defaultValue={props.defaultValue || ''}>
+          <FormLabel>{props.label}</FormLabel>
+          <FormControl>
+            <Textarea
+              rows={1}
+              placeholder="Lorem ipsum"
+              className="resize-y placeholder:text-muted-foregroundPage"
+              {...field}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};

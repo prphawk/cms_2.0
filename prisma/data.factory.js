@@ -37,10 +37,13 @@ class DataFactory {
   }
 
   newMockMembershipJSON(mockEmployeeId, mockCommitteeId, mockRole) {
+    const date = new Date();
+    date.setFullYear(new Date().getFullYear() + 1);
     return {
       employee_id: mockEmployeeId,
       committee_id: mockCommitteeId,
-      begin_date: null,
+      begin_date: new Date(),
+      end_date: date,
       role: mockRole,
       is_temporary: faker.datatype.boolean({ probability: 0.05 }),
       observations: faker.lorem.sentence(),

@@ -17,16 +17,8 @@ import { Committee, Membership } from '@prisma/client';
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { Dot } from '~/components/dot';
 import { formatCount } from '.';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import CommitteeDialog from '~/components/table/committees/committee-dialog';
+import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
+import { z } from 'zod';
 
 export default function CommitteeMembership() {
   const router = useRouter();
@@ -34,7 +26,7 @@ export default function CommitteeMembership() {
   const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
   const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
   const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
-  const { data, isFetching, isLoading, isError } = api.committee.getOne.useQuery(
+  const { data, isLoading, isError } = api.committee.getOne.useQuery(
     {
       //TODO useMemo
       id: Number(param_id),
@@ -44,7 +36,7 @@ export default function CommitteeMembership() {
     { enabled: _isNumeric(param_id) },
   );
 
-  const utils = api.useContext();
+  //const utils = api.useContext();
 
   //   const deactivate = api.committee.deactivate.useMutation({
   //     onMutate() {
@@ -103,10 +95,22 @@ export default function CommitteeMembership() {
   const handleOpenDialog = (open: boolean) => {
     setOpen(open);
   };
-  const handleSave = (committee: Committee) => {
-    //TODO onSave
-    handleOpenDialog(false);
+
+  const utils = api.useContext();
+
+  //TODO replace w/ upsert? that would b cool
+  const update = api.committee.update.useMutation({
+    // TODO onError
+    onSettled(data) {
+      console.log(data);
+      return utils.committee.getOne.invalidate();
+    },
+  });
+
+  const handleSave = (data: z.infer<typeof CommitteeSchema> & { id?: number }) => {
+    if (data.id) update.mutate(data as any);
   };
+
   const propsActions = {
     committee: data!,
     handleCreateMembership: () => {},
@@ -122,8 +126,8 @@ export default function CommitteeMembership() {
             <>
               <CommitteeDetails data={data} />
               <DataTable
+                isLoading={isLoading}
                 data={data?.members || []}
-                isLoading={isFetching || isLoading}
                 columns={getMembershipColumns(data.begin_date, data.end_date)}
                 tableFilters={<TableToolbarFilter {...propsFilters} />}
                 tableActions={<MembershipTableToolbarActions {...propsActions} />}
@@ -145,7 +149,9 @@ export default function CommitteeMembership() {
 export type CommitteeDataType = Committee & { members: Membership[] };
 
 const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
-  const { data: countData, isLoading } = api.committee.groupByActivity.useQuery();
+  const { data: countData, isLoading } = api.membership.groupByActivity.useQuery({
+    committee_id: data.id,
+  });
 
   const { active_count, total_count } = formatCount(isLoading, countData);
   return (

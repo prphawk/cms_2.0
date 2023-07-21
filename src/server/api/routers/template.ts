@@ -1,5 +1,14 @@
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { prisma } from '~/server/db';
+
+export const _getTemplateByName = async (name: string) => {
+  return await prisma.committeeTemplate.findFirst({ where: { name } });
+};
+
+// export const _createTemplate = async (name: string) => {
+//   return await prisma.committeeTemplate.create({ data: { name } });
+// };
 
 export const templateRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
