@@ -15,3 +15,8 @@ export const _isNumeric = (str?: string | string[]) => {
     !isNaN(parseFloat(str))
   ); // ...and ensure strings of whitespace fail
 };
+
+export const _addYears = (date: Date, years: number) => {
+  date.setFullYear(date.getFullYear() + years);
+  return date;
+};

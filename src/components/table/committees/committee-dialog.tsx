@@ -23,7 +23,7 @@ import { Committee } from '@prisma/client';
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { CommitteesHeaders } from '~/constants/headers';
-import { _toLocaleString, _toString } from '~/utils/string';
+import { _addYears, _toLocaleString, _toString } from '~/utils/string';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
@@ -37,7 +37,6 @@ import {
   CommandItem,
 } from '@/components/ui/command';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { addYears } from 'date-fns';
 import { api } from '~/utils/api';
 
 export const CommitteeSchema = z
@@ -133,7 +132,7 @@ export default function CommitteeDialog(props: {
               <DateForm
                 form={form}
                 fieldName="end_date"
-                defaultValue={props.committee?.end_date || addYears(new Date(), 1)}
+                defaultValue={props.committee?.end_date || _addYears(new Date(), 1)}
                 label={CommitteesHeaders.END_DATE}
                 dontSelectBefore={form.getValues('begin_date')}
                 required
