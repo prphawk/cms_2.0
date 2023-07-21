@@ -119,17 +119,7 @@ export const committeeRouter = createTRPCRouter({
   // members?: MembershipCreateNestedManyWithoutCommitteeInput
   // committee_template?: CommitteeTemplateCreateNestedOneWithoutCommitteesInput
   update: protectedProcedure
-    .input(
-      z.object({
-        id: z.number(),
-        bond: z.optional(z.string()),
-        name: z.optional(z.string()),
-        begin_date: z.optional(z.date()),
-        end_date: z.optional(z.date()),
-        ordinance: z.optional(z.string()),
-        observations: z.optional(z.string()),
-      }),
-    )
+    .input(CommitteeSchema.innerType().merge(z.object({ id: z.number() })))
     .mutation(({ ctx, input }) => {
       const { id, ...data } = input;
       return ctx.prisma.committee.update({ where: { id }, data });

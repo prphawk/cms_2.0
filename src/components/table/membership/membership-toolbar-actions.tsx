@@ -69,7 +69,7 @@ const ActionsMenuButton = (props: {
         </DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
         {props.committee.committee_template_id && (
-          <DropdownMenuItem>Suceder órgão</DropdownMenuItem>
+          <DropdownMenuItem disabled>Suceder órgão</DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem

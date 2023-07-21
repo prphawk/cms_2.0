@@ -95,10 +95,20 @@ export default function CommitteeMembership() {
   const handleOpenDialog = (open: boolean) => {
     setOpen(open);
   };
-  const handleSave = (data: z.infer<typeof CommitteeSchema>) => {
-    //TODO onSave
-    console.log('data', data);
-    //handleOpenDialog(false);
+
+  const utils = api.useContext();
+
+  //TODO replace w/ upsert? that would b cool
+  const update = api.committee.update.useMutation({
+    // TODO onError
+    onSettled(data) {
+      console.log(data);
+      return utils.committee.getOne.invalidate();
+    },
+  });
+
+  const handleSave = (data: z.infer<typeof CommitteeSchema> & { id?: number }) => {
+    if (data.id) update.mutate(data as any);
   };
 
   const propsActions = {
