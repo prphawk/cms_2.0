@@ -50,8 +50,8 @@ export const membershipRouter = createTRPCRouter({
     .input(z.object({ committee_id: z.number() }))
     .query(({ ctx, input }) => {
       return ctx.prisma.membership.groupBy({
-        where: { committee_id: input.committee_id },
         by: ['is_active'],
+        where: { committee_id: input.committee_id },
         _count: {
           is_active: true,
         },

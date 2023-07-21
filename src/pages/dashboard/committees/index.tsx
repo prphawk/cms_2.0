@@ -165,7 +165,7 @@ export const formatCount = (
   data: any[] | undefined,
 ): { active_count: string; total_count: string } => {
   let active, inactive;
-  if (isLoading || !data) active = inactive = 0;
+  if (isLoading || !data || !data.length) active = inactive = 0;
   else {
     active = data.at(0)._count.is_active;
     inactive = data.at(1)._count.is_active;

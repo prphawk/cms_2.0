@@ -139,7 +139,9 @@ export default function CommitteeMembership() {
 export type CommitteeDataType = Committee & { members: Membership[] };
 
 const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
-  const { data: countData, isLoading } = api.committee.groupByActivity.useQuery();
+  const { data: countData, isLoading } = api.membership.groupByActivity.useQuery({
+    committee_id: data.id,
+  });
 
   const { active_count, total_count } = formatCount(isLoading, countData);
   return (
