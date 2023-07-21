@@ -12,6 +12,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,15 +20,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Committee } from '@prisma/client';
-import { CalendarIcon, CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
+import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { CommitteesHeaders } from '~/constants/headers';
-import { _toLocaleString } from '~/utils/string';
+import { _toLocaleString, _toString } from '~/utils/string';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { number, z } from 'zod';
+import { z } from 'zod';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Command,
@@ -36,7 +36,9 @@ import {
   CommandInput,
   CommandItem,
 } from '@/components/ui/command';
-import { useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
+import { addYears } from 'date-fns';
+import { api } from '~/utils/api';
 
 export const CommitteeSchema = z
   .object({
@@ -48,8 +50,8 @@ export const CommitteeSchema = z
       .string({ required_error: `${CommitteesHeaders.BOND} é obrigatório` })
       .trim()
       .min(1, { message: `${CommitteesHeaders.BOND} é obrigatório` }),
-    begin_date: z.date({ required_error: `${CommitteesHeaders.BEGIN_DATE} é obrigatória` }),
-    end_date: z.date({ required_error: `${CommitteesHeaders.END_DATE} é obrigatória` }),
+    begin_date: z.coerce.date({ required_error: `${CommitteesHeaders.BEGIN_DATE} é obrigatória` }),
+    end_date: z.coerce.date({ required_error: `${CommitteesHeaders.END_DATE} é obrigatória` }),
     ordinance: z.string().optional(),
     observations: z.string().optional(),
     template_committee: z.string().optional(),
@@ -70,7 +72,6 @@ export default function CommitteeDialog(props: {
   });
 
   function onSubmit(data: z.infer<typeof CommitteeSchema>) {
-    console.log('onSubmit');
     props.handleSave(data);
     form.reset();
   }
@@ -105,35 +106,47 @@ export default function CommitteeDialog(props: {
               fieldName="name"
               label={CommitteesHeaders.NAME}
               defaultValue={props.committee?.name || ''}
+              placeholder="ex: Direção INF (2023)"
+              required
             />
-            <TemplateSelectFormItem form={form} defaultValue={''} />
-
             <CommonFormItem
               form={form}
               fieldName="bond"
               label={CommitteesHeaders.BOND}
               defaultValue={props.committee?.bond || ''}
+              placeholder="ex: Órgão"
+              required
             />
+            <div className="flex flex-row justify-between gap-x-4 pt-2">
+              <DateForm
+                form={form}
+                fieldName="begin_date"
+                label={CommitteesHeaders.BEGIN_DATE}
+                defaultValue={props.committee?.begin_date || new Date()}
+                required
+              />
+              <DateForm
+                form={form}
+                fieldName="end_date"
+                defaultValue={props.committee?.end_date || addYears(new Date(), 1)}
+                label={CommitteesHeaders.END_DATE}
+                dontSelectBefore={form.getValues('begin_date')}
+                required
+              />
+            </div>
             <CommonFormItem
               form={form}
               fieldName="ordinance"
               label={CommitteesHeaders.ORDINANCE}
               defaultValue={props.committee?.ordinance || ''}
+              placeholder="ex: Portaria"
             />
-            <div className="flex flex-row justify-between gap-4">
-              <DateForm form={form} fieldName="begin_date" label={CommitteesHeaders.BEGIN_DATE} />
-              <DateForm
-                form={form}
-                fieldName="end_date"
-                label={CommitteesHeaders.END_DATE}
-                dontSelectBefore={form.getValues('begin_date')}
-              />
-            </div>
             <ObservationsForm
               form={form}
               label={CommitteesHeaders.OBSERVATIONS}
               defaultValue={props.committee?.observations || ''}
             />
+            <TemplateSelectFormItem form={form} defaultValue={''} />
             <DialogFooter>
               <Button type="submit" form="formCommittee">
                 Salvar
@@ -147,17 +160,13 @@ export default function CommitteeDialog(props: {
 }
 
 const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => {
-  const [templates, setTemplates] = useState([
-    'English',
-    'French',
-    'German',
-    'Spanish',
-    'Portuguese',
-    'Russian',
-    'Japanese',
-    'Korean',
-    'Chinese',
-  ]);
+  const [templates, setTemplates] = useState<string[]>([]);
+
+  const { data, isLoading } = api.template.getAll.useQuery();
+
+  useEffect(() => {
+    if (data) setTemplates(data.map((e) => e.name));
+  }, [data]);
 
   const [createdIndex, setCreatedIndex] = useState<number>();
 
@@ -169,68 +178,72 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
       name="template_committee"
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>{CommitteesHeaders.TEMPLATE}</FormLabel>
+          <FormLabel className="pb-1">{CommitteesHeaders.TEMPLATE}</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
                   variant="outline"
                   role="combobox"
-                  className={cn('justify-between', !field.value && 'text-muted-foreground')}
+                  className={cn(
+                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+                    !field.value && 'text-muted-foregroundPage',
+                  )}
                 >
                   {field.value
                     ? templates.find((template) => template === field.value)
-                    : field.value || 'Selecione uma classe'}
+                    : field.value || 'ex: Direção INF'}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="p-0">
+            <PopoverContent className="offset min-w-max p-0">
               <Command>
                 <CommandInput
-                  placeholder={`Procurar ${CommitteesHeaders.TEMPLATE}...`}
+                  placeholder={`Digite sua ${CommitteesHeaders.TEMPLATE}...`}
                   className="h-9"
                   onValueChange={(search) => setCommandSearch(search)}
                 />
                 <CommandEmpty className="p-0">
-                  <Button
-                    className="max-h-full w-full "
-                    variant="ghost"
-                    onClick={() => {
-                      if (createdIndex) templates.pop();
-                      setCreatedIndex(templates.length);
-                      setTemplates([...templates, commandSearch]);
-                      props.form.setValue('template_committee', commandSearch);
-                    }}
-                  >
-                    <div className="truncate">
-                      Criar {CommitteesHeaders.TEMPLATE} "{commandSearch}"?
-                    </div>
-                  </Button>
+                  {isLoading
+                    ? 'Loading...'
+                    : !commandSearch && (
+                        <Button
+                          className="max-h-full w-full "
+                          variant="ghost"
+                          onClick={() => {
+                            if (createdIndex) templates.pop();
+                            setCreatedIndex(templates.length);
+                            setTemplates([...templates, commandSearch]);
+                            props.form.setValue('template_committee', commandSearch);
+                          }}
+                        >
+                          <div className="truncate">
+                            Criar {CommitteesHeaders.TEMPLATE} "{commandSearch}"?
+                          </div>
+                        </Button>
+                      )}
                 </CommandEmpty>
                 <CommandGroup>
-                  {templates.map((language) => (
+                  {templates.map((template) => (
                     <CommandItem
-                      value={language}
-                      key={language}
+                      value={template}
+                      key={template}
                       onSelect={(value) => {
                         let found: string | undefined;
                         if (
                           value === props.form.getValues('template_committee')?.toLocaleLowerCase()
                         ) {
                           found = undefined;
-                        } else
-                          found = templates.find(
-                            (language) => language.toLocaleLowerCase() === value,
-                          );
+                        } else found = templates.find((t) => t.toLocaleLowerCase() === value);
                         props.form.setValue('template_committee', found);
                       }}
                     >
-                      {language}
+                      {template}
                       <CheckIcon
                         className={cn(
                           'ml-auto h-4 w-4',
-                          language === field.value ? 'opacity-100' : 'opacity-0',
+                          template === field.value ? 'opacity-100' : 'opacity-0',
                         )}
                       />
                     </CommandItem>
@@ -239,10 +252,23 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
               </Command>
             </PopoverContent>
           </Popover>
+          <FormDescription className="-mb-1.5">
+            Instâncias de comissões <strong>permanentes</strong> devem pertencer a sua{' '}
+            {CommitteesHeaders.TEMPLATE}.
+          </FormDescription>
           <FormMessage />
         </FormItem>
       )}
     />
+  );
+};
+
+const MyLabel = (props: { required?: boolean } & PropsWithChildren) => {
+  return (
+    <FormLabel>
+      {props.children}
+      {props.required ? <span className="ml-1 text-red-700">*</span> : <></>}
+    </FormLabel>
   );
 };
 
@@ -251,6 +277,8 @@ const CommonFormItem = (props: {
   fieldName: 'name' | 'bond' | 'ordinance';
   label: string;
   defaultValue?: string;
+  placeholder?: string;
+  required?: boolean;
 }) => {
   return (
     <FormField
@@ -259,9 +287,14 @@ const CommonFormItem = (props: {
       name={props.fieldName}
       render={({ field }) => (
         <FormItem className="mt-1">
-          <FormLabel>{props.label}</FormLabel>
+          <MyLabel required={props.required}>{props.label}</MyLabel>
           <FormControl>
-            <Input {...field} />
+            <Input
+              // required={props.required}
+              className="placeholder:text-muted-foregroundPage"
+              {...field}
+              placeholder={props.placeholder}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -275,42 +308,18 @@ const DateForm = (props: {
   fieldName: 'begin_date' | 'end_date';
   label: string;
   dontSelectBefore?: Date;
-  defaultValue?: string;
+  defaultValue?: Date;
+  required?: boolean;
 }) => {
   return (
     <FormField
       control={props.form.control}
       name={props.fieldName}
+      defaultValue={_toString(props.defaultValue) || ''}
       render={({ field }) => (
-        <FormItem className="flex w-full flex-col" defaultValue={props.defaultValue || ''}>
-          <FormLabel>{props.label}</FormLabel>
-          <Popover>
-            <PopoverTrigger asChild>
-              <FormControl>
-                <Button
-                  variant={'outline'}
-                  className={cn(
-                    'pl-3 text-left font-normal',
-                    !field.value && 'text-muted-foreground',
-                  )}
-                >
-                  {field.value ? _toLocaleString(field.value) : <span>Escolha uma data</span>}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={field.value}
-                onSelect={field.onChange}
-                disabled={(date: Date) =>
-                  date < (props.dontSelectBefore || 0) || date < new Date('1900-01-01')
-                }
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+        <FormItem className="flex w-full flex-col">
+          <MyLabel required={props.required}>{props.label}</MyLabel>
+          <Input type="date" {...field} />
           <FormMessage />
         </FormItem>
       )}
@@ -327,7 +336,12 @@ const ObservationsForm = (props: { form: any; label: string; defaultValue?: stri
         <FormItem defaultValue={props.defaultValue || ''}>
           <FormLabel>{props.label}</FormLabel>
           <FormControl>
-            <Textarea placeholder="Lorem ipsum" className="resize-y" {...field} />
+            <Textarea
+              rows={1}
+              placeholder="Lorem ipsum"
+              className="resize-y placeholder:text-muted-foregroundPage"
+              {...field}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
