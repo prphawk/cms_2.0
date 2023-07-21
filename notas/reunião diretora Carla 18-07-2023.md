@@ -1,19 +1,25 @@
 nome do filtro Duração -> Tipo ✅
 
-membros temporários sao necessários?
-
 membros com data de fim ✅
 
-Comissões vira Órgãos Colegiados -> Nomes: "Comissão" de algo, "Conselho" de algo...
+entidade classe deve ter nome ✅
 
-template pro conselho do instuto (a combinar) A do conselho, n herdar as datas de fim para os membrps
+Comissões vira Órgãos Colegiados -> Nomes: "Comissão" de algo, "Conselho" de algo... ✅
 
 histórico do cargo mostra o historico da CLASSE
 
-atualizar os dados
+add botao criar comissão ✅
 
-add botao criar comissão
+formulário e funções de criar/editar comissão ✅✅✅
 
-Membros -> membrps ativos
+Membros -> membros ativos ✅
 
-membros (numero de membros na comissão)
+Exibir count membros (numero de membros/ativos na comissão) ✅
+
+Exibir count comissões (numero de comissões/ativos) ✅
+
+A combinar:
+
+- membros temporários sao necessários?
+- template pro conselho do instuto (a combinar) A do conselho, n herdar as datas de fim para os membrps
+- atualizar os dados reais
