@@ -16,8 +16,9 @@ import {
 import { _toLocaleString } from '~/utils/string';
 import { Dot } from '~/components/dot';
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions';
-import CommitteeDialog from '~/components/table/committees/committee-dialog';
+import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { Committee } from '@prisma/client';
+import { z } from 'zod';
 
 export default function Committees() {
   const router = useRouter();
@@ -44,7 +45,17 @@ export default function Committees() {
     },
   });
 
+  const create = api.committee.create.useMutation({
+    // TODO onError
+    onSettled(data) {
+      console.log(data);
+      return utils.committee.getAll.invalidate();
+    },
+  });
+
   function handleDeactivateCommittees(ids: number[]) {
+    //TODO pelo amor de deus vai invalidar tudo 500 vezes
+    // faz a função no prisma com IN pra ver os ids
     ids.forEach((id) => deactivate.mutate({ id }));
   }
 
@@ -81,9 +92,10 @@ export default function Committees() {
   const handleOpenDialog = (open: boolean) => {
     setOpen(open);
   };
-  const handleSave = (committee: any) => {
+  const handleSave = (data: z.infer<typeof CommitteeSchema>) => {
+    console.log('ok foi...');
+    create.mutate(data);
     //TODO Onsave
-    handleOpenDialog(false);
   };
 
   const filterProps = {

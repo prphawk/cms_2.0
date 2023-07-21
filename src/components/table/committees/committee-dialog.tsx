@@ -65,14 +65,19 @@ export default function CommitteeDialog(props: {
   open: boolean;
   handleOpenDialog: (open: boolean) => void;
   committee?: Committee;
-  handleSave: (data: z.infer<typeof CommitteeSchema>) => void;
+  handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void;
 }) {
   const form = useForm<z.infer<typeof CommitteeSchema>>({
     resolver: zodResolver(CommitteeSchema),
   });
 
   function onSubmit(data: z.infer<typeof CommitteeSchema>) {
-    props.handleSave(data);
+    props.handleSave({ id: props.committee?.id || undefined, ...data });
+    onClose();
+  }
+
+  function onClose() {
+    props.handleOpenDialog(false);
     form.reset();
   }
 
@@ -93,7 +98,7 @@ export default function CommitteeDialog(props: {
           </DialogDescription>
         </DialogHeader>
         <div
-          onClick={() => props.handleOpenDialog(false)}
+          onClick={onClose}
           className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 hover:outline-2 hover:ring-2 hover:ring-ring hover:ring-offset-2 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
         >
           <XIcon className="h-4 w-4" />
@@ -207,7 +212,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                 <CommandEmpty className="p-0">
                   {isLoading
                     ? 'Loading...'
-                    : !commandSearch && (
+                    : commandSearch && (
                         <Button
                           className="max-h-full w-full "
                           variant="ghost"

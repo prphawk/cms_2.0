@@ -2,6 +2,9 @@ import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc';
 import { _deactivateMembershipsByCommittee, membershipRouter } from './membership';
 import { prisma } from '~/server/db';
+import { CommitteeSchema } from '~/components/table/committees/committee-dialog';
+import { _getTemplateByName } from './template';
+import { Prisma } from '.prisma/client';
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({
@@ -92,29 +95,25 @@ export const committeeRouter = createTRPCRouter({
     });
   }),
 
-  /* 
-    TODO adicionar as nested?
-    members?: MembershipCreateNestedManyWithoutCommitteeInput
-    committee_template?: CommitteeTemplateCreateNestedOneWithoutCommitteesInput 
-  */
-  create: protectedProcedure
-    .input(
-      z.object({
-        bond: z.string(),
-        name: z.string(),
-        begin_date: z.optional(z.date()),
-        end_date: z.optional(z.date()),
-        ordinance: z.optional(z.string()),
-        observations: z.optional(z.string()),
-      }),
-    )
-    .mutation(({ ctx, input }) => {
-      if (!input.end_date) {
-        input.begin_date = input.end_date = input.begin_date || new Date();
-        input.end_date.setFullYear(input.begin_date.getFullYear() + 2);
-      }
-      return ctx.prisma.committee.create({ data: input });
-    }),
+  create: protectedProcedure.input(CommitteeSchema).mutation(async ({ ctx, input }) => {
+    const committee = {
+      bond: input.bond,
+      name: input.name,
+      begin_date: input.begin_date,
+      end_date: input.end_date,
+      ordinance: input.ordinance,
+      observations: input.observations,
+      is_active: true,
+    } as Prisma.CommitteeCreateInput;
+
+    if (input.template_committee) {
+      const templateSearch = await _getTemplateByName(input.template_committee);
+      committee.committee_template = templateSearch
+        ? { connect: { id: templateSearch.id } }
+        : { create: { name: input.template_committee } };
+    }
+    return ctx.prisma.committee.create({ data: committee });
+  }),
 
   // TODO adicionar as nested?
   // members?: MembershipCreateNestedManyWithoutCommitteeInput
