@@ -62,7 +62,7 @@ export const CommitteeSchema = z
 
 export default function CommitteeDialog(props: {
   open: boolean;
-  handleOpenDialog: (open: boolean) => void;
+  handleOpenDialog: (dialogEnum: number) => void;
   committee?: Committee & { committee_template?: { name: string } | null };
   handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void;
 }) {
@@ -83,7 +83,6 @@ export default function CommitteeDialog(props: {
   });
 
   useEffect(() => {
-    console.log('Open close');
     form.reset(myDefaultValues as any);
   }, [props.open]);
 
@@ -94,7 +93,7 @@ export default function CommitteeDialog(props: {
 
   function onClose() {
     form.reset();
-    props.handleOpenDialog(false);
+    props.handleOpenDialog(-1);
   }
 
   return (
@@ -196,7 +195,6 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
 
   const [commandSearch, setCommandSearch] = useState('');
 
-  console.log(props.form.getValues('committee_template_name'), props.defaultValue);
   return (
     <FormField
       defaultValue={props.defaultValue || ''}
@@ -292,7 +290,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
   );
 };
 
-const MyLabel = (props: { required?: boolean } & PropsWithChildren) => {
+export const MyLabel = (props: { required?: boolean } & PropsWithChildren) => {
   return (
     <FormLabel>
       {props.children}
@@ -301,9 +299,9 @@ const MyLabel = (props: { required?: boolean } & PropsWithChildren) => {
   );
 };
 
-const CommonFormItem = (props: {
+export const CommonFormItem = (props: {
   form: any;
-  fieldName: 'name' | 'bond' | 'ordinance';
+  fieldName: string;
   label: string;
   defaultValue?: string;
   placeholder?: string;
@@ -339,7 +337,6 @@ const DateForm = (props: {
   defaultValue?: Date;
   required?: boolean;
 }) => {
-  console.log(props.defaultValue, _toString(props.defaultValue));
   return (
     <FormField
       control={props.form.control}

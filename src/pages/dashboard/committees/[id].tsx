@@ -19,6 +19,12 @@ import { Dot } from '~/components/dot';
 import { formatCount } from '.';
 import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { z } from 'zod';
+import MembershipDialog from '~/components/table/membership/membership-dialog';
+
+export enum dialogsEnum {
+  committee,
+  membership,
+}
 
 export default function CommitteeMembership() {
   const router = useRouter();
@@ -35,27 +41,6 @@ export default function CommitteeMembership() {
     },
     { enabled: _isNumeric(param_id) },
   );
-
-  //const utils = api.useContext();
-
-  //   const deactivate = api.committee.deactivate.useMutation({
-  //     onMutate() {
-  //       return utils.committee.getAll.cancel();
-  //     },
-  //     // TODO onError
-  //     onSettled(data) {
-  //       console.log(data);
-  //       return utils.committee.getAll.invalidate();
-  //     },
-  //   });
-
-  //   function handleDeactivateCommittees(ids: number[]) {
-  //     ids.forEach((id) => deactivate.mutate({ id }));
-  //   }
-
-  //   function handleViewCommittee(id: number) {
-  //     router.push(`${Routes.COMMITTEES}/${id}`);
-  //   }
 
   const _setIsActiveFilterValues = (values?: string[]) => {
     if (!values?.length || values.length >= 2) {
@@ -90,10 +75,10 @@ export default function CommitteeMembership() {
     isActiveFilters: filterLabelsA,
     isTemporaryFilters: filterLabelsT,
   };
-  const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(-1);
 
-  const handleOpenDialog = (open: boolean) => {
-    setOpen(open);
+  const handleOpenDialog = (dialogEnum: number) => {
+    setOpenDialog(dialogEnum);
   };
 
   const utils = api.useContext();
@@ -113,9 +98,8 @@ export default function CommitteeMembership() {
 
   const propsActions = {
     committee: data!,
-    handleCreateMembership: () => {},
-    handleDeactivateCommittees: () => {},
     handleOpenDialog,
+    handleDeactivateCommittees: () => {},
   };
 
   return (
@@ -134,9 +118,15 @@ export default function CommitteeMembership() {
               />
               <CommitteeDialog
                 committee={data}
-                open={open}
+                open={openDialog == dialogsEnum.committee}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={handleSave}
+              />
+              <MembershipDialog
+                members={data.members}
+                open={openDialog == dialogsEnum.membership}
+                handleOpenDialog={handleOpenDialog}
+                //handleSave={handleSave}
               />
             </>
           )}

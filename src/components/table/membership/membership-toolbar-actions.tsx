@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { MoreHorizontalIcon, PlusIcon } from 'lucide-react';
-import { CommitteeDataType } from '~/pages/dashboard/committees/[id]';
+import { CommitteeDataType, dialogsEnum } from '~/pages/dashboard/committees/[id]';
 import { Committee } from '@prisma/client';
 import {
   DropdownMenu,
@@ -9,33 +9,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { useState } from 'react';
 
 export default function MembershipTableToolbarActions(props: {
   committee: CommitteeDataType;
-  handleCreateMembership: () => void;
   handleDeactivateCommittees: () => void;
-  handleOpenDialog: (open: boolean) => void;
+  handleOpenDialog: (dialogEnum: number) => void;
 }) {
   return (
     <>
       <Button
-        onClick={props.handleCreateMembership}
+        onClick={() => props.handleOpenDialog(dialogsEnum.membership)}
         variant="outline"
         size="sm"
         className="ml-auto mr-2 hidden h-8 bg-transparent lg:flex"
       >
         <PlusIcon className="mr-2 h-5 w-5" />
-        Adicionar membro(a)
+        Adicionar membro(s)
       </Button>
       <ActionsMenuButton
         committee={props.committee}
@@ -49,7 +38,7 @@ export default function MembershipTableToolbarActions(props: {
 const ActionsMenuButton = (props: {
   committee: Committee;
   handleDeactivateCommittees: (ids: number[]) => void;
-  handleOpenDialog: (open: boolean) => void;
+  handleOpenDialog: (dialogEnum: number) => void;
 }) => {
   return (
     <DropdownMenu>
@@ -64,7 +53,7 @@ const ActionsMenuButton = (props: {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => props.handleOpenDialog(true)}>
+        <DropdownMenuItem onClick={() => props.handleOpenDialog(dialogsEnum.committee)}>
           Editar órgão
         </DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
