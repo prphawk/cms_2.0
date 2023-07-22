@@ -24,7 +24,7 @@ export const getRoleHistoryColumns =
   //   committee_begin_date?: Date | null,
   //   committee_end_date?: Date | null,
   // handleDeactivateCommittees: (ids: number[]) => void,
-  ColumnDef<Membership & { employee: Employee } & { committee: Committee }>[] => [
+  ColumnDef<Membership & { employee: Employee }>[] => [
     {
       accessorKey: 'employee.name',
       accessorFn: (row) => row.employee.name,

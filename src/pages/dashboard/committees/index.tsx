@@ -19,7 +19,7 @@ import CommitteesTableToolbarActions from '~/components/table/committees/committ
 import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { Committee } from '@prisma/client';
 import { z } from 'zod';
-import { CommitteesHeaders } from '~/constants/headers';
+import { CommitteeHeaders } from '~/constants/headers';
 import { dialogsEnum } from './[id]';
 
 export default function Committees() {
@@ -120,7 +120,7 @@ export default function Committees() {
             columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
             tableFilters={<TableToolbarFilter {...filterProps} />}
             tableActions={<CommitteesTableToolbarActions {...actionProps} />}
-            column={CommitteesHeaders.NAME}
+            column={CommitteeHeaders.NAME}
           />
           <CommitteeDialog
             open={open === dialogsEnum.committee}

@@ -1,6 +1,6 @@
 import { Employee, Membership } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { MembershipHeaders } from '~/constants/headers';
+import { CommitteeHeaders, GeneralHeaders, MembershipHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
 import { MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 export const getMembershipColumns = (
   handleChangeMembership: (membership: Membership & { employee: Employee }) => void,
+  committee_template_id?: number | null,
   committee_begin_date?: Date | null,
   committee_end_date?: Date | null,
 ): // handleDeactivateCommittees: (ids: number[]) => void,
@@ -122,10 +123,16 @@ ColumnDef<Membership & { employee: Employee }>[] => [
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              <DropdownMenuItem disabled>
-                <Link href={`${Routes.COMMITTEES}/${committee_id}/${role}`}>
-                  Ver histórico do cargo
-                </Link>
+              <DropdownMenuItem>
+                {committee_template_id ? (
+                  <Link href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
+                    Ver histórico do cargo na {CommitteeHeaders.TEMPLATE}
+                  </Link>
+                ) : (
+                  <Link href={`${Routes.COMMITTEES}/${committee_id}/${role}`}>
+                    Ver histórico do cargo na {GeneralHeaders.COMMITTEE}
+                  </Link>
+                )}
               </DropdownMenuItem>
               <DropdownMenuItem disabled>Suceder cargo</DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleChangeMembership(row.original)}>

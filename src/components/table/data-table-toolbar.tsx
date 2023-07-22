@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { XIcon } from 'lucide-react';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
-import { CommitteesHeaders } from '~/constants/headers';
+import { CommitteeHeaders } from '~/constants/headers';
 import { Table } from '@tanstack/react-table';
 import { SlidersHorizontalIcon } from 'lucide-react';
 import {

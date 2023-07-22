@@ -154,6 +154,7 @@ export default function CommitteeMembership() {
                 data={data?.members || []}
                 columns={getMembershipColumns(
                   handleChangeMembership,
+                  data.committee_template_id,
                   data.begin_date,
                   data.end_date,
                 )}

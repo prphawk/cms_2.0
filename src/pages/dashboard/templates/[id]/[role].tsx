@@ -24,7 +24,6 @@ import { Committee, Membership } from '@prisma/client';
 import { Dot } from 'lucide-react';
 import { api } from '~/utils/api';
 import { _isNumeric, _toLocaleString } from '~/utils/string';
-import { formatCount } from '..';
 import { DataTable } from '~/components/table/data-table';
 import { TableToolbarFilter } from '~/components/table/data-table-toolbar';
 import { getMembershipColumns } from '~/components/table/membership/membership-columns';
@@ -33,32 +32,32 @@ import { MembershipHeaders } from '~/constants/headers';
 import { getRoleHistoryColumns } from '~/components/table/role-history/role-history-columns';
 import { DoubleDataTable } from '~/components/table/double-data-table';
 
-export default function CommitteeRoleHistory() {
+export default function TemplateRoleHistory() {
   const router = useRouter();
 
-  const param_id = router.query.id;
+  const param_template_id = router.query.id;
   const param_role = router.query.role;
 
   const roleName = param_role as string;
 
-  const { data: committeeData } = api.committee.getRoleHistory.useQuery({
+  const { data: committeeTemplateData } = api.template.getRoleHistory.useQuery({
     //TODO useMemo
-    committee_id: Number(param_id),
+    template_id: Number(param_template_id),
     role: roleName,
   });
 
   return (
     <AuthenticatedPage>
       <PageLayout>
-        <div className="container my-10 mb-auto text-white ">
-          {committeeData && (
+        <div className="committee container my-10 mb-auto text-white ">
+          {committeeTemplateData && (
             <>
               <HistoryDetails
-                title={`HISTÓRICO DE COMISSÃO: ${committeeData.name} - ${roleName}`}
+                title={`HISTÓRICO DE CLASSE: ${committeeTemplateData.name} - ${roleName}`}
               />
-              <DataTable
+              <DoubleDataTable
                 //isLoading={isLoading}
-                data={committeeData.members || []}
+                data={[]}
                 columns={getRoleHistoryColumns()}
                 // tableFilters={<TableToolbarFilter {...propsFilters} />}
                 // tableActions={<MembershipTableToolbarActions {...propsActions} />}
