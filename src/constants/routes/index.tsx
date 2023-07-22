@@ -3,4 +3,5 @@ export class Routes {
   public static AUTHENTICATED = '/dashboard';
   public static EMPLOYEES = this.AUTHENTICATED + '/employees';
   public static COMMITTEES = this.AUTHENTICATED + '/committees';
+  public static TEMPLATES = this.AUTHENTICATED + '/templates';
 }

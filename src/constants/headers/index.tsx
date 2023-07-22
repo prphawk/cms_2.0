@@ -1,4 +1,7 @@
-export class CommitteesHeaders {
+export class GeneralHeaders {
+  public static COMMITTEE = 'Comissão';
+}
+export class CommitteeHeaders {
   public static BOND = 'Órgão';
   public static NAME = 'Nome';
   public static BEGIN_DATE = 'Data de Início';

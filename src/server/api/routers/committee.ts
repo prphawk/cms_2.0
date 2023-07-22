@@ -1,10 +1,9 @@
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc';
-import { _deactivateMembershipsByCommittee, membershipRouter } from './membership';
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { _deactivateMembershipsByCommittee } from './membership';
 import { prisma } from '~/server/db';
 import { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { _getTemplateByName } from './template';
-import { api } from '~/utils/api';
 import { Prisma } from '@prisma/client';
 
 export const _findUniqueCommittee = async (committee_id: number) => {
@@ -159,5 +158,31 @@ export const committeeRouter = createTRPCRouter({
 
       await _deactivateMembershipsByCommittee(id);
       await _deactivateCommittee(id);
+    }),
+
+  getRoleHistory: protectedProcedure
+    .input(
+      z.object({
+        role: z.string(),
+        committee_id: z.number(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      const { role, committee_id } = input;
+
+      return ctx.prisma.committee.findUnique({
+        where: {
+          id: committee_id,
+        },
+        include: {
+          members: {
+            where: { role },
+            include: { employee: true },
+            orderBy: {
+              begin_date: 'desc',
+            },
+          },
+        },
+      });
     }),
 });

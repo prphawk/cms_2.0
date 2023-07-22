@@ -11,16 +11,16 @@ export const _getTemplateByName = async (name: string) => {
 // };
 
 export const templateRouter = createTRPCRouter({
-  getOneByCommittee: protectedProcedure
+  getOne: protectedProcedure
     .input(
       z.object({
-        committee_id: z.number(),
+        template_id: z.number(),
       }),
     )
     .query(({ ctx, input }) => {
       return ctx.prisma.committeeTemplate.findFirst({
         where: {
-          committees: { some: { id: input.committee_id } },
+          id: input.template_id,
         },
         include: {
           committees: { select: { id: true } },
@@ -48,6 +48,26 @@ export const templateRouter = createTRPCRouter({
               return { id: c };
             }),
           },
+        },
+      });
+    }),
+
+  getRoleHistory: protectedProcedure
+    .input(
+      z.object({
+        role: z.string(),
+        template_id: z.number(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      const { role, template_id } = input;
+
+      return ctx.prisma.committeeTemplate.findUnique({
+        where: {
+          id: template_id,
+        },
+        include: {
+          committees: { where: { members: { every: { role } } } },
         },
       });
     }),

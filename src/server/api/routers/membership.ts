@@ -104,31 +104,4 @@ export const membershipRouter = createTRPCRouter({
         data: { is_active: false },
       });
     }),
-
-  getRoleHistory: protectedProcedure
-    .input(
-      z.object({
-        role: z.string(),
-        committee_id: z.number(),
-      }),
-    )
-    .query(({ ctx, input }) => {
-      const { role, committee_id } = input;
-
-      return ctx.prisma.membership.findMany({
-        where: {
-          committee_id,
-          role,
-        },
-        include: {
-          employee: true,
-          committee: {
-            include: { committee_template: true },
-          },
-        },
-        orderBy: {
-          begin_date: 'desc',
-        },
-      });
-    }),
 });
