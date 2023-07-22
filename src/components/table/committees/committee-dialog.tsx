@@ -223,7 +223,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset min-w-max p-0">
+            <PopoverContent className="offset max-h-80 min-w-max overflow-y-auto p-0">
               <Command>
                 <CommandInput
                   placeholder={`Digite sua ${CommitteesHeaders.TEMPLATE}...`}
@@ -290,9 +290,9 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
   );
 };
 
-export const MyLabel = (props: { required?: boolean } & PropsWithChildren) => {
+export const MyLabel = (props: { required?: boolean; className?: string } & PropsWithChildren) => {
   return (
-    <FormLabel>
+    <FormLabel className={props.className}>
       {props.children}
       {props.required ? <span className="ml-1 text-red-700">*</span> : <></>}
     </FormLabel>
@@ -330,9 +330,9 @@ export const CommonFormItem = (props: {
   );
 };
 
-const DateForm = (props: {
+export const DateForm = (props: {
   form: any;
-  fieldName: 'begin_date' | 'end_date';
+  fieldName: string;
   label: string;
   defaultValue?: Date;
   required?: boolean;
@@ -353,7 +353,7 @@ const DateForm = (props: {
   );
 };
 
-const ObservationsForm = (props: { form: any; label: string; defaultValue?: string }) => {
+export const ObservationsForm = (props: { form: any; label: string; defaultValue?: string }) => {
   return (
     <FormField
       control={props.form.control}
@@ -364,7 +364,7 @@ const ObservationsForm = (props: { form: any; label: string; defaultValue?: stri
           <FormControl>
             <Textarea
               rows={1}
-              placeholder="Lorem ipsum"
+              placeholder="Something something..."
               className="resize-y placeholder:text-muted-foregroundPage"
               {...field}
             />

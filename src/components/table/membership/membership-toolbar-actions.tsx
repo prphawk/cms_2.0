@@ -13,12 +13,16 @@ import {
 export default function MembershipTableToolbarActions(props: {
   committee: CommitteeDataType;
   handleDeactivateCommittees: () => void;
+  handleClickAddMembershipButton: () => void;
   handleOpenDialog: (dialogEnum: number) => void;
 }) {
   return (
     <>
       <Button
-        onClick={() => props.handleOpenDialog(dialogsEnum.membership)}
+        onClick={() => {
+          props.handleClickAddMembershipButton();
+          props.handleOpenDialog(dialogsEnum.membership);
+        }}
         variant="outline"
         size="sm"
         className="ml-auto mr-2 hidden h-8 bg-transparent lg:flex"
@@ -61,14 +65,17 @@ const ActionsMenuButton = (props: {
           <DropdownMenuItem disabled>Suceder órgão</DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => {
-            props.handleDeactivateCommittees([props.committee.id]);
-            props.committee.is_active = false;
-          }}
-        >
-          Desativar órgão
-        </DropdownMenuItem>
+        {
+          <DropdownMenuItem
+            disabled={!props.committee.is_active}
+            onClick={() => {
+              props.handleDeactivateCommittees([props.committee.id]);
+              props.committee.is_active = false;
+            }}
+          >
+            Desativar órgão
+          </DropdownMenuItem>
+        }
       </DropdownMenuContent>
     </DropdownMenu>
   );

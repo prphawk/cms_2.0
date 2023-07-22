@@ -13,13 +13,16 @@ import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
 import { _isNumeric, _toLocaleString } from '~/utils/string';
-import { Committee, Membership } from '@prisma/client';
+import { Committee, Employee, Membership } from '@prisma/client';
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { Dot } from '~/components/dot';
 import { formatCount } from '.';
 import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { z } from 'zod';
-import MembershipDialog from '~/components/table/membership/membership-dialog';
+import MembershipDialog, {
+  MembershipSchema,
+} from '~/components/table/membership/membership-dialog';
+import { MembershipHeaders } from '~/constants/headers';
 
 export enum dialogsEnum {
   committee,
@@ -29,6 +32,9 @@ export enum dialogsEnum {
 export default function CommitteeMembership() {
   const router = useRouter();
   const param_id = router.query.id;
+  const [selectedMembership, setSelectedMembership] = useState<
+    Membership & { employee: Employee }
+  >();
   const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
   const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
   const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
@@ -84,7 +90,7 @@ export default function CommitteeMembership() {
   const utils = api.useContext();
 
   //TODO replace w/ upsert? that would b cool
-  const update = api.committee.update.useMutation({
+  const updateCommittee = api.committee.update.useMutation({
     // TODO onError
     onSettled(data) {
       console.log(data);
@@ -92,14 +98,49 @@ export default function CommitteeMembership() {
     },
   });
 
-  const handleSave = (data: z.infer<typeof CommitteeSchema> & { id?: number }) => {
-    if (data.id) update.mutate(data as any);
+  //TODO upsert?
+  const updateMembership = api.membership.update.useMutation({
+    // TODO onError
+    onSettled(data) {
+      return utils.committee.getOne.invalidate();
+    },
+  });
+
+  const createMembership = api.membership.create.useMutation({
+    // TODO onError
+    onSuccess() {
+      utils.employee.getOptions.invalidate(); //caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
+    },
+    onSettled(data) {
+      utils.committee.getOne.invalidate();
+    },
+  });
+
+  const handleSaveCommittee = (committee: z.infer<typeof CommitteeSchema> & { id?: number }) => {
+    if (committee.id) updateCommittee.mutate(committee as any);
+  };
+
+  const handleSaveMembership = (membership: z.infer<typeof MembershipSchema>) => {
+    if (!data?.id) return;
+    if (membership.employee.id)
+      updateMembership.mutate({ committee_id: data.id!, ...membership } as any);
+    else createMembership.mutate({ committee_id: data.id!, ...membership });
+  };
+
+  const handleClickAddMembershipButton = () => {
+    setSelectedMembership(undefined);
   };
 
   const propsActions = {
     committee: data!,
     handleOpenDialog,
+    handleClickAddMembershipButton,
     handleDeactivateCommittees: () => {},
+  };
+
+  const handleChangeMembership = (membership: Membership & { employee: Employee }) => {
+    handleOpenDialog(dialogsEnum.membership);
+    setSelectedMembership({ ...membership });
   };
 
   return (
@@ -112,21 +153,27 @@ export default function CommitteeMembership() {
               <DataTable
                 isLoading={isLoading}
                 data={data?.members || []}
-                columns={getMembershipColumns(data.begin_date, data.end_date)}
+                columns={getMembershipColumns(
+                  handleChangeMembership,
+                  data.begin_date,
+                  data.end_date,
+                )}
                 tableFilters={<TableToolbarFilter {...propsFilters} />}
                 tableActions={<MembershipTableToolbarActions {...propsActions} />}
+                column={MembershipHeaders.NAME}
               />
               <CommitteeDialog
                 committee={data}
                 open={openDialog == dialogsEnum.committee}
                 handleOpenDialog={handleOpenDialog}
-                handleSave={handleSave}
+                handleSave={handleSaveCommittee}
               />
               <MembershipDialog
-                members={data.members}
+                member={selectedMembership}
                 open={openDialog == dialogsEnum.membership}
                 handleOpenDialog={handleOpenDialog}
-                //handleSave={handleSave}
+                handleSave={handleSaveMembership}
+                committeeDates={{ begin_date: data.begin_date, end_date: data.end_date }}
               />
             </>
           )}

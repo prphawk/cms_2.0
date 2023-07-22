@@ -20,8 +20,8 @@ export const membershipRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        employee_id: z.number(),
         committee_id: z.number(),
+        employee: z.object({ id: z.number().optional(), name: z.string() }),
         role: z.optional(z.string()),
         begin_date: z.date(),
         end_date: z.date(),
@@ -30,20 +30,26 @@ export const membershipRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { employee_id, committee_id, ...rest } = input;
+      const { employee, committee_id, ...data } = input;
 
-      // if (!rest.begin_date) {
-      //   const committee = await _findUniqueCommittee(committee_id);
-      //   rest.begin_date = committee?.begin_date ?? undefined;
-      // }
-
-      return await ctx.prisma.membership.create({
-        data: {
-          employee: { connect: { id: employee_id } },
-          committee: { connect: { id: committee_id } },
-          ...rest,
-        },
-      });
+      if (employee.id) {
+        return ctx.prisma.membership.update({
+          where: { employee_id_committee_id: { employee_id: employee.id, committee_id } },
+          data,
+        });
+      } else {
+        return ctx.prisma.membership.create({
+          data: {
+            committee: { connect: { id: committee_id } },
+            employee: {
+              create: {
+                name: employee.name,
+              },
+            },
+            ...data,
+          },
+        });
+      }
     }),
 
   groupByActivity: protectedProcedure
@@ -64,18 +70,18 @@ export const membershipRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
-        employee_id: z.number(),
         committee_id: z.number(),
+        employee: z.object({ id: z.number(), name: z.string() }),
         role: z.optional(z.string()),
         is_temporary: z.optional(z.boolean()),
         observations: z.optional(z.string()),
       }),
     )
     .mutation(({ ctx, input }) => {
-      const { employee_id, committee_id, ...data } = input;
+      const { employee, committee_id, ...data } = input;
 
       return ctx.prisma.membership.update({
-        where: { employee_id_committee_id: { employee_id, committee_id } },
+        where: { employee_id_committee_id: { employee_id: employee.id, committee_id } },
         data,
       });
     }),
