@@ -93,7 +93,6 @@ export default function CommitteeMembership() {
   const updateCommittee = api.committee.update.useMutation({
     // TODO onError
     onSettled(data) {
-      console.log(data);
       return utils.committee.getOne.invalidate();
     },
   });
@@ -109,7 +108,7 @@ export default function CommitteeMembership() {
   const createMembership = api.membership.create.useMutation({
     // TODO onError
     onSuccess() {
-      utils.employee.getOptions.invalidate(); //caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
+      utils.employee.getOptions.invalidate(); //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
     },
     onSettled(data) {
       utils.committee.getOne.invalidate();
