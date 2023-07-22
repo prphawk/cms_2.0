@@ -19,6 +19,8 @@ import CommitteesTableToolbarActions from '~/components/table/committees/committ
 import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { Committee } from '@prisma/client';
 import { z } from 'zod';
+import { CommitteesHeaders } from '~/constants/headers';
+import { dialogsEnum } from './[id]';
 
 export default function Committees() {
   const router = useRouter();
@@ -85,10 +87,10 @@ export default function Committees() {
     return <span>Error: sowwyyyy</span>;
   }
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(-1);
 
-  const handleOpenDialog = (open: boolean) => {
-    setOpen(open);
+  const handleOpenDialog = (dialogEnum: number) => {
+    setOpen(dialogEnum);
   };
   const handleSave = (data: z.infer<typeof CommitteeSchema>) => {
     create.mutate(data);
@@ -102,7 +104,7 @@ export default function Committees() {
   };
   const actionProps = {
     handleCreateCommittee: () => {
-      handleOpenDialog(true);
+      handleOpenDialog(dialogsEnum.committee);
     },
   };
 
@@ -118,9 +120,10 @@ export default function Committees() {
             columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
             tableFilters={<TableToolbarFilter {...filterProps} />}
             tableActions={<CommitteesTableToolbarActions {...actionProps} />}
+            column={CommitteesHeaders.NAME}
           />
           <CommitteeDialog
-            open={open}
+            open={open === dialogsEnum.committee}
             handleOpenDialog={handleOpenDialog}
             handleSave={handleSave}
           />

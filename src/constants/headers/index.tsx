@@ -9,7 +9,7 @@ export class CommitteesHeaders {
   public static TEMPLATE = 'Classe';
 }
 export class MembershipHeaders {
-  public static NAME = 'Nome';
+  public static NAME = 'Servidor(a)';
   public static ROLE = 'Cargo';
   public static BEGIN_DATE = 'Data de Início';
   public static END_DATE = 'Data de Fim';

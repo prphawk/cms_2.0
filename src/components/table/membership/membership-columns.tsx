@@ -20,10 +20,10 @@ import { Routes } from '~/constants/routes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const getMembershipColumns = (
+  handleChangeMembership: (membership: Membership & { employee: Employee }) => void,
   committee_begin_date?: Date | null,
   committee_end_date?: Date | null,
 ): // handleDeactivateCommittees: (ids: number[]) => void,
-// handleViewCommittee: (id: number) => void,
 ColumnDef<Membership & { employee: Employee }>[] => [
   {
     accessorKey: 'employee.name',
@@ -128,7 +128,9 @@ ColumnDef<Membership & { employee: Employee }>[] => [
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem disabled>Suceder cargo</DropdownMenuItem>
-              <DropdownMenuItem disabled>Editar participação</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleChangeMembership(row.original)}>
+                Editar participação
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem disabled>Encerrar participação</DropdownMenuItem>
             </DropdownMenuContent>

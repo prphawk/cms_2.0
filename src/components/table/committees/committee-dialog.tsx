@@ -62,7 +62,7 @@ export const CommitteeSchema = z
 
 export default function CommitteeDialog(props: {
   open: boolean;
-  handleOpenDialog: (open: boolean) => void;
+  handleOpenDialog: (dialogEnum: number) => void;
   committee?: Committee & { committee_template?: { name: string } | null };
   handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void;
 }) {
@@ -83,7 +83,6 @@ export default function CommitteeDialog(props: {
   });
 
   useEffect(() => {
-    console.log('Open close');
     form.reset(myDefaultValues as any);
   }, [props.open]);
 
@@ -94,7 +93,7 @@ export default function CommitteeDialog(props: {
 
   function onClose() {
     form.reset();
-    props.handleOpenDialog(false);
+    props.handleOpenDialog(-1);
   }
 
   return (
@@ -196,7 +195,6 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
 
   const [commandSearch, setCommandSearch] = useState('');
 
-  console.log(props.form.getValues('committee_template_name'), props.defaultValue);
   return (
     <FormField
       defaultValue={props.defaultValue || ''}
@@ -225,7 +223,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset min-w-max p-0">
+            <PopoverContent className="offset max-h-80 min-w-max overflow-y-auto p-0">
               <Command>
                 <CommandInput
                   placeholder={`Digite sua ${CommitteesHeaders.TEMPLATE}...`}
@@ -292,18 +290,18 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
   );
 };
 
-const MyLabel = (props: { required?: boolean } & PropsWithChildren) => {
+export const MyLabel = (props: { required?: boolean; className?: string } & PropsWithChildren) => {
   return (
-    <FormLabel>
+    <FormLabel className={props.className}>
       {props.children}
       {props.required ? <span className="ml-1 text-red-700">*</span> : <></>}
     </FormLabel>
   );
 };
 
-const CommonFormItem = (props: {
+export const CommonFormItem = (props: {
   form: any;
-  fieldName: 'name' | 'bond' | 'ordinance';
+  fieldName: string;
   label: string;
   defaultValue?: string;
   placeholder?: string;
@@ -332,14 +330,13 @@ const CommonFormItem = (props: {
   );
 };
 
-const DateForm = (props: {
+export const DateForm = (props: {
   form: any;
-  fieldName: 'begin_date' | 'end_date';
+  fieldName: string;
   label: string;
   defaultValue?: Date;
   required?: boolean;
 }) => {
-  console.log(props.defaultValue, _toString(props.defaultValue));
   return (
     <FormField
       control={props.form.control}
@@ -356,7 +353,7 @@ const DateForm = (props: {
   );
 };
 
-const ObservationsForm = (props: { form: any; label: string; defaultValue?: string }) => {
+export const ObservationsForm = (props: { form: any; label: string; defaultValue?: string }) => {
   return (
     <FormField
       control={props.form.control}
@@ -367,7 +364,7 @@ const ObservationsForm = (props: { form: any; label: string; defaultValue?: stri
           <FormControl>
             <Textarea
               rows={1}
-              placeholder="Lorem ipsum"
+              placeholder="Something something..."
               className="resize-y placeholder:text-muted-foregroundPage"
               {...field}
             />

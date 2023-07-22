@@ -50,10 +50,12 @@ export function DataTable<TData, TValue>({
   isLoading,
   tableFilters,
   tableActions,
+  column,
 }: DataTableProps<TData, TValue> & {
   tableFilters: JSX.Element;
   isLoading?: boolean;
   tableActions?: JSX.Element;
+  column: string;
 }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -76,7 +78,12 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <TableToolbar table={table} tableFilters={tableFilters} tableActions={tableActions} />
+      <TableToolbar
+        table={table}
+        tableFilters={tableFilters}
+        tableActions={tableActions}
+        column={column}
+      />
       <div className="mt-3 rounded-md border">
         <Table>
           <TableHeader>

@@ -21,6 +21,7 @@ export function TableToolbar<TData>(
   props: TableToolbarProps<TData> & {
     tableFilters: JSX.Element;
     tableActions?: JSX.Element;
+    column: string;
   },
 ) {
   return (
@@ -28,9 +29,9 @@ export function TableToolbar<TData>(
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Buscar..."
-          value={(props.table.getColumn(CommitteesHeaders.NAME)?.getFilterValue() as string) ?? ''}
+          value={(props.table.getColumn(props.column)?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            props.table.getColumn(CommitteesHeaders.NAME)?.setFilterValue(event.target.value)
+            props.table.getColumn(props.column)?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] bg-transparent text-muted-foregroundPage lg:w-[250px]"
         />
