@@ -19,7 +19,7 @@ interface TableToolbarProps<TData> {
 
 export function TableToolbar<TData>(
   props: TableToolbarProps<TData> & {
-    tableFilters: JSX.Element;
+    tableFilters?: JSX.Element;
     tableActions?: JSX.Element;
     column: string;
   },

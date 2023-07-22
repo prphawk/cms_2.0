@@ -120,17 +120,10 @@ export const membershipRouter = createTRPCRouter({
           committee_id,
           role,
         },
-        select: {
-          role: true,
-          begin_date: true,
-          end_date: true,
-          is_temporary: true,
-          observations: true,
-          employee: {
-            select: {
-              id: true,
-              name: true,
-            },
+        include: {
+          employee: true,
+          committee: {
+            include: { committee_template: true },
           },
         },
         orderBy: {

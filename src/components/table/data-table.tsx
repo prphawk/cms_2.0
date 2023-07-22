@@ -52,7 +52,7 @@ export function DataTable<TData, TValue>({
   tableActions,
   column,
 }: DataTableProps<TData, TValue> & {
-  tableFilters: JSX.Element;
+  tableFilters?: JSX.Element;
   isLoading?: boolean;
   tableActions?: JSX.Element;
   column: string;
