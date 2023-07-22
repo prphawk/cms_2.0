@@ -31,6 +31,7 @@ import { getMembershipColumns } from '~/components/table/membership/membership-c
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { MembershipHeaders } from '~/constants/headers';
 import { getRoleHistoryColumns } from '~/components/table/role-history/role-history-columns';
+import { DoubleDataTable } from '~/components/table/double-data-table';
 
 export default function CommitteeRoleHistory() {
   const router = useRouter();
@@ -40,37 +41,19 @@ export default function CommitteeRoleHistory() {
 
   const role = param_role as string;
 
-  const { data, isLoading, isError } = api.membership.getRoleHistory.useQuery(
-    {
-      //TODO useMemo
-      committee_id: Number(param_id),
-      role,
-      // is_active: filters?.is_active,
-      // is_temporary: filters?.is_temporary,
-    },
-    { enabled: _isNumeric(param_id) && typeof param_role === 'string' },
-  );
-
-  const committeeName = data?.length
-    ? data.at(0)?.committee?.committee_template?.name || data.at(0)?.committee.name || ''
-    : '';
+  const { data: committeeTemplateData } = api.template.getOneByCommittee.useQuery({
+    //TODO useMemo
+    committee_id: Number(param_id),
+  });
 
   return (
     <AuthenticatedPage>
       <PageLayout>
         <div className="committee container my-10 mb-auto text-white ">
-          {data && (
-            <>
-              <HistoryDetails committee={committeeName} role={role} />
-              <DataTable
-                //isLoading={isLoading}
-                data={data || []}
-                columns={getRoleHistoryColumns()}
-                // tableFilters={<TableToolbarFilter {...propsFilters} />}
-                // tableActions={<MembershipTableToolbarActions {...propsActions} />}
-                column={MembershipHeaders.NAME}
-              />
-            </>
+          {committeeTemplateData ? (
+            <TemplateRoleHistory param_role={param_role} />
+          ) : (
+            <TemporaryCommitteeRoleHistory param_committee_id={param_id} param_role={param_role} />
           )}
         </div>
       </PageLayout>
@@ -78,14 +61,72 @@ export default function CommitteeRoleHistory() {
   );
 }
 
-const HistoryDetails = (props: { committee: string; role: string }) => {
+const TemplateRoleHistory = (props: {
+  param_role?: string | string[];
+  committeeTemplateData?: {
+    id: number;
+    name: string;
+    committees: { id: number }[];
+  };
+}) => {
+  const roleName = props.param_role as string;
+
+  return (
+    <>
+      <HistoryDetails
+        title={`HISTÓRICO DE CLASSE: ${props.committeeTemplateData?.name} - ${roleName}`}
+      />
+
+      <DoubleDataTable
+        //isLoading={isLoading}
+        data={[]}
+        columns={getRoleHistoryColumns()}
+        // tableFilters={<TableToolbarFilter {...propsFilters} />}
+        // tableActions={<MembershipTableToolbarActions {...propsActions} />}
+        column={MembershipHeaders.NAME}
+      />
+    </>
+  );
+};
+
+const TemporaryCommitteeRoleHistory = (props: {
+  param_committee_id?: string | string[];
+  param_role?: string | string[];
+}) => {
+  const roleName = props.param_role as string;
+
+  const { data: committeeData, isLoading } = api.membership.getRoleHistory.useQuery(
+    {
+      //TODO useMemo
+      committee_id: Number(props.param_committee_id),
+      role: roleName,
+    },
+    { enabled: _isNumeric(props.param_committee_id) && typeof props.param_role === 'string' },
+  );
+
+  const committeeName = committeeData?.length ? committeeData.at(0)?.committee.name || '' : '';
+
+  return (
+    <>
+      <HistoryDetails title={`HISTÓRICO DE COMISSÃO: ${committeeName} - ${roleName}`} />
+      <DataTable
+        //isLoading={isLoading}
+        data={committeeData || []}
+        columns={getRoleHistoryColumns()}
+        // tableFilters={<TableToolbarFilter {...propsFilters} />}
+        // tableActions={<MembershipTableToolbarActions {...propsActions} />}
+        column={MembershipHeaders.NAME}
+      />
+    </>
+  );
+};
+
+const HistoryDetails = (props: { title: string }) => {
   return (
     <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <TitleLayout>
-            HISTÓRICO: {props.committee} - {props.role}
-          </TitleLayout>
+          <TitleLayout>{props.title}</TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">Something something</AccordionContent>
       </AccordionItem>

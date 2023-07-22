@@ -11,6 +11,23 @@ export const _getTemplateByName = async (name: string) => {
 // };
 
 export const templateRouter = createTRPCRouter({
+  getOneByCommittee: protectedProcedure
+    .input(
+      z.object({
+        committee_id: z.number(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.committeeTemplate.findFirst({
+        where: {
+          committees: { some: { id: input.committee_id } },
+        },
+        include: {
+          committees: { select: { id: true } },
+        },
+      });
+    }),
+
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.committeeTemplate.findMany();
   }),
