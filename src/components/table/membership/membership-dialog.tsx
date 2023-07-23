@@ -33,23 +33,8 @@ import {
 } from '../committees/committee-dialog';
 import { MembershipHeaders } from '~/constants/headers';
 import { api } from '~/utils/api';
-
-type MembersDataType = {
-  employee: {
-    id: number;
-    name: string;
-    is_active: boolean;
-  };
-} & {
-  employee_id: number;
-  committee_id: number;
-  role: string | null;
-  begin_date: Date;
-  end_date: Date;
-  is_temporary: boolean;
-  is_active: boolean;
-  observations: string | null;
-};
+import { Employee, Membership } from '@prisma/client';
+import { CommandLoading } from 'cmdk';
 
 export const MembershipSchema = z
   .object({
@@ -77,7 +62,7 @@ export const MembershipSchema = z
 export default function MembershipDialog(props: {
   open: boolean;
   handleOpenDialog: (dialogEnum: number) => void;
-  member?: MembersDataType;
+  member?: Membership & { employee: Employee };
   handleSave: (data: z.infer<typeof MembershipSchema>) => void;
   committeeDates: { begin_date: Date | null; end_date: Date | null };
 }) {
@@ -151,7 +136,6 @@ export default function MembershipDialog(props: {
                 form={form}
                 fieldName="role"
                 label={MembershipHeaders.ROLE}
-                defaultValue={props.member?.role || ''}
                 placeholder="ex: Membro(a)"
                 required
               />
@@ -159,28 +143,16 @@ export default function MembershipDialog(props: {
                 form={form}
                 fieldName="begin_date"
                 label={MembershipHeaders.BEGIN_DATE}
-                defaultValue={
-                  props.member?.begin_date || props.committeeDates.begin_date || new Date()
-                }
                 required
               />
               <DateForm
                 form={form}
                 fieldName="end_date"
                 label={MembershipHeaders.END_DATE}
-                defaultValue={
-                  props.member?.end_date ||
-                  props.committeeDates.end_date ||
-                  _addYears(new Date(), 1)
-                }
                 required
               />
             </div>
-            <ObservationsForm
-              form={form}
-              label={MembershipHeaders.OBSERVATIONS}
-              defaultValue={props.member?.observations || ''}
-            />
+            <ObservationsForm form={form} label={MembershipHeaders.OBSERVATIONS} />
             <DialogFooter>
               <Button type="submit" form="formMembership">
                 Salvar
@@ -198,11 +170,7 @@ type EmployeeDataType = {
   name: string;
 };
 
-const EmployeeSelectFormItem = (props: {
-  form: any;
-  defaultValue?: EmployeeDataType;
-  disabled?: boolean;
-}) => {
+const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
   const [employees, setEmployees] = useState<EmployeeDataType[]>([]);
 
   const { data, isLoading } = api.employee.getOptions.useQuery();
@@ -217,7 +185,6 @@ const EmployeeSelectFormItem = (props: {
 
   return (
     <FormField
-      defaultValue={props.defaultValue || { name: '' }}
       control={props.form.control}
       name="employee"
       render={({ field }) => (
@@ -246,33 +213,32 @@ const EmployeeSelectFormItem = (props: {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset max-h-80 min-w-max overflow-y-auto p-0">
-              <Command>
+            <PopoverContent className="offset max-h-80 w-auto overflow-y-auto p-0">
+              <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite seu/sua ${MembershipHeaders.NAME}...`}
                   className="h-9"
                   onValueChange={(search) => setCommandSearch(search)}
                 />
+                {/* {isLoading && <CommandLoading>Loading...</CommandLoading>} */}
                 <CommandEmpty className="p-0">
-                  {isLoading
-                    ? 'Loading...'
-                    : commandSearch && (
-                        <Button
-                          className="max-h-full w-full "
-                          variant="ghost"
-                          onClick={() => {
-                            if (createdIndex) employees.pop();
-                            setCreatedIndex(employees.length);
-                            const newItem = { name: commandSearch };
-                            setEmployees([...employees, newItem]);
-                            props.form.setValue('employee', newItem);
-                          }}
-                        >
-                          <div className="truncate">
-                            Criar {MembershipHeaders.NAME} "{commandSearch}"?
-                          </div>
-                        </Button>
-                      )}
+                  {commandSearch && (
+                    <Button
+                      className="max-h-full w-full "
+                      variant="ghost"
+                      onClick={() => {
+                        if (createdIndex) employees.pop();
+                        setCreatedIndex(employees.length);
+                        const newItem = { name: commandSearch };
+                        setEmployees([...employees, newItem]);
+                        props.form.setValue('employee', newItem);
+                      }}
+                    >
+                      <div className="truncate">
+                        Criar {MembershipHeaders.NAME} "{commandSearch}"?
+                      </div>
+                    </Button>
+                  )}
                 </CommandEmpty>
                 <CommandGroup>
                   {employees.map((employee, index) => (
