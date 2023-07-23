@@ -65,7 +65,7 @@ ColumnDef<Membership & { employee: Employee }>[] => [
           {value}
         </Link>
       ) : (
-        { value }
+        <>{value}</>
       );
     },
   },
@@ -109,7 +109,6 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const committee_id = row.original.committee_id;
       const role = row.original.role;
       return (
         <>
@@ -124,13 +123,14 @@ ColumnDef<Membership & { employee: Employee }>[] => [
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              {committee_template_id && (
+              {committee_template_id ? (
                 <DropdownMenuItem>
                   <Link href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
                     Ver histórico do cargo na {CommitteeHeaders.TEMPLATE}
                   </Link>
-                  )
                 </DropdownMenuItem>
+              ) : (
+                <></>
               )}
               <DropdownMenuItem disabled>Suceder cargo</DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleChangeMembership(row.original)}>
