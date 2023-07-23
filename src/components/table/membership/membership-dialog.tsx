@@ -206,7 +206,7 @@ const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset scrollbar-thin max-h-80 w-[249px] overflow-y-auto p-0">
+            <PopoverContent className="offset w-[249px] p-0">
               <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite seu/sua ${MembershipHeaders.NAME}...`}
@@ -217,7 +217,6 @@ const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
                 <CommandEmpty className="p-0">
                   {commandSearch && (
                     <Button
-                      className="max-h-full w-full "
                       variant="ghost"
                       onClick={() => {
                         if (createdIndex) employees.pop();
@@ -233,7 +232,7 @@ const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
                     </Button>
                   )}
                 </CommandEmpty>
-                <CommandGroup>
+                <CommandGroup className="max-h-80 overflow-y-auto">
                   {employees.map((employee, index) => (
                     <CommandItem
                       value={employee.name}
@@ -308,7 +307,7 @@ const RoleSelectFormItem = (props: { form: any }) => {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset max-h-80 w-[249px] overflow-y-auto p-0">
+            <PopoverContent className="offset w-[249px] p-0">
               <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite seu ${MembershipHeaders.ROLE}...`}
@@ -333,7 +332,7 @@ const RoleSelectFormItem = (props: { form: any }) => {
                     </Button>
                   )}
                 </CommandEmpty>
-                <CommandGroup>
+                <CommandGroup className="max-h-80 overflow-y-auto">
                   {roles.map((role, index) => (
                     <CommandItem
                       value={role}

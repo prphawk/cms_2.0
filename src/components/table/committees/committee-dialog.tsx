@@ -177,7 +177,9 @@ const TemplateSelectFormItem = (props: { form: any }) => {
 
   useEffect(() => {
     console.log('Loading templates');
-    if (data) setTemplates(data.map((e) => e.name));
+    if (data) {
+      setTemplates([...data.map((e) => e.name)]);
+    }
   }, [data]);
 
   const [createdIndex, setCreatedIndex] = useState<number>();
@@ -211,7 +213,7 @@ const TemplateSelectFormItem = (props: { form: any }) => {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset max-h-80 w-96 overflow-y-auto p-0">
+            <PopoverContent className="offset w-96 p-0">
               <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite sua ${CommitteeHeaders.TEMPLATE}...`}
@@ -238,7 +240,7 @@ const TemplateSelectFormItem = (props: { form: any }) => {
                         </Button>
                       )}
                 </CommandEmpty>
-                <CommandGroup>
+                <CommandGroup className="max-h-64 overflow-y-auto">
                   {templates.map((template) => (
                     <CommandItem
                       value={template}
