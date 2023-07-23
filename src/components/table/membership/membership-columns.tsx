@@ -62,7 +62,14 @@ ColumnDef<Membership & { employee: Employee }>[] => [
       const committee_id = row.original.committee_id;
       const role = row.original.role;
       return (
-        <Link className="underline" href={`${Routes.COMMITTEES}/${committee_id}/${role}`}>
+        <Link
+          className="underline"
+          href={
+            committee_template_id
+              ? `${Routes.TEMPLATES}/${committee_template_id}/${role}`
+              : `${Routes.COMMITTEES}/${committee_id}/${role}`
+          }
+        >
           {value}
         </Link>
       );

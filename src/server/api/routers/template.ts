@@ -67,7 +67,10 @@ export const templateRouter = createTRPCRouter({
           id: template_id,
         },
         include: {
-          committees: { where: { members: { every: { role } } } },
+          committees: {
+            where: { members: { every: { role } } },
+            include: { members: true },
+          },
         },
       });
     }),

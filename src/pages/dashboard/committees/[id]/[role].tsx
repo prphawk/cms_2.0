@@ -30,7 +30,7 @@ import { TableToolbarFilter } from '~/components/table/data-table-toolbar';
 import { getMembershipColumns } from '~/components/table/membership/membership-columns';
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { MembershipHeaders } from '~/constants/headers';
-import { getRoleHistoryColumns } from '~/components/table/role-history/role-history-columns';
+import { getCommitteeRoleHistoryColumns } from '~/components/table/role-history/role-history-columns';
 import { DoubleDataTable } from '~/components/table/double-data-table';
 
 export default function CommitteeRoleHistory() {
@@ -59,7 +59,7 @@ export default function CommitteeRoleHistory() {
               <DataTable
                 //isLoading={isLoading}
                 data={committeeData.members || []}
-                columns={getRoleHistoryColumns()}
+                columns={getCommitteeRoleHistoryColumns()}
                 // tableFilters={<TableToolbarFilter {...propsFilters} />}
                 // tableActions={<MembershipTableToolbarActions {...propsActions} />}
                 column={MembershipHeaders.NAME}
