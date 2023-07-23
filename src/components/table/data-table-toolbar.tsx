@@ -44,7 +44,7 @@ export function TableToolbar<TData>(
   );
 }
 
-interface IFilterOptions {
+export interface IFilterOptions {
   label: string;
   value: string;
 }
@@ -74,6 +74,7 @@ export const TableToolbarFilter = (props: { filters: IFilter[] }) => {
       /> */}
       {props.filters.map((f) => (
         <DataTableFacetedFilter
+          disabled={!f.options.length}
           title={f.title}
           options={f.options}
           filters={f.activeFilters}
