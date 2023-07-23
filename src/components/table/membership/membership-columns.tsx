@@ -59,19 +59,13 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
-      const committee_id = row.original.committee_id;
       const role = row.original.role;
-      return (
-        <Link
-          className="underline"
-          href={
-            committee_template_id
-              ? `${Routes.TEMPLATES}/${committee_template_id}/${role}`
-              : `${Routes.COMMITTEES}/${committee_id}/${role}`
-          }
-        >
+      return committee_template_id ? (
+        <Link className="underline" href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
           {value}
         </Link>
+      ) : (
+        { value }
       );
     },
   },
@@ -130,17 +124,14 @@ ColumnDef<Membership & { employee: Employee }>[] => [
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                {committee_template_id ? (
+              {committee_template_id && (
+                <DropdownMenuItem>
                   <Link href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
                     Ver histórico do cargo na {CommitteeHeaders.TEMPLATE}
                   </Link>
-                ) : (
-                  <Link href={`${Routes.COMMITTEES}/${committee_id}/${role}`}>
-                    Ver histórico do cargo na {GeneralHeaders.COMMITTEE}
-                  </Link>
-                )}
-              </DropdownMenuItem>
+                  )
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem disabled>Suceder cargo</DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleChangeMembership(row.original)}>
                 Editar participação

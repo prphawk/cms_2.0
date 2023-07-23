@@ -17,7 +17,6 @@ import { _toLocaleString } from '~/utils/string';
 import { Dot } from '~/components/dot';
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions';
 import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
-import { Committee } from '@prisma/client';
 import { z } from 'zod';
 import { CommitteeHeaders } from '~/constants/headers';
 import { dialogsEnum } from './[id]';
