@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import PageLayout, { TextLayout } from '~/layout';
-import { AuthButton, LoginComponent } from '~/components/login';
+import { AuthButton } from '~/components/login';
 import { Routes } from '~/constants/routes';
 import LoadingLayout from '~/components/loading-layout';
 import AuthenticatedPage from '~/components/authenticated-page';

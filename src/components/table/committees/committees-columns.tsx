@@ -2,7 +2,17 @@ import { Committee } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { CommitteeHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
-import { EyeIcon, MoreHorizontal } from 'lucide-react';
+import {
+  CircleIcon,
+  CircleOffIcon,
+  EyeIcon,
+  Hourglass,
+  HourglassIcon,
+  MoreHorizontal,
+  PowerOffIcon,
+  RefreshCwOffIcon,
+  SkullIcon,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -34,17 +44,23 @@ export const getCommitteesColumns = (
 
       return (
         <div>
+          <strong>{value}</strong>
           {is_temporary && (
-            <Badge className="mr-2 text-white" variant="outline">
-              Temporária
+            <Badge className="ml-2 px-1 py-0.5" variant="outline">
+              <HourglassIcon className="h-3 w-3 text-white" />
             </Badge>
+            // <Button variant="ghost" size="icon">
+            //   <CircleIcon className="h-4 w-4" />
+            // </Button>
           )}
           {is_inactive && (
-            <Badge className="mr-2 text-white" variant="outline">
-              Inativa
+            // <Badge className="ml-2 text-white" variant="outline">
+            //   Inativo
+            // </Badge>
+            <Badge className="ml-2 px-1 py-0.5" variant="outline">
+              <PowerOffIcon className="h-3 w-3 text-white" />
             </Badge>
           )}
-          <strong>{value}</strong>
         </div>
       );
     },
