@@ -1,6 +1,6 @@
 import { Employee, Membership } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { MembershipHeaders } from '~/constants/headers';
+import { CommitteeHeaders, GeneralHeaders, MembershipHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
 import { MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 export const getMembershipColumns = (
   handleChangeMembership: (membership: Membership & { employee: Employee }) => void,
+  committee_template_id?: number | null,
   committee_begin_date?: Date | null,
   committee_end_date?: Date | null,
 ): // handleDeactivateCommittees: (ids: number[]) => void,
@@ -58,12 +59,13 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
-      const committee_id = row.original.committee_id;
       const role = row.original.role;
-      return (
-        <Link className="underline" href={`${Routes.COMMITTEES}/${committee_id}/${role}`}>
+      return committee_template_id ? (
+        <Link className="underline" href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
           {value}
         </Link>
+      ) : (
+        <>{value}</>
       );
     },
   },
@@ -107,7 +109,6 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const committee_id = row.original.committee_id;
       const role = row.original.role;
       return (
         <>
@@ -122,11 +123,15 @@ ColumnDef<Membership & { employee: Employee }>[] => [
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              <DropdownMenuItem disabled>
-                <Link href={`${Routes.COMMITTEES}/${committee_id}/${role}`}>
-                  Ver histórico do cargo
-                </Link>
-              </DropdownMenuItem>
+              {committee_template_id ? (
+                <DropdownMenuItem>
+                  <Link href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
+                    Ver histórico do cargo na {CommitteeHeaders.TEMPLATE}
+                  </Link>
+                </DropdownMenuItem>
+              ) : (
+                <></>
+              )}
               <DropdownMenuItem disabled>Suceder cargo</DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleChangeMembership(row.original)}>
                 Editar participação

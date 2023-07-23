@@ -9,16 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { _addYears, _toLocaleString, _toString } from '~/utils/string';
@@ -26,7 +17,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Command,
   CommandEmpty,
@@ -34,15 +24,13 @@ import {
   CommandInput,
   CommandItem,
 } from '@/components/ui/command';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  CommitteeSchema,
   CommonFormItem,
   DateForm,
   MyLabel,
   ObservationsForm,
 } from '../committees/committee-dialog';
-import { Committee } from '@prisma/client';
 import { MembershipHeaders } from '~/constants/headers';
 import { api } from '~/utils/api';
 
@@ -103,7 +91,7 @@ export default function MembershipDialog(props: {
         props.member?.begin_date || props.committeeDates.begin_date || new Date(),
       ),
       end_date: _toString(
-        props.member?.begin_date || props.committeeDates.end_date || _addYears(new Date(), 1),
+        props.member?.end_date || props.committeeDates.end_date || _addYears(new Date(), 1),
       ),
       role: props.member?.role || '',
       observations: props.member?.observations || '',
@@ -157,7 +145,7 @@ export default function MembershipDialog(props: {
               {/* {props.members?.map((e, index) => ( */}
               <EmployeeSelectFormItem
                 form={form}
-                //disabled={props.member?.employee.id !== undefined}
+                disabled={props.member?.employee.id !== undefined}
               />
               <CommonFormItem
                 form={form}

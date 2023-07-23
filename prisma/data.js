@@ -90,6 +90,16 @@ const memberships = [
   factory.newMockMembershipJSON(1, 8),
   factory.newMockMembershipJSON(2, 8),
   factory.newMockMembershipJSON(3, 9),
+  factory.newMockMembershipJSON(1, 10),
+  factory.newMockMembershipJSON(2, 10),
+  factory.newMockMembershipJSON(3, 10),
+  factory.newMockMembershipJSON(4, 10),
+  factory.newMockMembershipJSON(5, 10),
+  factory.newMockMembershipJSON(6, 11),
+  factory.newMockMembershipJSON(7, 11),
+  factory.newMockMembershipJSON(8, 11),
+  factory.newMockMembershipJSON(9, 11),
+  factory.newMockMembershipJSON(10, 11),
 ];
 
 module.exports = {

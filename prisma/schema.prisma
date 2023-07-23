@@ -88,18 +88,18 @@ model Committee {
 }
 
 model Membership {
+  id          Int         @default(autoincrement()) @id
   employee 		Employee 	  @relation(fields: [employee_id], references: [id])
   employee_id 	Int 			// relation scalar field (used in the `@relation` attribute above) @map("employee_id")
   committee 	Committee 	@relation(fields: [committee_id], references: [id])
   committee_id Int 			  // relation scalar field (used in the `@relation` attribute above)
-  role         String?   	@default("Membro(a)") //Cargo
+  role         String   	@default("Membro(a)") //Cargo
   begin_date   DateTime 	// default: begin_date da comissão
   end_date     DateTime
   is_temporary Boolean    @default(false)
   is_active    Boolean   	@default(true)
   observations String?
 
-  @@id([employee_id, committee_id])
   @@index([employee_id])
   @@index([committee_id])
 }

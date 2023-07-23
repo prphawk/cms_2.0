@@ -22,34 +22,31 @@ export const membershipRouter = createTRPCRouter({
       z.object({
         committee_id: z.number(),
         employee: z.object({ id: z.number().optional(), name: z.string() }),
-        role: z.optional(z.string()),
+        role: z.string(),
         begin_date: z.date(),
         end_date: z.date(),
         is_temporary: z.optional(z.boolean()),
         observations: z.optional(z.string()),
       }),
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(({ ctx, input }) => {
       const { employee, committee_id, ...data } = input;
-
-      if (employee.id) {
-        return ctx.prisma.membership.update({
-          where: { employee_id_committee_id: { employee_id: employee.id, committee_id } },
-          data,
-        });
-      } else {
-        return ctx.prisma.membership.create({
-          data: {
-            committee: { connect: { id: committee_id } },
-            employee: {
-              create: {
-                name: employee.name,
-              },
+      const employee_params = employee.id
+        ? {
+            connect: { id: employee.id },
+          }
+        : {
+            create: {
+              name: employee.name,
             },
-            ...data,
-          },
-        });
-      }
+          };
+      return ctx.prisma.membership.create({
+        data: {
+          committee: { connect: { id: committee_id } },
+          employee: employee_params,
+          ...data,
+        },
+      });
     }),
 
   groupByActivity: protectedProcedure
@@ -70,18 +67,19 @@ export const membershipRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
-        committee_id: z.number(),
-        employee: z.object({ id: z.number(), name: z.string() }),
-        role: z.optional(z.string()),
-        is_temporary: z.optional(z.boolean()),
-        observations: z.optional(z.string()),
+        id: z.number(),
+        begin_date: z.date(),
+        end_date: z.date(),
+        role: z.string(),
+        is_temporary: z.boolean().optional(),
+        observations: z.string().optional(),
       }),
     )
     .mutation(({ ctx, input }) => {
-      const { employee, committee_id, ...data } = input;
+      const { id, ...data } = input;
 
       return ctx.prisma.membership.update({
-        where: { employee_id_committee_id: { employee_id: employee.id, committee_id } },
+        where: { id },
         data,
       });
     }),
@@ -93,14 +91,13 @@ export const membershipRouter = createTRPCRouter({
   deactivate: protectedProcedure
     .input(
       z.object({
-        employee_id: z.number(),
-        committee_id: z.number(),
+        id: z.number(),
       }),
     )
     .mutation(({ ctx, input }) => {
-      const { employee_id, committee_id } = input;
+      const { id } = input;
       return ctx.prisma.membership.update({
-        where: { employee_id_committee_id: { employee_id, committee_id } },
+        where: { id },
         data: { is_active: false },
       });
     }),
@@ -109,33 +106,42 @@ export const membershipRouter = createTRPCRouter({
     .input(
       z.object({
         role: z.string(),
-        committee_id: z.number(),
+        template_id: z.number(),
       }),
     )
     .query(({ ctx, input }) => {
-      const { role, committee_id } = input;
+      const { role, template_id } = input;
 
       return ctx.prisma.membership.findMany({
         where: {
-          committee_id,
+          committee: { committee_template_id: template_id },
           role,
+        },
+        include: {
+          committee: true,
+          employee: true,
+        },
+      });
+    }),
+
+  getRoleOptions: protectedProcedure
+    .input(
+      z.object({
+        committee_id: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const result = await ctx.prisma.membership.findMany({
+        where: {
+          committee: { id: input.committee_id },
         },
         select: {
           role: true,
-          begin_date: true,
-          end_date: true,
-          is_temporary: true,
-          observations: true,
-          employee: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
         },
-        orderBy: {
-          begin_date: 'desc',
-        },
+        distinct: ['role'],
+      });
+      return result.map((e) => {
+        return { label: e.role, value: e.role };
       });
     }),
 });

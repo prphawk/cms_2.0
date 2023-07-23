@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import AuthenticatedPage from '~/components/authenticated-page';
 import { getMembershipColumns } from '~/components/table/membership/membership-columns';
-import { TableToolbarFilter } from '~/components/table/data-table-toolbar';
+import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar';
 import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
@@ -31,24 +31,77 @@ export enum dialogsEnum {
 
 export default function CommitteeMembership() {
   const router = useRouter();
-  const param_id = router.query.id;
+  const param_id = Number(router.query.id);
+
+  const utils = api.useContext();
+
+  //TODO replace w/ upsert? that would b cool
+  const updateCommittee = api.committee.update.useMutation({
+    // TODO onError
+    onSettled() {
+      return utils.committee.getOne.invalidate();
+    },
+  });
+
+  //TODO upsert?
+  const updateMembership = api.membership.update.useMutation({
+    // TODO onError
+    onSettled() {
+      utils.committee.getOne.invalidate();
+      utils.membership.getRoleOptions.invalidate();
+    },
+  });
+
+  const createMembership = api.membership.create.useMutation({
+    // TODO onError
+    onSuccess() {
+      utils.employee.getOptions.invalidate(); //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
+    },
+    onSettled() {
+      utils.committee.getOne.invalidate();
+      utils.membership.getRoleOptions.invalidate();
+    },
+  });
+
   const [selectedMembership, setSelectedMembership] = useState<
     Membership & { employee: Employee }
   >();
+
+  const [openDialog, setOpenDialog] = useState(-1);
+
+  const handleOpenDialog = (dialogEnum: number) => {
+    setOpenDialog(dialogEnum);
+  };
+
   const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
-  const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
-  const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
+  const [filterLabelsA, setFilterLabelsA] = useState<string[]>();
+  const [filterLabelsT, setFilterLabelsT] = useState<string[]>();
+  const [filterLabelsC, setFilterLabelsC] = useState<string[]>();
   const { data, isLoading, isError } = api.committee.getOne.useQuery(
     {
       //TODO useMemo
-      id: Number(param_id),
+      id: param_id,
       is_active: filters?.is_active,
       is_temporary: filters?.is_temporary,
+      roles: filterLabelsC,
     },
-    { enabled: _isNumeric(param_id) },
+    { enabled: !isNaN(param_id) },
+  );
+  const { data: roleOptions } = api.membership.getRoleOptions.useQuery(
+    {
+      committee_id: param_id,
+    },
+    { enabled: !isNaN(param_id) },
   );
 
-  const _setIsActiveFilterValues = (values?: string[]) => {
+  if (
+    isError
+    //|| deactivate.isError
+  ) {
+    return <span>Error: sowwyyyy</span>; //TODO pelo amor de deus kk
+  }
+
+  const handleChangeActiveFiltersA = (values?: string[]) => {
     if (!values?.length || values.length >= 2) {
       setFilters({ ...filters, is_active: undefined });
       setFilterLabelsA(values || []);
@@ -58,7 +111,7 @@ export default function CommitteeMembership() {
     }
   };
 
-  const _setIsTemporaryFilterValues = (values?: string[]) => {
+  const handleChangeActiveFiltersT = (values?: string[]) => {
     if (!values?.length || values.length >= 2) {
       setFilters({ ...filters, is_temporary: undefined });
       setFilterLabelsT(values || []);
@@ -68,79 +121,63 @@ export default function CommitteeMembership() {
     }
   };
 
-  if (
-    isError
-    //|| deactivate.isError
-  ) {
-    return <span>Error: sowwyyyy</span>;
-  }
-
-  const propsFilters = {
-    _setIsTemporaryFilterValues,
-    _setIsActiveFilterValues,
-    isActiveFilters: filterLabelsA,
-    isTemporaryFilters: filterLabelsT,
-  };
-  const [openDialog, setOpenDialog] = useState(-1);
-
-  const handleOpenDialog = (dialogEnum: number) => {
-    setOpenDialog(dialogEnum);
+  const handleChangeActiveFiltersC = (values?: string[]) => {
+    setFilterLabelsC(!values?.length ? undefined : values);
   };
 
-  const utils = api.useContext();
-
-  //TODO replace w/ upsert? that would b cool
-  const updateCommittee = api.committee.update.useMutation({
-    // TODO onError
-    onSettled(data) {
-      console.log(data);
-      return utils.committee.getOne.invalidate();
+  const propsFilters: IFilter[] = [
+    {
+      title: 'Status',
+      options: [
+        { label: 'Ativo(a)', value: 'is_active' },
+        { label: 'Inativo(a)', value: 'is_inactive' },
+      ],
+      activeFilters: filterLabelsA,
+      handleChangeActiveFilters: handleChangeActiveFiltersA,
     },
-  });
-
-  //TODO upsert?
-  const updateMembership = api.membership.update.useMutation({
-    // TODO onError
-    onSettled(data) {
-      return utils.committee.getOne.invalidate();
+    {
+      title: 'Tipo',
+      options: [
+        { label: 'Permanente', value: 'is_permanent' },
+        { label: 'Temporário(a)', value: 'is_temporary' },
+      ],
+      activeFilters: filterLabelsT,
+      handleChangeActiveFilters: handleChangeActiveFiltersT,
     },
-  });
-
-  const createMembership = api.membership.create.useMutation({
-    // TODO onError
-    onSuccess() {
-      utils.employee.getOptions.invalidate(); //caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
+    {
+      title: 'Cargo',
+      options: roleOptions?.length ? (roleOptions as IFilterOptions[]) : [],
+      activeFilters: filterLabelsC,
+      handleChangeActiveFilters: handleChangeActiveFiltersC,
     },
-    onSettled(data) {
-      utils.committee.getOne.invalidate();
-    },
-  });
+  ];
 
   const handleSaveCommittee = (committee: z.infer<typeof CommitteeSchema> & { id?: number }) => {
     if (committee.id) updateCommittee.mutate(committee as any);
   };
 
-  const handleSaveMembership = (membership: z.infer<typeof MembershipSchema>) => {
+  const handleSaveMembership = (membership: z.infer<typeof MembershipSchema> & { id?: number }) => {
     if (!data?.id) return;
-    if (membership.employee.id)
-      updateMembership.mutate({ committee_id: data.id!, ...membership } as any);
-    else createMembership.mutate({ committee_id: data.id!, ...membership });
+    console.log(selectedMembership);
+    if (membership.id) {
+      updateMembership.mutate({ committee_id: data?.id, ...(membership as any) });
+    } else createMembership.mutate({ committee_id: data?.id, ...(membership as any) });
   };
 
   const handleClickAddMembershipButton = () => {
     setSelectedMembership(undefined);
   };
 
-  const propsActions = {
-    committee: data!,
-    handleOpenDialog,
-    handleClickAddMembershipButton,
-    handleDeactivateCommittees: () => {},
-  };
-
   const handleChangeMembership = (membership: Membership & { employee: Employee }) => {
     handleOpenDialog(dialogsEnum.membership);
     setSelectedMembership({ ...membership });
+  };
+
+  const propsActions = {
+    committee: data!,
+    handleClickAddMembershipButton,
+    handleDeactivateCommittees: () => {}, //TODO
+    handleOpenDialog,
   };
 
   return (
@@ -155,10 +192,11 @@ export default function CommitteeMembership() {
                 data={data?.members || []}
                 columns={getMembershipColumns(
                   handleChangeMembership,
+                  data.committee_template_id,
                   data.begin_date,
                   data.end_date,
                 )}
-                tableFilters={<TableToolbarFilter {...propsFilters} />}
+                tableFilters={<TableToolbarFilter filters={propsFilters} />}
                 tableActions={<MembershipTableToolbarActions {...propsActions} />}
                 column={MembershipHeaders.NAME}
               />

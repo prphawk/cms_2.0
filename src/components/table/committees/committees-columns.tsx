@@ -1,6 +1,6 @@
 import { Committee } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { CommitteesHeaders } from '~/constants/headers';
+import { CommitteeHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
 import { EyeIcon, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,7 @@ export const getCommitteesColumns = (
 ): ColumnDef<Committee>[] => [
   {
     accessorKey: 'name',
-    id: CommitteesHeaders.NAME,
+    id: CommitteeHeaders.NAME,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
@@ -51,7 +51,7 @@ export const getCommitteesColumns = (
   },
   {
     accessorKey: 'bond',
-    id: CommitteesHeaders.BOND,
+    id: CommitteeHeaders.BOND,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
@@ -60,7 +60,7 @@ export const getCommitteesColumns = (
   },
   {
     accessorKey: 'begin_date',
-    id: CommitteesHeaders.BEGIN_DATE,
+    id: CommitteeHeaders.BEGIN_DATE,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = row.getValue(column.id) as Date;
@@ -69,7 +69,7 @@ export const getCommitteesColumns = (
   },
   {
     accessorKey: 'end_date',
-    id: CommitteesHeaders.END_DATE,
+    id: CommitteeHeaders.END_DATE,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = row.getValue(column.id) as Date;
@@ -78,7 +78,7 @@ export const getCommitteesColumns = (
   },
   {
     accessorKey: 'ordinance',
-    id: CommitteesHeaders.ORDINANCE,
+    id: CommitteeHeaders.ORDINANCE,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
@@ -87,7 +87,7 @@ export const getCommitteesColumns = (
   },
   {
     accessorKey: 'members',
-    id: CommitteesHeaders.MEMBERS,
+    id: CommitteeHeaders.MEMBERS,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;
@@ -96,7 +96,7 @@ export const getCommitteesColumns = (
   },
   {
     accessorKey: 'observations',
-    id: CommitteesHeaders.OBSERVATIONS,
+    id: CommitteeHeaders.OBSERVATIONS,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string;

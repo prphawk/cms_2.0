@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { XIcon } from 'lucide-react';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
-import { CommitteesHeaders } from '~/constants/headers';
+import { CommitteeHeaders } from '~/constants/headers';
 import { Table } from '@tanstack/react-table';
 import { SlidersHorizontalIcon } from 'lucide-react';
 import {
@@ -12,6 +12,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { PropsWithChildren, SetStateAction } from 'react';
 
 interface TableToolbarProps<TData> {
   table: Table<TData>;
@@ -19,7 +20,7 @@ interface TableToolbarProps<TData> {
 
 export function TableToolbar<TData>(
   props: TableToolbarProps<TData> & {
-    tableFilters: JSX.Element;
+    tableFilters?: JSX.Element;
     tableActions?: JSX.Element;
     column: string;
   },
@@ -43,27 +44,26 @@ export function TableToolbar<TData>(
   );
 }
 
-interface Filters {
-  isActiveFilters?: string[];
-  _setIsActiveFilterValues: (values?: string[]) => void;
-  isTemporaryFilters?: string[];
-  _setIsTemporaryFilterValues: (values?: string[]) => void;
+export interface IFilterOptions {
+  label: string;
+  value: string;
 }
 
-export const TableToolbarFilter = ({
-  isActiveFilters,
-  _setIsActiveFilterValues,
-  isTemporaryFilters,
-  _setIsTemporaryFilterValues,
-}: Filters) => {
+export interface IFilter {
+  title: string;
+  options: IFilterOptions[];
+  activeFilters?: string[];
+  handleChangeActiveFilters: (value: string[] | undefined) => void;
+}
+
+export const TableToolbarFilter = (props: { filters: IFilter[] }) => {
   const handleResetFilters = () => {
-    _setIsActiveFilterValues(undefined);
-    _setIsTemporaryFilterValues(undefined);
+    props.filters.forEach((f) => f.handleChangeActiveFilters(undefined));
   };
 
   return (
     <>
-      <DataTableFacetedFilter
+      {/* <DataTableFacetedFilter
         title="Status"
         options={[
           { label: 'Ativo(a)', value: 'is_active' },
@@ -71,18 +71,18 @@ export const TableToolbarFilter = ({
         ]}
         filters={isActiveFilters}
         setFiltersValue={_setIsActiveFilterValues}
-      />
-      <DataTableFacetedFilter
-        title="Tipo"
-        options={[
-          { label: 'Permanente', value: 'is_permanent' },
-          { label: 'Temporário(a)', value: 'is_temporary' },
-        ]}
-        filters={isTemporaryFilters}
-        setFiltersValue={_setIsTemporaryFilterValues}
-      />
-
-      {isTemporaryFilters?.length || isActiveFilters?.length ? (
+      /> */}
+      {props.filters.map((f, index) => (
+        <DataTableFacetedFilter
+          key={index}
+          disabled={!f.options.length}
+          title={f.title}
+          options={f.options}
+          filters={f.activeFilters}
+          setFiltersValue={f.handleChangeActiveFilters}
+        />
+      ))}
+      {props.filters.some((f) => f.activeFilters?.length) ? (
         <Button variant="ghost" onClick={handleResetFilters} className="h-8 px-2 lg:px-3">
           Limpar
           <XIcon className="ml-1 mt-1 h-4 w-4" />

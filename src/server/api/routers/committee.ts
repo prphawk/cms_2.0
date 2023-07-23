@@ -1,10 +1,9 @@
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc';
-import { _deactivateMembershipsByCommittee, membershipRouter } from './membership';
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { _deactivateMembershipsByCommittee } from './membership';
 import { prisma } from '~/server/db';
 import { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { _getTemplateByName } from './template';
-import { api } from '~/utils/api';
 import { Prisma } from '@prisma/client';
 
 export const _findUniqueCommittee = async (committee_id: number) => {
@@ -28,11 +27,14 @@ export const committeeRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.number(),
-        is_active: z.optional(z.boolean()),
-        is_temporary: z.optional(z.boolean()),
+        is_active: z.boolean().optional(),
+        is_temporary: z.boolean().optional(),
+        roles: z.string().array().optional(),
       }),
     )
     .query(({ ctx, input }) => {
+      // const roles_filter = input.roles ? {}
+
       return ctx.prisma.committee.findUnique({
         where: {
           id: input.id,
@@ -43,6 +45,7 @@ export const committeeRouter = createTRPCRouter({
             where: {
               is_active: input.is_active,
               is_temporary: input.is_temporary,
+              role: { in: input.roles },
             },
           },
           committee_template: true,
@@ -159,5 +162,31 @@ export const committeeRouter = createTRPCRouter({
 
       await _deactivateMembershipsByCommittee(id);
       await _deactivateCommittee(id);
+    }),
+
+  getRoleHistory: protectedProcedure
+    .input(
+      z.object({
+        role: z.string(),
+        committee_id: z.number(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      const { role, committee_id } = input;
+
+      return ctx.prisma.committee.findUnique({
+        where: {
+          id: committee_id,
+        },
+        include: {
+          members: {
+            where: { role },
+            include: { employee: true },
+            orderBy: {
+              begin_date: 'desc',
+            },
+          },
+        },
+      });
     }),
 });

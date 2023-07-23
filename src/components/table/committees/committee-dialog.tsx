@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input';
 import { Committee } from '@prisma/client';
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { CommitteesHeaders } from '~/constants/headers';
+import { CommitteeHeaders } from '~/constants/headers';
 import { _addYears, _toLocaleString, _toString } from '~/utils/string';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -42,21 +42,21 @@ import { api } from '~/utils/api';
 export const CommitteeSchema = z
   .object({
     name: z
-      .string({ required_error: `${CommitteesHeaders.NAME} é obrigatório` })
+      .string({ required_error: `${CommitteeHeaders.NAME} é obrigatório` })
       .trim()
-      .min(1, { message: `${CommitteesHeaders.NAME} é obrigatório` }),
+      .min(1, { message: `${CommitteeHeaders.NAME} é obrigatório` }),
     bond: z
-      .string({ required_error: `${CommitteesHeaders.BOND} é obrigatório` })
+      .string({ required_error: `${CommitteeHeaders.BOND} é obrigatório` })
       .trim()
-      .min(1, { message: `${CommitteesHeaders.BOND} é obrigatório` }),
-    begin_date: z.coerce.date({ required_error: `${CommitteesHeaders.BEGIN_DATE} é obrigatória` }),
-    end_date: z.coerce.date({ required_error: `${CommitteesHeaders.END_DATE} é obrigatória` }),
+      .min(1, { message: `${CommitteeHeaders.BOND} é obrigatório` }),
+    begin_date: z.coerce.date({ required_error: `${CommitteeHeaders.BEGIN_DATE} é obrigatória` }),
+    end_date: z.coerce.date({ required_error: `${CommitteeHeaders.END_DATE} é obrigatória` }),
     ordinance: z.string().optional(),
     observations: z.string().optional(),
     committee_template_name: z.string().optional(),
   })
   .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
-    message: `${CommitteesHeaders.END_DATE} não pode ocorrer antes de ${CommitteesHeaders.BEGIN_DATE}.`,
+    message: `${CommitteeHeaders.END_DATE} não pode ocorrer antes de ${CommitteeHeaders.BEGIN_DATE}.`,
     path: ['end_date'],
   });
 
@@ -124,7 +124,7 @@ export default function CommitteeDialog(props: {
             <CommonFormItem
               form={form}
               fieldName="name"
-              label={CommitteesHeaders.NAME}
+              label={CommitteeHeaders.NAME}
               defaultValue={props.committee?.name || ''}
               placeholder="ex: Direção INF (2023)"
               required
@@ -132,7 +132,7 @@ export default function CommitteeDialog(props: {
             <CommonFormItem
               form={form}
               fieldName="bond"
-              label={CommitteesHeaders.BOND}
+              label={CommitteeHeaders.BOND}
               defaultValue={props.committee?.bond || ''}
               placeholder="ex: Órgão"
               required
@@ -141,7 +141,7 @@ export default function CommitteeDialog(props: {
               <DateForm
                 form={form}
                 fieldName="begin_date"
-                label={CommitteesHeaders.BEGIN_DATE}
+                label={CommitteeHeaders.BEGIN_DATE}
                 defaultValue={props.committee?.begin_date || new Date()}
                 required
               />
@@ -149,7 +149,7 @@ export default function CommitteeDialog(props: {
                 form={form}
                 fieldName="end_date"
                 defaultValue={props.committee?.end_date || _addYears(new Date(), 1)}
-                label={CommitteesHeaders.END_DATE}
+                label={CommitteeHeaders.END_DATE}
                 //dontSelectBefore={form.getValues('begin_date')}
                 required
               />
@@ -157,13 +157,13 @@ export default function CommitteeDialog(props: {
             <CommonFormItem
               form={form}
               fieldName="ordinance"
-              label={CommitteesHeaders.ORDINANCE}
+              label={CommitteeHeaders.ORDINANCE}
               defaultValue={props.committee?.ordinance || ''}
               placeholder="ex: Portaria"
             />
             <ObservationsForm
               form={form}
-              label={CommitteesHeaders.OBSERVATIONS}
+              label={CommitteeHeaders.OBSERVATIONS}
               defaultValue={props.committee?.observations || ''}
             />
             <TemplateSelectFormItem
@@ -202,7 +202,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
       name="committee_template_name"
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel className="pb-1">{CommitteesHeaders.TEMPLATE}</FormLabel>
+          <FormLabel className="pb-1">{CommitteeHeaders.TEMPLATE}</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
@@ -226,7 +226,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
             <PopoverContent className="offset max-h-80 min-w-max overflow-y-auto p-0">
               <Command>
                 <CommandInput
-                  placeholder={`Digite sua ${CommitteesHeaders.TEMPLATE}...`}
+                  placeholder={`Digite sua ${CommitteeHeaders.TEMPLATE}...`}
                   className="h-9"
                   onValueChange={(search) => setCommandSearch(search)}
                 />
@@ -245,7 +245,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                           }}
                         >
                           <div className="truncate">
-                            Criar {CommitteesHeaders.TEMPLATE} "{commandSearch}"?
+                            Criar {CommitteeHeaders.TEMPLATE} "{commandSearch}"?
                           </div>
                         </Button>
                       )}
@@ -281,7 +281,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
           </Popover>
           <FormDescription className="-mb-1.5">
             Instâncias de comissões <strong>permanentes</strong> devem pertencer a sua{' '}
-            {CommitteesHeaders.TEMPLATE}.
+            {CommitteeHeaders.TEMPLATE}.
           </FormDescription>
           <FormMessage />
         </FormItem>

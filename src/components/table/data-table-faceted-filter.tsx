@@ -31,16 +31,23 @@ export function DataTableFacetedFilter<TData, TValue>({
   options,
   filters,
   setFiltersValue,
+  disabled,
 }: DataTableFacetedFilter<TData, TValue> & {
   filters?: string[];
   setFiltersValue: (values?: string[]) => void;
+  disabled?: boolean;
 }) {
   const selectedValues = new Set<string>(filters);
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed bg-transparent">
+        <Button
+          disabled={disabled}
+          variant="outline"
+          size="sm"
+          className="h-8 border-dashed bg-transparent"
+        >
           <PlusCircleIcon className="mr-2 h-4 w-4" />
           {title}
           {selectedValues?.size > 0 && (
@@ -74,7 +81,9 @@ export function DataTableFacetedFilter<TData, TValue>({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command>
+          <CommandInput placeholder={title} />
           <CommandList>
+            <CommandEmpty>Sem resultados.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
