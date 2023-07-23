@@ -1,37 +1,18 @@
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/router';
-import { Label } from '@/components/ui/label';
 import AuthenticatedPage from '~/components/authenticated-page';
-import PageLayout, { TextLayout, TitleLayout } from '~/layout';
-import { useState } from 'react';
+import PageLayout, { TitleLayout } from '~/layout';
+import { PropsWithChildren } from 'react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Committee, Membership } from '@prisma/client';
-import { Dot } from 'lucide-react';
 import { api } from '~/utils/api';
 import { _isNumeric, _toLocaleString } from '~/utils/string';
-import { formatCount } from '..';
 import { DataTable } from '~/components/table/data-table';
-import { TableToolbarFilter } from '~/components/table/data-table-toolbar';
-import { getMembershipColumns } from '~/components/table/membership/membership-columns';
-import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { MembershipHeaders } from '~/constants/headers';
 import { getCommitteeRoleHistoryColumns } from '~/components/table/role-history/role-history-columns';
-import { DoubleDataTable } from '~/components/table/double-data-table';
 
 export default function CommitteeRoleHistory() {
   const router = useRouter();
@@ -53,9 +34,9 @@ export default function CommitteeRoleHistory() {
         <div className="container my-10 mb-auto text-white ">
           {committeeData && (
             <>
-              <HistoryDetails
-                title={`HISTÓRICO DE COMISSÃO: ${committeeData.name} - ${roleName}`}
-              />
+              <HistoryDetails title={`Órgão Colegiado ${committeeData.name}: "${roleName}"`}>
+                something something
+              </HistoryDetails>
               <DataTable
                 //isLoading={isLoading}
                 data={committeeData.members || []}
@@ -72,14 +53,16 @@ export default function CommitteeRoleHistory() {
   );
 }
 
-const HistoryDetails = (props: { title: string }) => {
+export const HistoryDetails = (
+  props: { title: string; isLoading?: boolean } & PropsWithChildren,
+) => {
   return (
     <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <TitleLayout>{props.title}</TitleLayout>
+          <TitleLayout>{props.isLoading ? 'Loading' : props.title}</TitleLayout>
         </AccordionTrigger>
-        <AccordionContent className="tracking-wide">Something something</AccordionContent>
+        <AccordionContent className="tracking-wide">{props.children}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );

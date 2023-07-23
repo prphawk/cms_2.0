@@ -22,9 +22,6 @@ export const templateRouter = createTRPCRouter({
         where: {
           id: input.template_id,
         },
-        include: {
-          committees: { select: { id: true } },
-        },
       });
     }),
 

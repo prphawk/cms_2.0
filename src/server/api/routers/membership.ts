@@ -104,4 +104,26 @@ export const membershipRouter = createTRPCRouter({
         data: { is_active: false },
       });
     }),
+
+  getRoleHistory: protectedProcedure
+    .input(
+      z.object({
+        role: z.string(),
+        template_id: z.number(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      const { role, template_id } = input;
+
+      return ctx.prisma.membership.findMany({
+        where: {
+          committee: { committee_template_id: template_id },
+          role,
+        },
+        include: {
+          committee: true,
+          employee: true,
+        },
+      });
+    }),
 });
