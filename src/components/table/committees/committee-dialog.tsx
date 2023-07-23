@@ -177,9 +177,7 @@ const TemplateSelectFormItem = (props: { form: any }) => {
 
   useEffect(() => {
     console.log('Loading templates');
-    if (data) {
-      setTemplates([...data.map((e) => e.name)]);
-    }
+    if (data) setTemplates([...data.map((e) => e.name)]);
   }, [data]);
 
   const [createdIndex, setCreatedIndex] = useState<number>();
