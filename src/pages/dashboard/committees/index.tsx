@@ -4,7 +4,7 @@ import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
 import { useState } from 'react';
-import { TableToolbarFilter } from '../../../components/table/data-table-toolbar';
+import { IFilter, TableToolbarFilter } from '../../../components/table/data-table-toolbar';
 import { useRouter } from 'next/router';
 import { Routes } from '~/constants/routes';
 import {
@@ -25,8 +25,8 @@ import { dialogsEnum } from './[id]';
 export default function Committees() {
   const router = useRouter();
   const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
-  const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
-  const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
+  const [filterLabelsA, setFilterLabelsA] = useState<string[]>();
+  const [filterLabelsT, setFilterLabelsT] = useState<string[]>();
 
   const utils = api.useContext();
 
@@ -63,7 +63,7 @@ export default function Committees() {
     router.push(`${Routes.COMMITTEES}/${id}`);
   }
 
-  const _setIsActiveFilterValues = (values?: string[]) => {
+  const handleChangeActiveFiltersA = (values?: string[]) => {
     if (!values?.length || values.length >= 2) {
       setFilters({ ...filters, is_active: undefined });
       setFilterLabelsA(values || []);
@@ -73,7 +73,7 @@ export default function Committees() {
     }
   };
 
-  const _setIsTemporaryFilterValues = (values?: string[]) => {
+  const handleChangeActiveFiltersT = (values?: string[]) => {
     if (!values?.length || values.length >= 2) {
       setFilters({ ...filters, is_temporary: undefined });
       setFilterLabelsT(values || []);
@@ -96,12 +96,27 @@ export default function Committees() {
     create.mutate(data);
   };
 
-  const filterProps = {
-    _setIsTemporaryFilterValues,
-    _setIsActiveFilterValues,
-    isActiveFilters: filterLabelsA,
-    isTemporaryFilters: filterLabelsT,
-  };
+  const propsFilters: IFilter[] = [
+    {
+      title: 'Status',
+      options: [
+        { label: 'Ativo(a)', value: 'is_active' },
+        { label: 'Inativo(a)', value: 'is_inactive' },
+      ],
+      activeFilters: filterLabelsA,
+      handleChangeActiveFilters: handleChangeActiveFiltersA,
+    },
+    {
+      title: 'Tipo',
+      options: [
+        { label: 'Permanente', value: 'is_permanent' },
+        { label: 'Temporário(a)', value: 'is_temporary' },
+      ],
+      activeFilters: filterLabelsT,
+      handleChangeActiveFilters: handleChangeActiveFiltersT,
+    },
+  ];
+
   const actionProps = {
     handleCreateCommittee: () => {
       handleOpenDialog(dialogsEnum.committee);
@@ -118,7 +133,7 @@ export default function Committees() {
             data={data || []}
             isLoading={isFetching || isLoading}
             columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
-            tableFilters={<TableToolbarFilter {...filterProps} />}
+            tableFilters={<TableToolbarFilter filters={propsFilters} />}
             tableActions={<CommitteesTableToolbarActions {...actionProps} />}
             column={CommitteeHeaders.NAME}
           />

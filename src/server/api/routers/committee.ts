@@ -27,11 +27,14 @@ export const committeeRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.number(),
-        is_active: z.optional(z.boolean()),
-        is_temporary: z.optional(z.boolean()),
+        is_active: z.boolean().optional(),
+        is_temporary: z.boolean().optional(),
+        roles: z.string().array().optional(),
       }),
     )
     .query(({ ctx, input }) => {
+      // const roles_filter = input.roles ? {}
+
       return ctx.prisma.committee.findUnique({
         where: {
           id: input.id,
@@ -42,6 +45,7 @@ export const committeeRouter = createTRPCRouter({
             where: {
               is_active: input.is_active,
               is_temporary: input.is_temporary,
+              role: { in: input.roles },
             },
           },
           committee_template: true,

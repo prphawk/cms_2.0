@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import AuthenticatedPage from '~/components/authenticated-page';
 import { getMembershipColumns } from '~/components/table/membership/membership-columns';
-import { TableToolbarFilter } from '~/components/table/data-table-toolbar';
+import { IFilter, TableToolbarFilter } from '~/components/table/data-table-toolbar';
 import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
@@ -36,19 +36,21 @@ export default function CommitteeMembership() {
     Membership & { employee: Employee }
   >();
   const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
-  const [filterLabelsA, setFilterLabelsA] = useState<string[]>([]);
-  const [filterLabelsT, setFilterLabelsT] = useState<string[]>([]);
+  const [filterLabelsA, setFilterLabelsA] = useState<string[]>();
+  const [filterLabelsT, setFilterLabelsT] = useState<string[]>();
+  const [filterLabelsC, setFilterLabelsC] = useState<string[]>();
   const { data, isLoading, isError } = api.committee.getOne.useQuery(
     {
       //TODO useMemo
       id: Number(param_id),
       is_active: filters?.is_active,
       is_temporary: filters?.is_temporary,
+      roles: filterLabelsC,
     },
     { enabled: _isNumeric(param_id) },
   );
 
-  const _setIsActiveFilterValues = (values?: string[]) => {
+  const handleChangeActiveFiltersA = (values?: string[]) => {
     if (!values?.length || values.length >= 2) {
       setFilters({ ...filters, is_active: undefined });
       setFilterLabelsA(values || []);
@@ -58,7 +60,7 @@ export default function CommitteeMembership() {
     }
   };
 
-  const _setIsTemporaryFilterValues = (values?: string[]) => {
+  const handleChangeActiveFiltersT = (values?: string[]) => {
     if (!values?.length || values.length >= 2) {
       setFilters({ ...filters, is_temporary: undefined });
       setFilterLabelsT(values || []);
@@ -68,6 +70,10 @@ export default function CommitteeMembership() {
     }
   };
 
+  const handleChangeActiveFiltersC = (values?: string[]) => {
+    setFilterLabelsC(!values?.length ? undefined : values);
+  };
+
   if (
     isError
     //|| deactivate.isError
@@ -75,12 +81,36 @@ export default function CommitteeMembership() {
     return <span>Error: sowwyyyy</span>;
   }
 
-  const propsFilters = {
-    _setIsTemporaryFilterValues,
-    _setIsActiveFilterValues,
-    isActiveFilters: filterLabelsA,
-    isTemporaryFilters: filterLabelsT,
-  };
+  const propsFilters: IFilter[] = [
+    {
+      title: 'Status',
+      options: [
+        { label: 'Ativo(a)', value: 'is_active' },
+        { label: 'Inativo(a)', value: 'is_inactive' },
+      ],
+      activeFilters: filterLabelsA,
+      handleChangeActiveFilters: handleChangeActiveFiltersA,
+    },
+    {
+      title: 'Tipo',
+      options: [
+        { label: 'Permanente', value: 'is_permanent' },
+        { label: 'Temporário(a)', value: 'is_temporary' },
+      ],
+      activeFilters: filterLabelsT,
+      handleChangeActiveFilters: handleChangeActiveFiltersT,
+    },
+    {
+      title: 'Cargo',
+      options: [
+        { label: 'Membro(a)', value: 'Membro(a)' },
+        { label: 'Diretor(a)', value: 'Diretor(a)' },
+      ],
+      activeFilters: filterLabelsC,
+      handleChangeActiveFilters: handleChangeActiveFiltersC,
+    },
+  ];
+
   const [openDialog, setOpenDialog] = useState(-1);
 
   const handleOpenDialog = (dialogEnum: number) => {
@@ -158,7 +188,7 @@ export default function CommitteeMembership() {
                   data.begin_date,
                   data.end_date,
                 )}
-                tableFilters={<TableToolbarFilter {...propsFilters} />}
+                tableFilters={<TableToolbarFilter filters={propsFilters} />}
                 tableActions={<MembershipTableToolbarActions {...propsActions} />}
                 column={MembershipHeaders.NAME}
               />
