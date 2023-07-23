@@ -47,7 +47,8 @@ export default function CommitteeMembership() {
   const updateMembership = api.membership.update.useMutation({
     // TODO onError
     onSettled() {
-      return utils.committee.getOne.invalidate();
+      utils.committee.getOne.invalidate();
+      utils.membership.getRoleOptions.invalidate();
     },
   });
 
@@ -58,6 +59,7 @@ export default function CommitteeMembership() {
     },
     onSettled() {
       utils.committee.getOne.invalidate();
+      utils.membership.getRoleOptions.invalidate();
     },
   });
 

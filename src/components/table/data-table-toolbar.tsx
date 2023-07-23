@@ -72,8 +72,9 @@ export const TableToolbarFilter = (props: { filters: IFilter[] }) => {
         filters={isActiveFilters}
         setFiltersValue={_setIsActiveFilterValues}
       /> */}
-      {props.filters.map((f) => (
+      {props.filters.map((f, index) => (
         <DataTableFacetedFilter
+          key={index}
           disabled={!f.options.length}
           title={f.title}
           options={f.options}
