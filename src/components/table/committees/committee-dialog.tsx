@@ -136,13 +136,13 @@ export default function CommitteeDialog(props: {
               required
             />
             <div className="flex flex-row justify-between gap-x-4 pt-2">
-              <DateForm
+              <DateFormItem
                 form={form}
                 fieldName="begin_date"
                 label={CommitteeHeaders.BEGIN_DATE}
                 required
               />
-              <DateForm
+              <DateFormItem
                 form={form}
                 fieldName="end_date"
                 label={CommitteeHeaders.END_DATE}
@@ -156,7 +156,7 @@ export default function CommitteeDialog(props: {
               label={CommitteeHeaders.ORDINANCE}
               placeholder="ex: Portaria"
             />
-            <ObservationsForm form={form} label={CommitteeHeaders.OBSERVATIONS} />
+            <ObservationsFormItem form={form} label={CommitteeHeaders.OBSERVATIONS} />
             <TemplateSelectFormItem form={form} />
             <DialogFooter>
               <Button type="submit" form="formCommittee">
@@ -176,6 +176,7 @@ const TemplateSelectFormItem = (props: { form: any }) => {
   const { data, isLoading } = api.template.getAll.useQuery();
 
   useEffect(() => {
+    console.log('Loading templates');
     if (data) setTemplates(data.map((e) => e.name));
   }, [data]);
 
@@ -198,7 +199,7 @@ const TemplateSelectFormItem = (props: { form: any }) => {
                   role="combobox"
                   className={cn(
                     'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-                    !field.value && 'text-muted-foregroundPage',
+                    !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage',
                   )}
                 >
                   {isLoading
@@ -210,8 +211,8 @@ const TemplateSelectFormItem = (props: { form: any }) => {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset max-h-80 min-w-max overflow-y-auto p-0">
-              <Command>
+            <PopoverContent className="offset max-h-80 w-96 overflow-y-auto p-0">
+              <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite sua ${CommitteeHeaders.TEMPLATE}...`}
                   className="h-9"
@@ -315,7 +316,7 @@ export const CommonFormItem = (props: {
   );
 };
 
-export const DateForm = (props: {
+export const DateFormItem = (props: {
   form: any;
   fieldName: string;
   label: string;
@@ -336,7 +337,7 @@ export const DateForm = (props: {
   );
 };
 
-export const ObservationsForm = (props: { form: any; label: string }) => {
+export const ObservationsFormItem = (props: { form: any; label: string }) => {
   return (
     <FormField
       control={props.form.control}

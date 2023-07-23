@@ -124,7 +124,7 @@ export const membershipRouter = createTRPCRouter({
       });
     }),
 
-  getRoleOptions: protectedProcedure
+  getRoleOptionsByCommittee: protectedProcedure
     .input(
       z.object({
         committee_id: z.number(),
@@ -138,10 +138,26 @@ export const membershipRouter = createTRPCRouter({
         select: {
           role: true,
         },
+        orderBy: {
+          role: 'asc',
+        },
         distinct: ['role'],
       });
       return result.map((e) => {
         return { label: e.role, value: e.role };
       });
     }),
+
+  getRoleOptions: protectedProcedure.query(async ({ ctx, input }) => {
+    const result = await ctx.prisma.membership.findMany({
+      select: {
+        role: true,
+      },
+      orderBy: {
+        role: 'asc',
+      },
+      distinct: ['role'],
+    });
+    return result.map((e) => e.role);
+  }),
 });

@@ -48,7 +48,7 @@ export default function CommitteeMembership() {
     // TODO onError
     onSettled() {
       utils.committee.getOne.invalidate();
-      utils.membership.getRoleOptions.invalidate();
+      utils.membership.getRoleOptionsByCommittee.invalidate();
     },
   });
 
@@ -59,7 +59,7 @@ export default function CommitteeMembership() {
     },
     onSettled() {
       utils.committee.getOne.invalidate();
-      utils.membership.getRoleOptions.invalidate();
+      utils.membership.getRoleOptionsByCommittee.invalidate();
     },
   });
 
@@ -87,7 +87,7 @@ export default function CommitteeMembership() {
     },
     { enabled: !isNaN(param_id) },
   );
-  const { data: roleOptions } = api.membership.getRoleOptions.useQuery(
+  const { data: roleOptions } = api.membership.getRoleOptionsByCommittee.useQuery(
     {
       committee_id: param_id,
     },
@@ -211,7 +211,7 @@ export default function CommitteeMembership() {
                 open={openDialog == dialogsEnum.membership}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={handleSaveMembership}
-                committeeDates={{ begin_date: data.begin_date, end_date: data.end_date }}
+                committee={{ id: data.id, begin_date: data.begin_date, end_date: data.end_date }}
               />
             </>
           )}
