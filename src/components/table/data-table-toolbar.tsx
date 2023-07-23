@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { XIcon } from 'lucide-react';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
-import { CommitteeHeaders } from '~/constants/headers';
 import { Table } from '@tanstack/react-table';
 import { SlidersHorizontalIcon } from 'lucide-react';
 import {
@@ -12,7 +11,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { PropsWithChildren, SetStateAction } from 'react';
 
 interface TableToolbarProps<TData> {
   table: Table<TData>;
@@ -47,6 +45,7 @@ export function TableToolbar<TData>(
 export interface IFilterOptions {
   label: string;
   value: string;
+  icon?: React.ComponentType<{ className?: string }>;
 }
 
 export interface IFilter {
@@ -63,15 +62,6 @@ export const TableToolbarFilter = (props: { filters: IFilter[] }) => {
 
   return (
     <>
-      {/* <DataTableFacetedFilter
-        title="Status"
-        options={[
-          { label: 'Ativo(a)', value: 'is_active' },
-          { label: 'Inativo(a)', value: 'is_inactive' },
-        ]}
-        filters={isActiveFilters}
-        setFiltersValue={_setIsActiveFilterValues}
-      /> */}
       {props.filters.map((f, index) => (
         <DataTableFacetedFilter
           key={index}

@@ -20,6 +20,7 @@ import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/
 import { z } from 'zod';
 import { CommitteeHeaders } from '~/constants/headers';
 import { dialogsEnum } from './[id]';
+import { filterAProps, filterTProps } from '~/constants/filters';
 
 export default function Committees() {
   const router = useRouter();
@@ -97,20 +98,12 @@ export default function Committees() {
 
   const propsFilters: IFilter[] = [
     {
-      title: 'Status',
-      options: [
-        { label: 'Ativo(a)', value: 'is_active' },
-        { label: 'Inativo(a)', value: 'is_inactive' },
-      ],
+      ...filterAProps,
       activeFilters: filterLabelsA,
       handleChangeActiveFilters: handleChangeActiveFiltersA,
     },
     {
-      title: 'Tipo',
-      options: [
-        { label: 'Permanente', value: 'is_permanent' },
-        { label: 'Temporário(a)', value: 'is_temporary' },
-      ],
+      ...filterTProps,
       activeFilters: filterLabelsT,
       handleChangeActiveFilters: handleChangeActiveFiltersT,
     },

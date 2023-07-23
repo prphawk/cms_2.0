@@ -23,6 +23,8 @@ import MembershipDialog, {
   MembershipSchema,
 } from '~/components/table/membership/membership-dialog';
 import { MembershipHeaders } from '~/constants/headers';
+import { CircleIcon, CircleOffIcon, RefreshCwIcon, RefreshCwOffIcon } from 'lucide-react';
+import { filterAProps, filterTProps } from '~/constants/filters';
 
 export enum dialogsEnum {
   committee,
@@ -127,20 +129,12 @@ export default function CommitteeMembership() {
 
   const propsFilters: IFilter[] = [
     {
-      title: 'Status',
-      options: [
-        { label: 'Ativo(a)', value: 'is_active' },
-        { label: 'Inativo(a)', value: 'is_inactive' },
-      ],
+      ...filterAProps,
       activeFilters: filterLabelsA,
       handleChangeActiveFilters: handleChangeActiveFiltersA,
     },
     {
-      title: 'Tipo',
-      options: [
-        { label: 'Permanente', value: 'is_permanent' },
-        { label: 'Temporário(a)', value: 'is_temporary' },
-      ],
+      ...filterTProps,
       activeFilters: filterLabelsT,
       handleChangeActiveFilters: handleChangeActiveFiltersT,
     },
