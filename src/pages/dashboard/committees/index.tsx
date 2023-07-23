@@ -130,7 +130,7 @@ export default function Committees() {
           <Header />
           <DataTable
             data={data || []}
-            isLoading={isFetching || isLoading}
+            isLoading={isLoading}
             columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
             tableFilters={<TableToolbarFilter filters={propsFilters} />}
             tableActions={<CommitteesTableToolbarActions {...actionProps} />}

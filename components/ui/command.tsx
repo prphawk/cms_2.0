@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DialogProps } from '@radix-ui/react-dialog';
 // import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { Command as CommandPrimitive } from 'cmdk';
+import { CommandLoading, Command as CommandPrimitive } from 'cmdk';
 
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -9,15 +9,17 @@ import { SearchIcon } from 'lucide-react';
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive> & { isLoading?: boolean }
+>(({ isLoading, className, ...props }, ref) => (
   <CommandPrimitive
+    filter={(value, search) => (value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}
     ref={ref}
     className={cn(
       'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
       className,
     )}
     {...props}
+    {...(isLoading && <CommandLoading>Loading...</CommandLoading>)}
   />
 ));
 Command.displayName = CommandPrimitive.displayName;
