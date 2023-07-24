@@ -63,7 +63,17 @@ export default function Home() {
   );
 }
 
-const ListItem = ({ className, title, children, href }) => {
+const ListItem = ({
+  className,
+  title,
+  children,
+  href,
+}: {
+  className?: string;
+  title: string;
+  children: any;
+  href: string;
+}) => {
   return (
     <a
       href={href}
