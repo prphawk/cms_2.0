@@ -176,7 +176,6 @@ const TemplateSelectFormItem = (props: { form: any }) => {
   const { data, isLoading } = api.template.getAll.useQuery();
 
   useEffect(() => {
-    console.log('Loading templates');
     if (data) setTemplates([...data.map((e) => e.name)]);
   }, [data]);
 

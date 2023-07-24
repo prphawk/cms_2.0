@@ -57,7 +57,9 @@ export interface IFilter {
 
 export const TableToolbarFilter = (props: { filters: IFilter[] }) => {
   const handleResetFilters = () => {
-    props.filters.forEach((f) => f.handleChangeActiveFilters(undefined));
+    props.filters.forEach((f) => {
+      f.handleChangeActiveFilters(undefined);
+    });
   };
 
   return (

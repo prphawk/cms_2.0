@@ -270,7 +270,6 @@ const RoleSelectFormItem = (props: { form: any }) => {
   const { data, isLoading } = api.membership.getRoleOptions.useQuery();
 
   useEffect(() => {
-    console.log('Loading roles');
     if (data) setRoles([...data]);
   }, [data]);
 

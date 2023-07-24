@@ -13,28 +13,55 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { _toLocaleString } from '~/utils/string';
+import { _toLocaleString, _formatCount } from '~/utils/string';
 import { Dot } from '~/components/dot';
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions';
 import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { z } from 'zod';
 import { CommitteeHeaders } from '~/constants/headers';
 import { dialogsEnum } from './[id]';
-import { filterAProps, filterTProps } from '~/constants/filters';
+import {
+  FilterStateType,
+  filterAProps,
+  filterTProps,
+  handleChangeActiveFilters,
+} from '~/components/filters';
 
 export default function Committees() {
   const router = useRouter();
-  const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
-  const [filterLabelsA, setFilterLabelsA] = useState<string[]>();
-  const [filterLabelsT, setFilterLabelsT] = useState<string[]>();
+
+  const [open, setOpen] = useState(-1);
+
+  const handleOpenDialog = (dialogEnum: number) => setOpen(dialogEnum);
+
+  const [filterA, setFilterA] = useState<FilterStateType>();
+  const [filterT, setFilterT] = useState<FilterStateType>();
 
   const utils = api.useContext();
 
-  const { data, isFetching, isLoading, isError } = api.committee.getAll.useQuery({
-    //TODO useMemo
-    is_active: filters?.is_active,
-    is_temporary: filters?.is_temporary,
+  const { data, isLoading, isError } = api.committee.getAll.useQuery({
+    is_active: filterA?.value,
+    is_temporary: filterT?.value,
   });
+
+  if (isError) {
+    return <span>Error: sowwyyyy</span>;
+  }
+
+  const propsFilters: IFilter[] = [
+    {
+      ...filterAProps,
+      activeFilters: filterA?.labels,
+      handleChangeActiveFilters: (labels) =>
+        handleChangeActiveFilters('is_active', setFilterA, labels),
+    },
+    {
+      ...filterTProps,
+      activeFilters: filterT?.labels,
+      handleChangeActiveFilters: (labels) =>
+        handleChangeActiveFilters('is_temporary', setFilterT, labels),
+    },
+  ];
 
   const deactivate = api.committee.deactivate.useMutation({
     onMutate() {
@@ -63,56 +90,8 @@ export default function Committees() {
     router.push(`${Routes.COMMITTEES}/${id}`);
   }
 
-  const handleChangeActiveFiltersA = (values?: string[]) => {
-    if (!values?.length || values.length >= 2) {
-      setFilters({ ...filters, is_active: undefined });
-      setFilterLabelsA(values || []);
-    } else {
-      setFilters({ ...filters, is_active: values?.includes('is_active') });
-      setFilterLabelsA(values!);
-    }
-  };
-
-  const handleChangeActiveFiltersT = (values?: string[]) => {
-    if (!values?.length || values.length >= 2) {
-      setFilters({ ...filters, is_temporary: undefined });
-      setFilterLabelsT(values || []);
-    } else {
-      setFilters({ ...filters, is_temporary: values?.includes('is_temporary') });
-      setFilterLabelsT(values!);
-    }
-  };
-
-  if (isError || deactivate.isError) {
-    return <span>Error: sowwyyyy</span>;
-  }
-
-  const [open, setOpen] = useState(-1);
-
-  const handleOpenDialog = (dialogEnum: number) => {
-    setOpen(dialogEnum);
-  };
-  const handleSave = (data: z.infer<typeof CommitteeSchema>) => {
+  const handleSaveCommittee = (data: z.infer<typeof CommitteeSchema>) => {
     create.mutate(data);
-  };
-
-  const propsFilters: IFilter[] = [
-    {
-      ...filterAProps,
-      activeFilters: filterLabelsA,
-      handleChangeActiveFilters: handleChangeActiveFiltersA,
-    },
-    {
-      ...filterTProps,
-      activeFilters: filterLabelsT,
-      handleChangeActiveFilters: handleChangeActiveFiltersT,
-    },
-  ];
-
-  const actionProps = {
-    handleCreateCommittee: () => {
-      handleOpenDialog(dialogsEnum.committee);
-    },
   };
 
   return (
@@ -126,13 +105,17 @@ export default function Committees() {
             isLoading={isLoading}
             columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
             tableFilters={<TableToolbarFilter filters={propsFilters} />}
-            tableActions={<CommitteesTableToolbarActions {...actionProps} />}
+            tableActions={
+              <CommitteesTableToolbarActions
+                handleCreateCommittee={() => handleOpenDialog(dialogsEnum.committee)}
+              />
+            }
             column={CommitteeHeaders.NAME}
           />
           <CommitteeDialog
             open={open === dialogsEnum.committee}
             handleOpenDialog={handleOpenDialog}
-            handleSave={handleSave}
+            handleSave={handleSaveCommittee}
           />
         </div>
         {/* </LoadingLayout> */}
@@ -144,7 +127,7 @@ export default function Committees() {
 const Header = () => {
   const { data: countData, isLoading } = api.committee.groupByActivity.useQuery();
 
-  const { active_count, total_count } = formatCount(isLoading, countData);
+  const { active_count, total_count } = _formatCount(isLoading, countData);
 
   return (
     <>
@@ -164,17 +147,4 @@ const Header = () => {
       </Accordion>
     </>
   );
-};
-
-export const formatCount = (
-  isLoading: boolean,
-  data: any[] | undefined,
-): { active_count: string; total_count: string } => {
-  let active, inactive;
-  if (isLoading || !data || !data.length) active = inactive = 0;
-  else {
-    active = data.at(0) ? data.at(0)._count?.is_active : 0;
-    inactive = data.at(1) ? data.at(1)._count?.is_active : 0;
-  }
-  return { active_count: active ?? 'Loading...', total_count: active + inactive ?? 'Loading...' };
 };
