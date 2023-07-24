@@ -126,7 +126,7 @@ ColumnDef<Membership & { employee: Employee }>[] => [
               {committee_template_id ? (
                 <DropdownMenuItem>
                   <Link href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
-                    Ver histórico do cargo na {CommitteeHeaders.TEMPLATE}
+                    Ver histórico do cargo
                   </Link>
                 </DropdownMenuItem>
               ) : (

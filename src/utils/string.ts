@@ -20,3 +20,20 @@ export const _addYears = (date: Date, years: number) => {
   date.setFullYear(date.getFullYear() + years);
   return date;
 };
+
+export const _formatCount = (
+  isLoading: boolean,
+  data: { _count: any; is_active: boolean }[] | undefined,
+): { active_count: number; total_count: number } => {
+  let obj = { active: 0, inactive: 0 };
+
+  if (!(isLoading || !data || !data.length)) {
+    data.forEach((e) => {
+      obj[e.is_active ? 'active' : 'inactive'] = e._count.is_active;
+    });
+  }
+  return {
+    active_count: obj.active ?? 'Loading...',
+    total_count: obj.active + obj.inactive ?? 'Loading...',
+  };
+};

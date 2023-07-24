@@ -27,29 +27,14 @@ import {
 import { useEffect, useState } from 'react';
 import {
   CommonFormItem,
-  DateForm,
+  DateFormItem,
   MyLabel,
-  ObservationsForm,
+  ObservationsFormItem,
 } from '../committees/committee-dialog';
 import { MembershipHeaders } from '~/constants/headers';
 import { api } from '~/utils/api';
-
-type MembersDataType = {
-  employee: {
-    id: number;
-    name: string;
-    is_active: boolean;
-  };
-} & {
-  employee_id: number;
-  committee_id: number;
-  role: string | null;
-  begin_date: Date;
-  end_date: Date;
-  is_temporary: boolean;
-  is_active: boolean;
-  observations: string | null;
-};
+import { Employee, Membership } from '@prisma/client';
+import React from 'react';
 
 export const MembershipSchema = z
   .object({
@@ -77,9 +62,9 @@ export const MembershipSchema = z
 export default function MembershipDialog(props: {
   open: boolean;
   handleOpenDialog: (dialogEnum: number) => void;
-  member?: MembersDataType;
+  member?: Membership & { employee: Employee };
   handleSave: (data: z.infer<typeof MembershipSchema>) => void;
-  committeeDates: { begin_date: Date | null; end_date: Date | null };
+  committee: { id: number; begin_date: Date | null; end_date: Date | null };
 }) {
   const myDefaultValues = () => {
     return {
@@ -87,11 +72,9 @@ export default function MembershipDialog(props: {
         id: props.member?.employee.id,
         name: props.member?.employee.name || '',
       },
-      begin_date: _toString(
-        props.member?.begin_date || props.committeeDates.begin_date || new Date(),
-      ),
+      begin_date: _toString(props.member?.begin_date || props.committee.begin_date || new Date()),
       end_date: _toString(
-        props.member?.end_date || props.committeeDates.end_date || _addYears(new Date(), 1),
+        props.member?.end_date || props.committee.end_date || _addYears(new Date(), 1),
       ),
       role: props.member?.role || '',
       observations: props.member?.observations || '',
@@ -147,40 +130,22 @@ export default function MembershipDialog(props: {
                 form={form}
                 disabled={props.member?.employee.id !== undefined}
               />
-              <CommonFormItem
-                form={form}
-                fieldName="role"
-                label={MembershipHeaders.ROLE}
-                defaultValue={props.member?.role || ''}
-                placeholder="ex: Membro(a)"
-                required
-              />
-              <DateForm
+              <RoleSelectFormItem form={form} />
+
+              <DateFormItem
                 form={form}
                 fieldName="begin_date"
                 label={MembershipHeaders.BEGIN_DATE}
-                defaultValue={
-                  props.member?.begin_date || props.committeeDates.begin_date || new Date()
-                }
                 required
               />
-              <DateForm
+              <DateFormItem
                 form={form}
                 fieldName="end_date"
                 label={MembershipHeaders.END_DATE}
-                defaultValue={
-                  props.member?.end_date ||
-                  props.committeeDates.end_date ||
-                  _addYears(new Date(), 1)
-                }
                 required
               />
             </div>
-            <ObservationsForm
-              form={form}
-              label={MembershipHeaders.OBSERVATIONS}
-              defaultValue={props.member?.observations || ''}
-            />
+            <ObservationsFormItem form={form} label={MembershipHeaders.OBSERVATIONS} />
             <DialogFooter>
               <Button type="submit" form="formMembership">
                 Salvar
@@ -198,11 +163,7 @@ type EmployeeDataType = {
   name: string;
 };
 
-const EmployeeSelectFormItem = (props: {
-  form: any;
-  defaultValue?: EmployeeDataType;
-  disabled?: boolean;
-}) => {
+const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
   const [employees, setEmployees] = useState<EmployeeDataType[]>([]);
 
   const { data, isLoading } = api.employee.getOptions.useQuery();
@@ -217,7 +178,6 @@ const EmployeeSelectFormItem = (props: {
 
   return (
     <FormField
-      defaultValue={props.defaultValue || { name: '' }}
       control={props.form.control}
       name="employee"
       render={({ field }) => (
@@ -246,35 +206,33 @@ const EmployeeSelectFormItem = (props: {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset max-h-80 min-w-max overflow-y-auto p-0">
-              <Command>
+            <PopoverContent className="offset w-[249px] p-0">
+              <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite seu/sua ${MembershipHeaders.NAME}...`}
                   className="h-9"
                   onValueChange={(search) => setCommandSearch(search)}
                 />
+                {/* {isLoading && <CommandLoading>Loading...</CommandLoading>} */}
                 <CommandEmpty className="p-0">
-                  {isLoading
-                    ? 'Loading...'
-                    : commandSearch && (
-                        <Button
-                          className="max-h-full w-full "
-                          variant="ghost"
-                          onClick={() => {
-                            if (createdIndex) employees.pop();
-                            setCreatedIndex(employees.length);
-                            const newItem = { name: commandSearch };
-                            setEmployees([...employees, newItem]);
-                            props.form.setValue('employee', newItem);
-                          }}
-                        >
-                          <div className="truncate">
-                            Criar {MembershipHeaders.NAME} "{commandSearch}"?
-                          </div>
-                        </Button>
-                      )}
+                  {commandSearch && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        if (createdIndex) employees.pop();
+                        setCreatedIndex(employees.length);
+                        const newItem = { name: commandSearch };
+                        setEmployees([...employees, newItem]);
+                        props.form.setValue('employee', newItem);
+                      }}
+                    >
+                      <div className="truncate">
+                        Criar {MembershipHeaders.NAME} "{commandSearch}"?
+                      </div>
+                    </Button>
+                  )}
                 </CommandEmpty>
-                <CommandGroup>
+                <CommandGroup className="max-h-80 overflow-y-auto">
                   {employees.map((employee, index) => (
                     <CommandItem
                       value={employee.name}
@@ -292,6 +250,105 @@ const EmployeeSelectFormItem = (props: {
                         className={cn(
                           'ml-auto h-4 w-4',
                           employee.name === field.value.name ? 'opacity-100' : 'opacity-0',
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+const RoleSelectFormItem = (props: { form: any }) => {
+  const [roles, setRoles] = useState<string[]>([]);
+
+  const { data, isLoading } = api.membership.getRoleOptions.useQuery();
+
+  useEffect(() => {
+    if (data) setRoles([...data]);
+  }, [data]);
+
+  const [createdIndex, setCreatedIndex] = useState<number>();
+
+  const [commandSearch, setCommandSearch] = useState('');
+
+  return (
+    <FormField
+      control={props.form.control}
+      name="role"
+      render={({ field }) => (
+        <FormItem className="flex w-full flex-col">
+          <MyLabel required className="pb-1">
+            {MembershipHeaders.ROLE}
+          </MyLabel>
+          <Popover>
+            <PopoverTrigger asChild>
+              <FormControl>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className={cn(
+                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+                    !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage',
+                  )}
+                >
+                  {isLoading
+                    ? 'Loading...'
+                    : field.value
+                    ? roles.find((r) => r === field.value)
+                    : 'ex: Membro(a)'}
+                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="offset w-[249px] p-0">
+              <Command isLoading={isLoading}>
+                <CommandInput
+                  placeholder={`Digite seu ${MembershipHeaders.ROLE}...`}
+                  className="h-9"
+                  onValueChange={(search) => setCommandSearch(search)}
+                />
+                <CommandEmpty className="p-0">
+                  {commandSearch && (
+                    <Button
+                      className="max-h-full w-full "
+                      variant="ghost"
+                      onClick={() => {
+                        if (createdIndex) roles.pop();
+                        setCreatedIndex(roles.length);
+                        setRoles([...roles, commandSearch]);
+                        props.form.setValue('role', commandSearch);
+                      }}
+                    >
+                      <div className="truncate">
+                        Criar {MembershipHeaders.ROLE} "{commandSearch}"?
+                      </div>
+                    </Button>
+                  )}
+                </CommandEmpty>
+                <CommandGroup className="max-h-80 overflow-y-auto">
+                  {roles.map((role, index) => (
+                    <CommandItem
+                      value={role}
+                      key={index}
+                      onSelect={(value) => {
+                        let found: string | undefined;
+                        if (value === props.form.getValues('role')?.toLocaleLowerCase()) {
+                          found = undefined;
+                        } else found = roles.find((r) => r.toLocaleLowerCase() === value);
+                        props.form.setValue('role', found || '');
+                      }}
+                    >
+                      {role}
+                      <CheckIcon
+                        className={cn(
+                          'ml-auto h-4 w-4',
+                          role === field.value ? 'opacity-100' : 'opacity-0',
                         )}
                       />
                     </CommandItem>

@@ -71,7 +71,7 @@ export default function CommitteeDialog(props: {
       bond: props.committee?.bond || '',
       name: props.committee?.name || '',
       begin_date: _toString(props.committee?.begin_date || new Date()),
-      end_date: _toString(props.committee?.end_date || new Date()),
+      end_date: _toString(props.committee?.end_date || _addYears(new Date(), 1)),
       ordinance: props.committee?.ordinance || '',
       observations: props.committee?.observations || '',
       committee_template_name: props.committee?.committee_template?.name || '',
@@ -125,7 +125,6 @@ export default function CommitteeDialog(props: {
               form={form}
               fieldName="name"
               label={CommitteeHeaders.NAME}
-              defaultValue={props.committee?.name || ''}
               placeholder="ex: Direção INF (2023)"
               required
             />
@@ -133,22 +132,19 @@ export default function CommitteeDialog(props: {
               form={form}
               fieldName="bond"
               label={CommitteeHeaders.BOND}
-              defaultValue={props.committee?.bond || ''}
               placeholder="ex: Órgão"
               required
             />
             <div className="flex flex-row justify-between gap-x-4 pt-2">
-              <DateForm
+              <DateFormItem
                 form={form}
                 fieldName="begin_date"
                 label={CommitteeHeaders.BEGIN_DATE}
-                defaultValue={props.committee?.begin_date || new Date()}
                 required
               />
-              <DateForm
+              <DateFormItem
                 form={form}
                 fieldName="end_date"
-                defaultValue={props.committee?.end_date || _addYears(new Date(), 1)}
                 label={CommitteeHeaders.END_DATE}
                 //dontSelectBefore={form.getValues('begin_date')}
                 required
@@ -158,18 +154,10 @@ export default function CommitteeDialog(props: {
               form={form}
               fieldName="ordinance"
               label={CommitteeHeaders.ORDINANCE}
-              defaultValue={props.committee?.ordinance || ''}
               placeholder="ex: Portaria"
             />
-            <ObservationsForm
-              form={form}
-              label={CommitteeHeaders.OBSERVATIONS}
-              defaultValue={props.committee?.observations || ''}
-            />
-            <TemplateSelectFormItem
-              form={form}
-              defaultValue={props.committee?.committee_template?.name}
-            />
+            <ObservationsFormItem form={form} label={CommitteeHeaders.OBSERVATIONS} />
+            <TemplateSelectFormItem form={form} />
             <DialogFooter>
               <Button type="submit" form="formCommittee">
                 Salvar
@@ -182,13 +170,13 @@ export default function CommitteeDialog(props: {
   );
 }
 
-const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => {
+const TemplateSelectFormItem = (props: { form: any }) => {
   const [templates, setTemplates] = useState<string[]>([]);
 
   const { data, isLoading } = api.template.getAll.useQuery();
 
   useEffect(() => {
-    if (data) setTemplates(data.map((e) => e.name));
+    if (data) setTemplates([...data.map((e) => e.name)]);
   }, [data]);
 
   const [createdIndex, setCreatedIndex] = useState<number>();
@@ -197,7 +185,6 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
 
   return (
     <FormField
-      defaultValue={props.defaultValue || ''}
       control={props.form.control}
       name="committee_template_name"
       render={({ field }) => (
@@ -211,7 +198,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                   role="combobox"
                   className={cn(
                     'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-                    !field.value && 'text-muted-foregroundPage',
+                    !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage',
                   )}
                 >
                   {isLoading
@@ -223,8 +210,8 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset max-h-80 min-w-max overflow-y-auto p-0">
-              <Command>
+            <PopoverContent className="offset w-96 p-0">
+              <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite sua ${CommitteeHeaders.TEMPLATE}...`}
                   className="h-9"
@@ -250,7 +237,7 @@ const TemplateSelectFormItem = (props: { form: any; defaultValue?: string }) => 
                         </Button>
                       )}
                 </CommandEmpty>
-                <CommandGroup>
+                <CommandGroup className="max-h-64 overflow-y-auto">
                   {templates.map((template) => (
                     <CommandItem
                       value={template}
@@ -303,13 +290,11 @@ export const CommonFormItem = (props: {
   form: any;
   fieldName: string;
   label: string;
-  defaultValue?: string;
   placeholder?: string;
   required?: boolean;
 }) => {
   return (
     <FormField
-      defaultValue={props.defaultValue || ''}
       control={props.form.control}
       name={props.fieldName}
       render={({ field }) => (
@@ -330,18 +315,16 @@ export const CommonFormItem = (props: {
   );
 };
 
-export const DateForm = (props: {
+export const DateFormItem = (props: {
   form: any;
   fieldName: string;
   label: string;
-  defaultValue?: Date;
   required?: boolean;
 }) => {
   return (
     <FormField
       control={props.form.control}
       name={props.fieldName}
-      defaultValue={_toString(props.defaultValue)}
       render={({ field }) => (
         <FormItem className="flex w-full flex-col">
           <MyLabel required={props.required}>{props.label}</MyLabel>
@@ -353,13 +336,13 @@ export const DateForm = (props: {
   );
 };
 
-export const ObservationsForm = (props: { form: any; label: string; defaultValue?: string }) => {
+export const ObservationsFormItem = (props: { form: any; label: string }) => {
   return (
     <FormField
       control={props.form.control}
       name="observations"
       render={({ field }) => (
-        <FormItem defaultValue={props.defaultValue || ''}>
+        <FormItem>
           <FormLabel>{props.label}</FormLabel>
           <FormControl>
             <Textarea

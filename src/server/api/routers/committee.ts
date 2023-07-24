@@ -72,8 +72,8 @@ export const committeeRouter = createTRPCRouter({
         is_temporary: z.optional(z.boolean()),
       }),
     )
-    .query(({ ctx, input }) => {
-      return ctx.prisma.committee.findMany({
+    .query(async ({ ctx, input }) => {
+      const result = await ctx.prisma.committee.findMany({
         where: {
           is_active: input.is_active,
           committee_template:
@@ -82,10 +82,18 @@ export const committeeRouter = createTRPCRouter({
         orderBy: { name: 'asc' },
         include: {
           members: {
-            select: { employee: true }, //TODO just count here
-            where: { is_active: true },
+            select: { is_active: true }, //TODO just count here
           },
         },
+      });
+
+      return result.map((c) => {
+        const members_count = { active_count: 0, total_count: c.members.length };
+        members_count.active_count = c.members.reduce(
+          (acum, curr) => acum + Number(curr.is_active),
+          0,
+        );
+        return { ...c, members_count };
       });
     }),
 

@@ -12,17 +12,23 @@ import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/
 import { DataTable } from '~/components/table/data-table';
 import PageLayout, { TitleLayout } from '~/layout';
 import { api } from '~/utils/api';
-import { _isNumeric, _toLocaleString } from '~/utils/string';
+import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string';
 import { Committee, Employee, Membership } from '@prisma/client';
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { Dot } from '~/components/dot';
-import { formatCount } from '.';
 import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { z } from 'zod';
 import MembershipDialog, {
   MembershipSchema,
 } from '~/components/table/membership/membership-dialog';
 import { MembershipHeaders } from '~/constants/headers';
+import { CircleIcon, CircleOffIcon, RefreshCwIcon, RefreshCwOffIcon } from 'lucide-react';
+import {
+  FilterStateType,
+  filterAProps,
+  filterTProps,
+  handleChangeActiveFilters,
+} from '~/components/filters';
 
 export enum dialogsEnum {
   committee,
@@ -48,7 +54,7 @@ export default function CommitteeMembership() {
     // TODO onError
     onSettled() {
       utils.committee.getOne.invalidate();
-      utils.membership.getRoleOptions.invalidate();
+      utils.membership.getRoleOptionsByCommittee.invalidate();
     },
   });
 
@@ -59,7 +65,7 @@ export default function CommitteeMembership() {
     },
     onSettled() {
       utils.committee.getOne.invalidate();
-      utils.membership.getRoleOptions.invalidate();
+      utils.membership.getRoleOptionsByCommittee.invalidate();
     },
   });
 
@@ -73,21 +79,21 @@ export default function CommitteeMembership() {
     setOpenDialog(dialogEnum);
   };
 
-  const [filters, setFilters] = useState<{ is_active?: boolean; is_temporary?: boolean }>();
-  const [filterLabelsA, setFilterLabelsA] = useState<string[]>();
-  const [filterLabelsT, setFilterLabelsT] = useState<string[]>();
-  const [filterLabelsC, setFilterLabelsC] = useState<string[]>();
+  const [filterA, setFilterA] = useState<FilterStateType>();
+  const [filterT, setFilterT] = useState<FilterStateType>();
+  const [filterC, setFilterC] = useState<string[]>();
+
   const { data, isLoading, isError } = api.committee.getOne.useQuery(
     {
-      //TODO useMemo
       id: param_id,
-      is_active: filters?.is_active,
-      is_temporary: filters?.is_temporary,
-      roles: filterLabelsC,
+      is_active: filterA?.value,
+      is_temporary: filterT?.value,
+      roles: filterC,
     },
     { enabled: !isNaN(param_id) },
   );
-  const { data: roleOptions } = api.membership.getRoleOptions.useQuery(
+
+  const { data: roleOptions } = api.membership.getRoleOptionsByCommittee.useQuery(
     {
       committee_id: param_id,
     },
@@ -101,53 +107,27 @@ export default function CommitteeMembership() {
     return <span>Error: sowwyyyy</span>; //TODO pelo amor de deus kk
   }
 
-  const handleChangeActiveFiltersA = (values?: string[]) => {
-    if (!values?.length || values.length >= 2) {
-      setFilters({ ...filters, is_active: undefined });
-      setFilterLabelsA(values || []);
-    } else {
-      setFilters({ ...filters, is_active: values?.includes('is_active') });
-      setFilterLabelsA(values!);
-    }
-  };
-
-  const handleChangeActiveFiltersT = (values?: string[]) => {
-    if (!values?.length || values.length >= 2) {
-      setFilters({ ...filters, is_temporary: undefined });
-      setFilterLabelsT(values || []);
-    } else {
-      setFilters({ ...filters, is_temporary: values?.includes('is_temporary') });
-      setFilterLabelsT(values!);
-    }
-  };
-
   const handleChangeActiveFiltersC = (values?: string[]) => {
-    setFilterLabelsC(!values?.length ? undefined : values);
+    setFilterC(!values?.length ? undefined : values);
   };
 
   const propsFilters: IFilter[] = [
     {
-      title: 'Status',
-      options: [
-        { label: 'Ativo(a)', value: 'is_active' },
-        { label: 'Inativo(a)', value: 'is_inactive' },
-      ],
-      activeFilters: filterLabelsA,
-      handleChangeActiveFilters: handleChangeActiveFiltersA,
+      ...filterAProps,
+      activeFilters: filterA?.labels,
+      handleChangeActiveFilters: (labels) =>
+        handleChangeActiveFilters('is_active', setFilterA, labels),
     },
     {
-      title: 'Tipo',
-      options: [
-        { label: 'Permanente', value: 'is_permanent' },
-        { label: 'Temporário(a)', value: 'is_temporary' },
-      ],
-      activeFilters: filterLabelsT,
-      handleChangeActiveFilters: handleChangeActiveFiltersT,
+      ...filterTProps,
+      activeFilters: filterT?.labels,
+      handleChangeActiveFilters: (labels) =>
+        handleChangeActiveFilters('is_temporary', setFilterT, labels),
     },
     {
       title: 'Cargo',
       options: roleOptions?.length ? (roleOptions as IFilterOptions[]) : [],
-      activeFilters: filterLabelsC,
+      activeFilters: filterC,
       handleChangeActiveFilters: handleChangeActiveFiltersC,
     },
   ];
@@ -158,7 +138,6 @@ export default function CommitteeMembership() {
 
   const handleSaveMembership = (membership: z.infer<typeof MembershipSchema> & { id?: number }) => {
     if (!data?.id) return;
-    console.log(selectedMembership);
     if (membership.id) {
       updateMembership.mutate({ committee_id: data?.id, ...(membership as any) });
     } else createMembership.mutate({ committee_id: data?.id, ...(membership as any) });
@@ -211,7 +190,7 @@ export default function CommitteeMembership() {
                 open={openDialog == dialogsEnum.membership}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={handleSaveMembership}
-                committeeDates={{ begin_date: data.begin_date, end_date: data.end_date }}
+                committee={{ id: data.id, begin_date: data.begin_date, end_date: data.end_date }}
               />
             </>
           )}
@@ -228,7 +207,7 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
     committee_id: data.id,
   });
 
-  const { active_count, total_count } = formatCount(isLoading, countData);
+  const { active_count, total_count } = _formatCount(isLoading, countData);
   return (
     <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
       <AccordionItem value="item-1">

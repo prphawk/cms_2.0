@@ -2,7 +2,17 @@ import { Committee } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { CommitteeHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
-import { EyeIcon, MoreHorizontal } from 'lucide-react';
+import {
+  CircleIcon,
+  CircleOffIcon,
+  EyeIcon,
+  Hourglass,
+  HourglassIcon,
+  MoreHorizontal,
+  PowerOffIcon,
+  RefreshCwOffIcon,
+  SkullIcon,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,7 +32,14 @@ import { Routes } from '~/constants/routes';
 export const getCommitteesColumns = (
   handleDeactivateCommittees: (ids: number[]) => void,
   handleViewCommittee: (id: number) => void,
-): ColumnDef<Committee>[] => [
+): ColumnDef<
+  Committee & {
+    members_count: {
+      active_count: number;
+      total_count: number;
+    };
+  }
+>[] => [
   {
     accessorKey: 'name',
     id: CommitteeHeaders.NAME,
@@ -33,18 +50,18 @@ export const getCommitteesColumns = (
       const is_inactive = !row.original.is_active;
 
       return (
-        <div>
+        <div className="inline-block w-full truncate">
+          <strong className="">{value}</strong>
           {is_temporary && (
-            <Badge className="mr-2 text-white" variant="outline">
-              Temporária
+            <Badge className="ml-2 px-1 py-0.5" variant="outline">
+              <HourglassIcon className="h-3 w-3 text-white" />
             </Badge>
           )}
           {is_inactive && (
-            <Badge className="mr-2 text-white" variant="outline">
-              Inativa
+            <Badge className="ml-2 px-1 py-0.5" variant="outline">
+              <PowerOffIcon className="h-3 w-3 text-white" />
             </Badge>
           )}
-          <strong>{value}</strong>
         </div>
       );
     },
@@ -64,7 +81,7 @@ export const getCommitteesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = row.getValue(column.id) as Date;
-      return <div>{_toLocaleString(date)}</div>; // pode retornar JSX tbm
+      return <div className="text-sm">{_toLocaleString(date)}</div>; // pode retornar JSX tbm
     },
   },
   {
@@ -86,12 +103,26 @@ export const getCommitteesColumns = (
     },
   },
   {
-    accessorKey: 'members',
+    accessorKey: 'members_count',
+    accessorFn: (row) => row.members_count,
     id: CommitteeHeaders.MEMBERS,
-    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="align-center inline-block truncate"
+        column={column}
+        title={column.id}
+      />
+    ),
     cell: ({ row, column }) => {
-      const value = row.getValue(column.id) as string;
-      return <div className="text-center">{value.length}</div>;
+      const value = row.getValue(column.id) as {
+        active_count: number;
+        total_count: number;
+      };
+      return (
+        <div className="text-center">
+          {value.active_count} / {value.total_count}
+        </div>
+      );
     },
   },
   {
@@ -104,7 +135,7 @@ export const getCommitteesColumns = (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="w-60 truncate">{value}</div>
+              <div className="w-48 truncate">{value}</div>
             </TooltipTrigger>
             <TooltipContent>{value}</TooltipContent>
           </Tooltip>

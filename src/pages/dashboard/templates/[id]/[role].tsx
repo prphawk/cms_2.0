@@ -21,7 +21,6 @@ export default function TemplateRoleHistory() {
   const role = router.query.role as string;
 
   const { data } = api.membership.getRoleHistory.useQuery({
-    //TODO useMemo
     template_id,
     role,
   });
@@ -51,7 +50,6 @@ export default function TemplateRoleHistory() {
 
 const TemplateHistoryDetails = (props: { template_id: number; role: string }) => {
   const { data, isLoading } = api.template.getOne.useQuery({
-    //TODO useMemo
     template_id: props.template_id,
   });
   return (
