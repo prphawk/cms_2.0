@@ -23,13 +23,17 @@ export const _addYears = (date: Date, years: number) => {
 
 export const _formatCount = (
   isLoading: boolean,
-  data: any[] | undefined,
-): { active_count: string; total_count: string } => {
-  let active, inactive;
-  if (isLoading || !data || !data.length) active = inactive = 0;
-  else {
-    active = data.at(0) ? data.at(0)._count?.is_active : 0;
-    inactive = data.at(1) ? data.at(1)._count?.is_active : 0;
+  data: { _count: any; is_active: boolean }[] | undefined,
+): { active_count: number; total_count: number } => {
+  let obj = { active: 0, inactive: 0 };
+
+  if (!(isLoading || !data || !data.length)) {
+    data.forEach((e) => {
+      obj[e.is_active ? 'active' : 'inactive'] = e._count.is_active;
+    });
   }
-  return { active_count: active ?? 'Loading...', total_count: active + inactive ?? 'Loading...' };
+  return {
+    active_count: obj.active ?? 'Loading...',
+    total_count: obj.active + obj.inactive ?? 'Loading...',
+  };
 };
