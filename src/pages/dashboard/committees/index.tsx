@@ -18,7 +18,7 @@ import { Dot } from '~/components/dot';
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions';
 import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { z } from 'zod';
-import { CommitteeHeaders } from '~/constants/headers';
+import { CommitteeHeaders, MenuHeaders } from '~/constants/headers';
 import { dialogsEnum } from './[id]';
 import {
   FilterStateType,
@@ -134,7 +134,7 @@ const Header = () => {
       <Accordion className="mb-6" type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <TitleLayout>Órgãos Colegiados</TitleLayout>
+            <TitleLayout>{MenuHeaders.COMMITTEES}</TitleLayout>
           </AccordionTrigger>
           <AccordionContent className="tracking-wide">
             <strong>Órgãos: </strong>

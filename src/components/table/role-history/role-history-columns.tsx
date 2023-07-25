@@ -1,6 +1,6 @@
 import { Committee, Employee, Membership } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { CommitteeHeaders, GeneralHeaders, MembershipHeaders } from '~/constants/headers';
+import { CommitteeHeaders, MenuHeaders, MembershipHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
 import { EyeIcon, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -95,7 +95,7 @@ export const getTemplateRoleHistoryColumns =
     {
       accessorKey: 'committee.name',
       accessorFn: (row) => row.committee.name,
-      id: GeneralHeaders.COMMITTEE,
+      id: MenuHeaders.COMMITTEE,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row, column }) => {
         const value = row.getValue(column.id) as string;

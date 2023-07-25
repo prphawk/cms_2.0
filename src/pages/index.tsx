@@ -7,34 +7,31 @@ import LoadingLayout from '~/components/loading-layout';
 import AuthenticatedPage from '~/components/authenticated-page';
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { MenuHeaders } from '~/constants/headers';
 
 export default function Home() {
   const { status } = useSession();
 
   const components = [
     {
-      title: 'Comissões',
+      title: MenuHeaders.COMMITTEES,
       href: Routes.COMMITTEES,
-      description:
-        'A modal dialog that interrupts the user with important content and expects a response.',
+      description: 'Coisas muito legais relacionadas as órgãos colegiados e comissões do INF.',
     },
     {
-      title: 'Servidores',
+      title: MenuHeaders.EMPLOYEES,
       href: Routes.EMPLOYEES,
-      description:
-        'A modal dialog that interrupts the user with important content and expects a response.',
+      description: 'Under construction.',
     },
     {
       title: 'Classes',
       href: Routes.TEMPLATES,
-      description:
-        'A modal dialog that interrupts the user with important content and expects a response.',
+      description: 'Under construction.',
     },
     {
       title: 'Configurações',
       href: Routes.SETTINGS,
-      description:
-        'A modal dialog that interrupts the user with important content and expects a response.',
+      description: 'Under construction.',
     },
   ];
   return (

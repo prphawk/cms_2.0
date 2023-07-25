@@ -1,8 +1,11 @@
-export class GeneralHeaders {
-  public static COMMITTEE = 'Comissão';
+export class MenuHeaders {
+  public static COMMITTEE = 'Órgão';
+  public static COMMITTEES = 'Órgãos';
+  public static EMPLOYEE = 'Servidor';
+  public static EMPLOYEES = 'Servidores';
 }
 export class CommitteeHeaders {
-  public static BOND = 'Órgão';
+  public static BOND = 'Vínculo';
   public static NAME = 'Nome';
   public static BEGIN_DATE = 'Data de Início';
   public static END_DATE = 'Data de Fim';

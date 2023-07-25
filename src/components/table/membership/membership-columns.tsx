@@ -1,6 +1,6 @@
 import { Employee, Membership } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { CommitteeHeaders, GeneralHeaders, MembershipHeaders } from '~/constants/headers';
+import { CommitteeHeaders, MenuHeaders, MembershipHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
 import { MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
