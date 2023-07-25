@@ -2,17 +2,7 @@ import { Committee } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { CommitteeHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
-import {
-  CircleIcon,
-  CircleOffIcon,
-  EyeIcon,
-  Hourglass,
-  HourglassIcon,
-  MoreHorizontal,
-  PowerOffIcon,
-  RefreshCwOffIcon,
-  SkullIcon,
-} from 'lucide-react';
+import { CircleOffIcon, EyeIcon, HourglassIcon, LucideIcon, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -28,11 +18,21 @@ import { Separator } from '@radix-ui/react-dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import Link from 'next/link';
 import { Routes } from '~/constants/routes';
+import { cn } from '@/lib/utils';
+import { ReactNode } from 'react';
 
 interface IActiveCount {
   active_count: number;
   total_count: number;
 }
+
+export const IconBadge = ({ children, className }: { children: ReactNode; className?: string }) => {
+  return (
+    <Badge className="ml-2 px-1 py-0.5" variant="outline">
+      {children}
+    </Badge>
+  );
+};
 
 export const getCommitteesColumns = (
   handleDeactivateCommittees: (ids: number[]) => void,
@@ -58,14 +58,14 @@ export const getCommitteesColumns = (
         <div className="inline-block w-full truncate">
           <strong className="">{value}</strong>
           {is_temporary && (
-            <Badge className="ml-2 px-1 py-0.5" variant="outline">
+            <IconBadge>
               <HourglassIcon className="h-3 w-3 text-white" />
-            </Badge>
+            </IconBadge>
           )}
           {is_inactive && (
-            <Badge className="ml-2 px-1 py-0.5" variant="outline">
-              <PowerOffIcon className="h-3 w-3 text-white" />
-            </Badge>
+            <IconBadge>
+              <CircleOffIcon className="h-3 w-3 text-white" />
+            </IconBadge>
           )}
         </div>
       );

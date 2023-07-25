@@ -16,6 +16,7 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command';
+import { IconBadge } from './committees/committees-columns';
 
 interface DataTableFacetedFilter<TData, TValue> {
   title?: string;
@@ -110,8 +111,12 @@ export function DataTableFacetedFilter<TData, TValue>({
                     >
                       <Check className={cn('h-4 w-4')} />
                     </div>
-                    {option.icon && <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
                     <span>{option.label}</span>
+                    {option.icon && (
+                      <IconBadge>
+                        <option.icon className="h-3 w-3 text-gray-600" />
+                      </IconBadge>
+                    )}
                   </CommandItem>
                 );
               })}
