@@ -29,6 +29,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import Link from 'next/link';
 import { Routes } from '~/constants/routes';
 
+interface IActiveCount {
+  active_count: number;
+  total_count: number;
+}
+
 export const getCommitteesColumns = (
   handleDeactivateCommittees: (ids: number[]) => void,
   handleViewCommittee: (id: number) => void,
@@ -76,6 +81,15 @@ export const getCommitteesColumns = (
     },
   },
   {
+    accessorKey: 'ordinance',
+    id: CommitteeHeaders.ORDINANCE,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string;
+      return <div>{value}</div>;
+    },
+  },
+  {
     accessorKey: 'begin_date',
     id: CommitteeHeaders.BEGIN_DATE,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
@@ -94,33 +108,23 @@ export const getCommitteesColumns = (
     },
   },
   {
-    accessorKey: 'ordinance',
-    id: CommitteeHeaders.ORDINANCE,
-    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
-    cell: ({ row, column }) => {
-      const value = row.getValue(column.id) as string;
-      return <div>{value}</div>;
-    },
-  },
-  {
     accessorKey: 'members_count',
     accessorFn: (row) => row.members_count,
+    sortingFn: (row1, row2, columnId) => {
+      return (row1.getValue(columnId) as IActiveCount).active_count >
+        (row2.getValue(columnId) as IActiveCount).active_count
+        ? 1
+        : -1;
+    },
     id: CommitteeHeaders.MEMBERS,
     header: ({ column }) => (
-      <DataTableColumnHeader
-        className="align-center inline-block truncate"
-        column={column}
-        title={column.id}
-      />
+      <DataTableColumnHeader className="align-center" column={column} title={column.id} />
     ),
     cell: ({ row, column }) => {
-      const value = row.getValue(column.id) as {
-        active_count: number;
-        total_count: number;
-      };
+      const value = row.getValue(column.id) as IActiveCount;
       return (
         <div className="text-center">
-          {value.active_count} / {value.total_count}
+          {value.active_count} de {value.total_count} membros
         </div>
       );
     },
