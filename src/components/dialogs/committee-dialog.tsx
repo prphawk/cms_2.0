@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -16,28 +16,28 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Committee } from '@prisma/client';
-import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { CommitteeHeaders } from '~/constants/headers';
-import { _addYears, _toLocaleString, _toString } from '~/utils/string';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { cn } from '@/lib/utils';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Textarea } from '@/components/ui/textarea';
+  FormMessage
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Committee } from '@prisma/client'
+import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { CommitteeHeaders } from '~/constants/headers'
+import { _addYears, _toLocaleString, _toString } from '~/utils/string'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { cn } from '@/lib/utils'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,
-} from '@/components/ui/command';
-import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
-import { api } from '~/utils/api';
+  CommandItem
+} from '@/components/ui/command'
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
+import { api } from '~/utils/api'
 
 export const CommitteeSchema = z
   .object({
@@ -53,18 +53,18 @@ export const CommitteeSchema = z
     end_date: z.coerce.date({ required_error: `${CommitteeHeaders.END_DATE} é obrigatória` }),
     ordinance: z.string().optional(),
     observations: z.string().optional(),
-    committee_template_name: z.string().optional(),
+    committee_template_name: z.string().optional()
   })
   .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
     message: `${CommitteeHeaders.END_DATE} não pode ocorrer antes de ${CommitteeHeaders.BEGIN_DATE}.`,
-    path: ['end_date'],
-  });
+    path: ['end_date']
+  })
 
 export default function CommitteeDialog(props: {
-  open: boolean;
-  handleOpenDialog: (dialogEnum: number) => void;
-  committee?: Committee & { committee_template?: { name: string } | null };
-  handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void;
+  open: boolean
+  handleOpenDialog: (dialogEnum: number) => void
+  committee?: Committee & { committee_template?: { name: string } | null }
+  handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void
 }) {
   const myDefaultValues = () => {
     return {
@@ -74,26 +74,26 @@ export default function CommitteeDialog(props: {
       end_date: _toString(props.committee?.end_date || _addYears(new Date(), 1)),
       ordinance: props.committee?.ordinance || '',
       observations: props.committee?.observations || '',
-      committee_template_name: props.committee?.committee_template?.name || '',
-    };
-  };
+      committee_template_name: props.committee?.committee_template?.name || ''
+    }
+  }
 
   const form = useForm<z.infer<typeof CommitteeSchema>>({
-    resolver: zodResolver(CommitteeSchema),
-  });
+    resolver: zodResolver(CommitteeSchema)
+  })
 
   useEffect(() => {
-    form.reset(myDefaultValues as any);
-  }, [props.open]);
+    form.reset(myDefaultValues as any)
+  }, [props.open])
 
   function onSubmit(data: z.infer<typeof CommitteeSchema>) {
-    props.handleSave({ id: props.committee?.id || undefined, ...data });
-    onClose();
+    props.handleSave({ id: props.committee?.id || undefined, ...data })
+    onClose()
   }
 
   function onClose() {
-    form.reset();
-    props.handleOpenDialog(-1);
+    form.reset()
+    props.handleOpenDialog(-1)
   }
 
   return (
@@ -156,7 +156,11 @@ export default function CommitteeDialog(props: {
                 required
               />
             </div>
-            <ObservationsFormItem form={form} label={CommitteeHeaders.OBSERVATIONS} />
+            <ObservationsFormItem
+              fieldName="observations"
+              form={form}
+              label={CommitteeHeaders.OBSERVATIONS}
+            />
             <TemplateSelectFormItem form={form} />
             <DialogFooter>
               <Button type="submit" form="formCommittee">
@@ -167,21 +171,21 @@ export default function CommitteeDialog(props: {
         </Form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 
 const TemplateSelectFormItem = (props: { form: any }) => {
-  const [templates, setTemplates] = useState<string[]>([]);
+  const [templates, setTemplates] = useState<string[]>([])
 
-  const { data, isLoading } = api.template.getAll.useQuery();
+  const { data, isLoading } = api.template.getAll.useQuery()
 
   useEffect(() => {
-    if (data) setTemplates([...data.map((e) => e.name)]);
-  }, [data]);
+    if (data) setTemplates([...data.map((e) => e.name)])
+  }, [data])
 
-  const [createdIndex, setCreatedIndex] = useState<number>();
+  const [createdIndex, setCreatedIndex] = useState<number>()
 
-  const [commandSearch, setCommandSearch] = useState('');
+  const [commandSearch, setCommandSearch] = useState('')
 
   return (
     <FormField
@@ -198,7 +202,7 @@ const TemplateSelectFormItem = (props: { form: any }) => {
                   role="combobox"
                   className={cn(
                     'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-                    !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage',
+                    !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage'
                   )}
                 >
                   {isLoading
@@ -225,10 +229,10 @@ const TemplateSelectFormItem = (props: { form: any }) => {
                           className="max-h-full w-full "
                           variant="ghost"
                           onClick={() => {
-                            if (createdIndex) templates.pop();
-                            setCreatedIndex(templates.length);
-                            setTemplates([...templates, commandSearch]);
-                            props.form.setValue('committee_template_name', commandSearch);
+                            if (createdIndex) templates.pop()
+                            setCreatedIndex(templates.length)
+                            setTemplates([...templates, commandSearch])
+                            props.form.setValue('committee_template_name', commandSearch)
                           }}
                         >
                           <div className="truncate">
@@ -243,21 +247,21 @@ const TemplateSelectFormItem = (props: { form: any }) => {
                       value={template}
                       key={template}
                       onSelect={(value) => {
-                        let found: string | undefined;
+                        let found: string | undefined
                         if (
                           value ===
                           props.form.getValues('committee_template_name')?.toLocaleLowerCase()
                         ) {
-                          found = undefined;
-                        } else found = templates.find((t) => t.toLocaleLowerCase() === value);
-                        props.form.setValue('committee_template_name', found || '');
+                          found = undefined
+                        } else found = templates.find((t) => t.toLocaleLowerCase() === value)
+                        props.form.setValue('committee_template_name', found || '')
                       }}
                     >
                       {template}
                       <CheckIcon
                         className={cn(
                           'ml-auto h-4 w-4',
-                          template === field.value ? 'opacity-100' : 'opacity-0',
+                          template === field.value ? 'opacity-100' : 'opacity-0'
                         )}
                       />
                     </CommandItem>
@@ -274,8 +278,8 @@ const TemplateSelectFormItem = (props: { form: any }) => {
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
 export const MyLabel = (props: { required?: boolean; className?: string } & PropsWithChildren) => {
   return (
@@ -283,23 +287,25 @@ export const MyLabel = (props: { required?: boolean; className?: string } & Prop
       {props.children}
       {props.required ? <span className="ml-1 text-red-700">*</span> : <></>}
     </FormLabel>
-  );
-};
+  )
+}
 
 export const CommonFormItem = (props: {
-  form: any;
-  fieldName: string;
-  label: string;
-  placeholder?: string;
-  required?: boolean;
+  form: any
+  fieldName: string
+  label: string
+  placeholder?: string
+  required?: boolean
+  className?: string
+  hideLabel?: boolean
 }) => {
   return (
     <FormField
       control={props.form.control}
       name={props.fieldName}
       render={({ field }) => (
-        <FormItem className="mt-1">
-          <MyLabel required={props.required}>{props.label}</MyLabel>
+        <FormItem className={cn('mt-1', props.className)}>
+          {!props.hideLabel && <MyLabel required={props.required}>{props.label}</MyLabel>}{' '}
           <FormControl>
             <Input
               // required={props.required}
@@ -312,35 +318,37 @@ export const CommonFormItem = (props: {
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
 export const DateFormItem = (props: {
-  form: any;
-  fieldName: string;
-  label: string;
-  required?: boolean;
+  form: any
+  fieldName: string
+  label: string
+  required?: boolean
+  className?: string
+  hideLabel?: boolean
 }) => {
   return (
     <FormField
       control={props.form.control}
       name={props.fieldName}
       render={({ field }) => (
-        <FormItem className="flex w-full flex-col">
-          <MyLabel required={props.required}>{props.label}</MyLabel>
+        <FormItem className={cn('flex w-full flex-col', props.className)}>
+          {!props.hideLabel && <MyLabel required={props.required}>{props.label}</MyLabel>}
           <Input type="date" {...field} />
           <FormMessage />
         </FormItem>
       )}
     ></FormField>
-  );
-};
+  )
+}
 
-export const ObservationsFormItem = (props: { form: any; label: string }) => {
+export const ObservationsFormItem = (props: { form: any; label: string; fieldName: string }) => {
   return (
     <FormField
       control={props.form.control}
-      name="observations"
+      name={props.fieldName}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{props.label}</FormLabel>
@@ -356,5 +364,5 @@ export const ObservationsFormItem = (props: { form: any; label: string }) => {
         </FormItem>
       )}
     />
-  );
-};
+  )
+}

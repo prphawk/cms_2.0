@@ -17,7 +17,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
-import { CheckIcon, ChevronsUpDownIcon, PlusIcon, XIcon } from 'lucide-react'
+import { CheckIcon, ChevronsUpDownIcon, PlusIcon, SaveIcon, XIcon } from 'lucide-react'
 import { FieldArrayWithId, UseFieldArrayReturn, useFieldArray, useForm } from 'react-hook-form'
 import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -39,23 +39,10 @@ import { Employee, Membership } from '@prisma/client'
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
+import { MembershipSchema } from './membership-dialog'
 
 export const MembershipArraySchema = z.object({
-  members: z.array(
-    z.object({
-      employee: z.object({
-        id: z.number().optional(),
-        name: z
-          .string({ required_error: `${MembershipHeaders.NAME} é obrigatório` })
-          .trim()
-          .min(1, { message: `${MembershipHeaders.NAME} é obrigatório` })
-      }),
-      role: z
-        .string({ required_error: `${MembershipHeaders.ROLE} é obrigatório` })
-        .trim()
-        .min(1, { message: `${MembershipHeaders.ROLE} é obrigatório` })
-    })
-  )
+  members: z.array(MembershipSchema)
 })
 
 export default function MembershipArrayDialog(props: {
@@ -74,7 +61,11 @@ export default function MembershipArrayDialog(props: {
       employee: {
         name: ''
       },
-      role: ''
+      role: '',
+      begin_date: _toString(new Date()),
+      end_date: _toString(_addYears(new Date(), 1)),
+      ordinance: '',
+      observations: ''
     }
   }
   const myDefaultValues = () => {
@@ -87,7 +78,10 @@ export default function MembershipArrayDialog(props: {
                 name: m.employee.name || ''
               },
               role: m.role || '',
-              selected: true
+              begin_date: _toString(m.begin_date || new Date()),
+              end_date: _toString(m.end_date || _addYears(new Date(), 1)),
+              ordinance: m.ordinance || '',
+              observations: m.observations || ''
             }
           })
         }
@@ -97,7 +91,7 @@ export default function MembershipArrayDialog(props: {
   }
 
   const form = useForm<z.infer<typeof MembershipArraySchema>>({
-    defaultValues: myDefaultValues(),
+    defaultValues: myDefaultValues() as any,
     resolver: zodResolver(MembershipArraySchema),
     mode: 'onChange'
   })
@@ -126,7 +120,7 @@ export default function MembershipArrayDialog(props: {
       {props.open && (
         <div className="fixed inset-0 z-50 bg-background/10 backdrop-blur data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
       )}
-      <DialogContent>
+      <DialogContent className="overflow-x-auto">
         <DialogHeader>
           <DialogTitle>Sucessão de Membros</DialogTitle>
           <DialogDescription>
@@ -143,60 +137,78 @@ export default function MembershipArrayDialog(props: {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} id="formMembership">
             {isLoading ? (
-              <div className="mx-6 my-10 text-center text-muted-foregroundPage">loading...</div>
+              <div className="mx-6 my-10 text-center text-muted-foregroundPage">Loading...</div>
             ) : (
-              fieldArray.fields.map((f, index) => (
-                <div
-                  key={f.id}
-                  className={'flex flex-row items-center justify-between gap-x-4 p-2'}
-                >
-                  <EmployeeSelectFormItem form={form} name={`members.${index}.employee`} />
-                  <RoleSelectFormItem form={form} name={`members.${index}.role`} />
-                  <Button
-                    className="mt-6 h-6 w-6"
-                    onClick={() => fieldArray.remove(index)}
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <XIcon className="h-5 w-5" />
-                  </Button>
-                </div>
-              ))
+              <div className="grid gap-y-2 ">
+                {fieldArray.fields.map((f, index) => (
+                  <div key={f.id} className={'flex flex-row items-end justify-between gap-x-4'}>
+                    <Button
+                      className="mb-1 h-5 w-5"
+                      onClick={() => fieldArray.remove(index)}
+                      variant="ghost"
+                      size="icon"
+                    >
+                      <XIcon className="h-4 w-4" />
+                    </Button>
+                    <EmployeeSelectFormItem
+                      hideLabel={index > 0}
+                      form={form}
+                      name={`members.${index}.employee`}
+                    />
+                    <RoleSelectFormItem
+                      hideLabel={index > 0}
+                      form={form}
+                      name={`members.${index}.role`}
+                    />
+                    <CommonFormItem
+                      hideLabel={index > 0}
+                      className="min-w-[128px]"
+                      form={form}
+                      fieldName={`members.${index}.ordinance`}
+                      label={MembershipHeaders.ORDINANCE}
+                      placeholder="ex: Portaria"
+                    />
+                    <DateFormItem
+                      hideLabel={index > 0}
+                      className="w-min"
+                      form={form}
+                      fieldName={`members.${index}.begin_date`}
+                      label={MembershipHeaders.BEGIN_DATE}
+                      required
+                    />
+                    <DateFormItem
+                      hideLabel={index > 0}
+                      className="w-min"
+                      form={form}
+                      fieldName={`members.${index}.end_date`}
+                      label={MembershipHeaders.END_DATE}
+                      required
+                    />
+                    <CommonFormItem
+                      hideLabel={index > 0}
+                      className="min-w-[128px]"
+                      form={form}
+                      fieldName={`members.${index}.observations`}
+                      label={MembershipHeaders.OBSERVATIONS}
+                      placeholder="ex: Something something"
+                    />
+                  </div>
+                ))}
+              </div>
             )}
-
-            {/* 
-            <CommonFormItem
-              form={form}
-              fieldName="ordinance"
-              label={MembershipHeaders.ORDINANCE}
-              placeholder="ex: Portaria"
-            />
-            <div className="grid grid-cols-2 items-baseline justify-between gap-x-4 pt-2">
-              <DateFormItem
-                form={form}
-                fieldName="begin_date"
-                label={MembershipHeaders.BEGIN_DATE}
-                required
-              />
-              <DateFormItem
-                form={form}
-                fieldName="end_date"
-                label={MembershipHeaders.END_DATE}
-                required
-              />
-            <ObservationsFormItem form={form} label={MembershipHeaders.OBSERVATIONS} /> */}
-            <DialogFooter className="mt-2">
+            <DialogFooter className="mt-4">
               <Button
                 size="sm"
                 className="mr-auto"
-                variant="ghost"
+                variant="outline"
                 type="button"
-                onClick={() => fieldArray.append(newAppendedValue())}
+                onClick={() => fieldArray.append(newAppendedValue() as any)}
               >
                 <PlusIcon className="mr-1 h-5 w-5" />
                 Novo
               </Button>
-              <Button disabled={isLoading} type="submit" form="formMembership">
+              <Button size="sm" disabled={isLoading} type="submit" form="formMembership">
+                <SaveIcon className="mr-1 h-5 w-5" />
                 Salvar
               </Button>
             </DialogFooter>
@@ -212,7 +224,12 @@ type EmployeeDataType = {
   name: string
 }
 
-const EmployeeSelectFormItem = (props: { form: any; name: string; disabled?: boolean }) => {
+const EmployeeSelectFormItem = (props: {
+  form: any
+  name: string
+  disabled?: boolean
+  hideLabel?: boolean
+}) => {
   const [employees, setEmployees] = useState<EmployeeDataType[]>([])
 
   const { data, isLoading } = api.employee.getOptions.useQuery()
@@ -231,9 +248,11 @@ const EmployeeSelectFormItem = (props: { form: any; name: string; disabled?: boo
       name={props.name}
       render={({ field }) => (
         <FormItem className="flex w-full flex-col">
-          <MyLabel required className="pb-1">
-            {MembershipHeaders.NAME}
-          </MyLabel>
+          {!props.hideLabel && (
+            <MyLabel required className="pb-1">
+              {MembershipHeaders.NAME}
+            </MyLabel>
+          )}
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
@@ -314,7 +333,7 @@ const EmployeeSelectFormItem = (props: { form: any; name: string; disabled?: boo
   )
 }
 
-const RoleSelectFormItem = (props: { form: any; name: string }) => {
+const RoleSelectFormItem = (props: { form: any; name: string; hideLabel?: boolean }) => {
   const [roles, setRoles] = useState<string[]>([])
 
   const { data, isLoading } = api.membership.getRoleOptions.useQuery()
@@ -334,9 +353,11 @@ const RoleSelectFormItem = (props: { form: any; name: string }) => {
       name={props.name}
       render={({ field }) => (
         <FormItem className="flex w-full flex-col">
-          <MyLabel required className="pb-1">
-            {MembershipHeaders.ROLE}
-          </MyLabel>
+          {!props.hideLabel && (
+            <MyLabel required className="pb-1">
+              {MembershipHeaders.ROLE}
+            </MyLabel>
+          )}
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
