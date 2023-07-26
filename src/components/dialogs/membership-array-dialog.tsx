@@ -9,8 +9,15 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
+import { CheckIcon, ChevronsUpDownIcon, PlusIcon, XIcon } from 'lucide-react'
 import { FieldArrayWithId, UseFieldArrayReturn, useFieldArray, useForm } from 'react-hook-form'
 import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -31,10 +38,18 @@ import { api } from '~/utils/api'
 import { Employee, Membership } from '@prisma/client'
 import React from 'react'
 import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export const MembershipArraySchema = z.object({
-  roles: z.array(
+  members: z.array(
     z.object({
+      employee: z.object({
+        id: z.number().optional(),
+        name: z
+          .string({ required_error: `${MembershipHeaders.NAME} é obrigatório` })
+          .trim()
+          .min(1, { message: `${MembershipHeaders.NAME} é obrigatório` })
+      }),
       role: z
         .string({ required_error: `${MembershipHeaders.ROLE} é obrigatório` })
         .trim()
@@ -46,16 +61,39 @@ export const MembershipArraySchema = z.object({
 export default function MembershipArrayDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: number) => void
-  members: (Membership & { employee: Employee })[]
   handleSave: (data: z.infer<typeof MembershipArraySchema>) => void
-  //committee: { id: number; begin_date: Date | null; end_date: Date | null };
+  committeeId: number
 }) {
-  const myDefaultValues = () => {
+  const { data, isLoading } = api.committee.getOne.useQuery({
+    id: props.committeeId,
+    is_active: true
+  })
+
+  const newAppendedValue = () => {
     return {
-      roles: props.members.map((m) => {
-        return { role: m.role || '' }
-      })
+      employee: {
+        name: ''
+      },
+      role: ''
     }
+  }
+  const myDefaultValues = () => {
+    return data
+      ? {
+          members: data.members.map((m) => {
+            return {
+              employee: {
+                id: m.employee.id,
+                name: m.employee.name || ''
+              },
+              role: m.role || '',
+              selected: true
+            }
+          })
+        }
+      : {
+          members: []
+        }
   }
 
   const form = useForm<z.infer<typeof MembershipArraySchema>>({
@@ -66,10 +104,10 @@ export default function MembershipArrayDialog(props: {
 
   useEffect(() => {
     form.reset(myDefaultValues as any)
-  }, [props.open, props.members])
+  }, [props.open, data])
 
   const fieldArray = useFieldArray({
-    name: 'roles', // unique name for your Field Array
+    name: 'members', // unique name for your Field Array
     control: form.control // control props comes from useForm (optional: if you are using FormContext)
   })
 
@@ -92,11 +130,7 @@ export default function MembershipArrayDialog(props: {
         <DialogHeader>
           <DialogTitle>Sucessão de Membros</DialogTitle>
           <DialogDescription>
-            {props.members && (
-              <>
-                Ao editar, os dados anteriores do órgão serão <strong>descartados</strong>.
-              </>
-            )}
+            Ao editar, os dados anteriores do órgão serão <strong>descartados</strong>.
           </DialogDescription>
         </DialogHeader>
         <div
@@ -107,45 +141,30 @@ export default function MembershipArrayDialog(props: {
           <span className="sr-only">Close</span>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3" id="formMembership">
-            <div className="grid grid-cols-2 items-baseline justify-between gap-x-4">
-              {fieldArray.fields.map((f, index) => (
-                <RoleSelectFormItem
-                  defaultValue={f.role}
+          <form onSubmit={form.handleSubmit(onSubmit)} id="formMembership">
+            {isLoading ? (
+              <div className="mx-6 my-10 text-center text-muted-foregroundPage">loading...</div>
+            ) : (
+              fieldArray.fields.map((f, index) => (
+                <div
                   key={f.id}
-                  index={index}
-                  form={form}
-                  fieldArray={fieldArray}
-                />
-
-                // <FormField
-                //   defaultValue={f.role}
-                //   key={f.id}
-                //   control={form.control}
-                //   name={`roles.${index}.role`}
-                //   render={({ field }) => (
-                //     <FormItem className="mt-1">
-                //       <MyLabel>Role</MyLabel>
-                //       <FormControl>
-                //         <Input
-                //           // required={props.required}
-                //           className="placeholder:text-muted-foregroundPage"
-                //           {...field}
-                //           //placeholder={props.placeholder}
-                //         />
-                //       </FormControl>
-                //       <FormMessage />
-                //     </FormItem>
-                //   )}
-                // />
-              ))}
-            </div>
+                  className={'flex flex-row items-center justify-between gap-x-4 p-2'}
+                >
+                  <EmployeeSelectFormItem form={form} name={`members.${index}.employee`} />
+                  <RoleSelectFormItem form={form} name={`members.${index}.role`} />
+                  <Button
+                    className="mt-6 h-6 w-6"
+                    onClick={() => fieldArray.remove(index)}
+                    variant="ghost"
+                    size="icon"
+                  >
+                    <XIcon className="h-5 w-5" />
+                  </Button>
+                </div>
+              ))
+            )}
 
             {/* 
-              <EmployeeSelectFormItem
-                field={f}
-                //disabled={props.members?.employee.id !== undefined}
-                /> 
             <CommonFormItem
               form={form}
               fieldName="ordinance"
@@ -166,8 +185,18 @@ export default function MembershipArrayDialog(props: {
                 required
               />
             <ObservationsFormItem form={form} label={MembershipHeaders.OBSERVATIONS} /> */}
-            <DialogFooter>
-              <Button type="submit" form="formMembership">
+            <DialogFooter className="mt-2">
+              <Button
+                size="sm"
+                className="mr-auto"
+                variant="ghost"
+                type="button"
+                onClick={() => fieldArray.append(newAppendedValue())}
+              >
+                <PlusIcon className="mr-1 h-5 w-5" />
+                Novo
+              </Button>
+              <Button disabled={isLoading} type="submit" form="formMembership">
                 Salvar
               </Button>
             </DialogFooter>
@@ -183,7 +212,7 @@ type EmployeeDataType = {
   name: string
 }
 
-const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
+const EmployeeSelectFormItem = (props: { form: any; name: string; disabled?: boolean }) => {
   const [employees, setEmployees] = useState<EmployeeDataType[]>([])
 
   const { data, isLoading } = api.employee.getOptions.useQuery()
@@ -199,7 +228,7 @@ const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
   return (
     <FormField
       control={props.form.control}
-      name="employee"
+      name={props.name}
       render={({ field }) => (
         <FormItem className="flex w-full flex-col">
           <MyLabel required className="pb-1">
@@ -243,7 +272,7 @@ const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
                         setCreatedIndex(employees.length)
                         const newItem = { name: commandSearch }
                         setEmployees([...employees, newItem])
-                        props.form.setValue('employee', newItem)
+                        props.form.setValue(props.name, newItem)
                       }}
                     >
                       <div className="truncate">
@@ -259,10 +288,10 @@ const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
                       key={index}
                       onSelect={(value) => {
                         let found: EmployeeDataType | undefined
-                        if (value === props.form.getValues('employee')?.name.toLocaleLowerCase()) {
+                        if (value === props.form.getValues(props.name)?.name.toLocaleLowerCase()) {
                           found = undefined
                         } else found = employees.find((e) => e.name.toLocaleLowerCase() === value)
-                        props.form.setValue('employee', found || { name: '' })
+                        props.form.setValue(props.name, found || { name: '' })
                       }}
                     >
                       {employee.name}
@@ -285,22 +314,7 @@ const EmployeeSelectFormItem = (props: { form: any; disabled?: boolean }) => {
   )
 }
 
-type FieldArrayType = UseFieldArrayReturn<
-  {
-    roles: {
-      role: string
-    }[]
-  },
-  'roles',
-  'id'
->
-
-const RoleSelectFormItem = (props: {
-  defaultValue: string
-  form: any
-  fieldArray: FieldArrayType
-  index: number
-}) => {
+const RoleSelectFormItem = (props: { form: any; name: string }) => {
   const [roles, setRoles] = useState<string[]>([])
 
   const { data, isLoading } = api.membership.getRoleOptions.useQuery()
@@ -315,9 +329,9 @@ const RoleSelectFormItem = (props: {
 
   return (
     <FormField
-      defaultValue={props.defaultValue}
+      //defaultValue={props.defaultValue}
       control={props.form.control}
-      name={`roles.${props.index}.role` as const}
+      name={props.name}
       render={({ field }) => (
         <FormItem className="flex w-full flex-col">
           <MyLabel required className="pb-1">
@@ -359,7 +373,7 @@ const RoleSelectFormItem = (props: {
                         if (createdIndex) roles.pop()
                         setCreatedIndex(roles.length)
                         setRoles([...roles, commandSearch])
-                        props.fieldArray.update(props.index, { role: commandSearch })
+                        props.form.setValue(props.name, commandSearch)
                       }}
                     >
                       <div className="truncate">
@@ -375,10 +389,10 @@ const RoleSelectFormItem = (props: {
                       key={index}
                       onSelect={(value) => {
                         let found: string | undefined
-                        if (value === props.form.getValues('role')?.toLocaleLowerCase()) {
+                        if (value === props.form.getValues(props.name)?.toLocaleLowerCase()) {
                           found = undefined
                         } else found = roles.find((r) => r.toLocaleLowerCase() === value)
-                        props.fieldArray.update(props.index, { role: found || '' })
+                        props.form.setValue(props.name, found || '')
                       }}
                     >
                       {role}

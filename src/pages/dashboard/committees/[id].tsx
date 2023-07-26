@@ -2,149 +2,149 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import AuthenticatedPage from '~/components/authenticated-page';
-import { getMembershipColumns } from '~/components/table/membership/membership-columns';
-import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar';
-import { DataTable } from '~/components/table/data-table';
-import PageLayout, { TitleLayout } from '~/layout';
-import { api } from '~/utils/api';
-import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string';
-import { Committee, Employee, Membership } from '@prisma/client';
-import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
-import { Dot } from '~/components/dot';
-import { z } from 'zod';
+  AccordionTrigger
+} from '@/components/ui/accordion'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import AuthenticatedPage from '~/components/authenticated-page'
+import { getMembershipColumns } from '~/components/table/membership/membership-columns'
+import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar'
+import { DataTable } from '~/components/table/data-table'
+import PageLayout, { TitleLayout } from '~/layout'
+import { api } from '~/utils/api'
+import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string'
+import { Committee, Employee, Membership } from '@prisma/client'
+import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions'
+import { Dot } from '~/components/dot'
+import { z } from 'zod'
 
-import { MembershipHeaders } from '~/constants/headers';
-import { FilterStateType, filterAProps, handleChangeActiveFilters } from '~/components/filters';
-import CommitteeDialog, { CommitteeSchema } from '~/components/dialogs/committee-dialog';
-import MembershipDialog, { MembershipSchema } from '~/components/dialogs/membership-dialog';
-import MembershipArrayDialog from '~/components/dialogs/membership-array-dialog';
+import { MembershipHeaders } from '~/constants/headers'
+import { FilterStateType, filterAProps, handleChangeActiveFilters } from '~/components/filters'
+import CommitteeDialog, { CommitteeSchema } from '~/components/dialogs/committee-dialog'
+import MembershipDialog, { MembershipSchema } from '~/components/dialogs/membership-dialog'
+import MembershipArrayDialog from '~/components/dialogs/membership-array-dialog'
 
 export enum dialogsEnum {
   committee,
   membership,
-  membershipArray,
+  membershipArray
 }
 
 export default function CommitteeMembership() {
-  const router = useRouter();
-  const param_id = Number(router.query.id);
+  const router = useRouter()
+  const param_id = Number(router.query.id)
 
-  const utils = api.useContext();
+  const utils = api.useContext()
 
   //TODO replace w/ upsert? that would b cool
   const updateCommittee = api.committee.update.useMutation({
     // TODO onError
     onSettled() {
-      return utils.committee.getOne.invalidate();
-    },
-  });
+      return utils.committee.getOne.invalidate()
+    }
+  })
 
   //TODO upsert?
   const updateMembership = api.membership.update.useMutation({
     // TODO onError
     onSettled() {
-      utils.committee.getOne.invalidate();
-      utils.membership.getRoleOptionsByCommittee.invalidate();
-    },
-  });
+      utils.committee.getOne.invalidate()
+      utils.membership.getRoleOptionsByCommittee.invalidate()
+    }
+  })
 
   const createMembership = api.membership.create.useMutation({
     // TODO onError
     onSuccess() {
-      utils.employee.getOptions.invalidate(); //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
+      utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
     },
     onSettled() {
-      utils.committee.getOne.invalidate();
-      utils.membership.getRoleOptionsByCommittee.invalidate();
-    },
-  });
+      utils.committee.getOne.invalidate()
+      utils.membership.getRoleOptionsByCommittee.invalidate()
+    }
+  })
 
   const [selectedMembership, setSelectedMembership] = useState<
     Membership & { employee: Employee }
-  >();
+  >()
 
-  const [openDialog, setOpenDialog] = useState(dialogsEnum.membershipArray);
+  const [openDialog, setOpenDialog] = useState(dialogsEnum.membershipArray)
 
   const handleOpenDialog = (dialogEnum: number) => {
-    setOpenDialog(dialogEnum);
-  };
+    setOpenDialog(dialogEnum)
+  }
 
-  const [filterA, setFilterA] = useState<FilterStateType>();
-  const [filterC, setFilterC] = useState<string[]>();
+  const [filterA, setFilterA] = useState<FilterStateType>()
+  const [filterC, setFilterC] = useState<string[]>()
 
   const { data, isLoading, isError } = api.committee.getOne.useQuery(
     {
       id: param_id,
       is_active: filterA?.value,
-      roles: filterC,
+      roles: filterC
     },
-    { enabled: !isNaN(param_id) },
-  );
+    { enabled: !isNaN(param_id) }
+  )
 
   const { data: roleOptions } = api.membership.getRoleOptionsByCommittee.useQuery(
     {
-      committee_id: param_id,
+      committee_id: param_id
     },
-    { enabled: !isNaN(param_id) },
-  );
+    { enabled: !isNaN(param_id) }
+  )
 
   if (
     isError
     //|| deactivate.isError
   ) {
-    return <span>Error: sowwyyyy</span>; //TODO pelo amor de deus kk
+    return <span>Error: sowwyyyy</span> //TODO pelo amor de deus kk
   }
 
   const handleChangeActiveFiltersC = (values?: string[]) => {
-    setFilterC(!values?.length ? undefined : values);
-  };
+    setFilterC(!values?.length ? undefined : values)
+  }
 
   const propsFilters: IFilter[] = [
     {
       ...filterAProps,
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeActiveFilters('is_active', setFilterA, labels),
+        handleChangeActiveFilters('is_active', setFilterA, labels)
     },
     {
       title: 'Cargo',
       options: roleOptions?.length ? (roleOptions as IFilterOptions[]) : [],
       activeFilters: filterC,
-      handleChangeActiveFilters: handleChangeActiveFiltersC,
-    },
-  ];
+      handleChangeActiveFilters: handleChangeActiveFiltersC
+    }
+  ]
 
   const handleSaveCommittee = (committee: z.infer<typeof CommitteeSchema> & { id?: number }) => {
-    if (committee.id) updateCommittee.mutate(committee as any);
-  };
+    if (committee.id) updateCommittee.mutate(committee as any)
+  }
 
   const handleSaveMembership = (membership: z.infer<typeof MembershipSchema> & { id?: number }) => {
-    if (!data?.id) return;
+    if (!data?.id) return
     if (membership.id) {
-      updateMembership.mutate({ committee_id: data?.id, ...(membership as any) });
-    } else createMembership.mutate({ committee_id: data?.id, ...(membership as any) });
-  };
+      updateMembership.mutate({ committee_id: data?.id, ...(membership as any) })
+    } else createMembership.mutate({ committee_id: data?.id, ...(membership as any) })
+  }
 
   const handleClickAddMembershipButton = () => {
-    setSelectedMembership(undefined);
-  };
+    setSelectedMembership(undefined)
+  }
 
   const handleChangeMembership = (membership: Membership & { employee: Employee }) => {
-    handleOpenDialog(dialogsEnum.membership);
-    setSelectedMembership({ ...membership });
-  };
+    handleOpenDialog(dialogsEnum.membership)
+    setSelectedMembership({ ...membership })
+  }
 
   const propsActions = {
     committee: data!,
     handleClickAddMembershipButton,
     handleDeactivateCommittees: () => {}, //TODO
-    handleOpenDialog,
-  };
+    handleOpenDialog
+  }
 
   return (
     <AuthenticatedPage>
@@ -160,7 +160,7 @@ export default function CommitteeMembership() {
                   handleChangeMembership,
                   data.committee_template_id,
                   data.begin_date,
-                  data.end_date,
+                  data.end_date
                 )}
                 tableFilters={<TableToolbarFilter filters={propsFilters} />}
                 tableActions={<MembershipTableToolbarActions {...propsActions} />}
@@ -180,28 +180,28 @@ export default function CommitteeMembership() {
                 committee={{ id: data.id, begin_date: data.begin_date, end_date: data.end_date }}
               />
               <MembershipArrayDialog
-                members={data.members}
+                //members={data.members}
                 open={openDialog == dialogsEnum.membershipArray}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={(data) => console.log(data)}
-                //committee={{ id: data.id, begin_date: data.begin_date, end_date: data.end_date }}
+                committeeId={data.id}
               />
             </>
           )}
         </div>
       </PageLayout>
     </AuthenticatedPage>
-  );
+  )
 }
 
-export type CommitteeDataType = Committee & { members: Membership[] };
+export type CommitteeDataType = Committee & { members: Membership[] }
 
 const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
   const { data: countData, isLoading } = api.membership.groupByActivity.useQuery({
-    committee_id: data.id,
-  });
+    committee_id: data.id
+  })
 
-  const { active_count, total_count } = _formatCount(isLoading, countData);
+  const { active_count, total_count } = _formatCount(isLoading, countData)
   return (
     <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
       <AccordionItem value="item-1">
@@ -237,5 +237,5 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
         </AccordionContent>
       </AccordionItem>
     </Accordion>
-  );
-};
+  )
+}
