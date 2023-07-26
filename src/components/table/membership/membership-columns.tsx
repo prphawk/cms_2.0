@@ -34,7 +34,6 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row }) => {
       const value = row.original.employee?.name as string;
-      const is_temporary = row.original.is_temporary;
       const is_inactive = !row.original.is_active;
 
       return (

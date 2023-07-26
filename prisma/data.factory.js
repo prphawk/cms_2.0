@@ -46,7 +46,6 @@ class DataFactory {
       begin_date: new Date(),
       end_date: date,
       role: mockRole,
-      is_temporary: faker.datatype.boolean({ probability: 0.05 }),
       observations: faker.lorem.sentence(),
       is_active: faker.datatype.boolean({ probability: 0.75 }),
     };

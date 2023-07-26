@@ -80,14 +80,12 @@ export default function CommitteeMembership() {
   };
 
   const [filterA, setFilterA] = useState<FilterStateType>();
-  const [filterT, setFilterT] = useState<FilterStateType>();
   const [filterC, setFilterC] = useState<string[]>();
 
   const { data, isLoading, isError } = api.committee.getOne.useQuery(
     {
       id: param_id,
       is_active: filterA?.value,
-      is_temporary: filterT?.value,
       roles: filterC,
     },
     { enabled: !isNaN(param_id) },
@@ -117,12 +115,6 @@ export default function CommitteeMembership() {
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
         handleChangeActiveFilters('is_active', setFilterA, labels),
-    },
-    {
-      ...filterTProps,
-      activeFilters: filterT?.labels,
-      handleChangeActiveFilters: (labels) =>
-        handleChangeActiveFilters('is_temporary', setFilterT, labels),
     },
     {
       title: 'Cargo',
