@@ -30,6 +30,7 @@ import { MembershipHeaders } from '~/constants/headers'
 import { api } from '~/utils/api'
 import { Employee, Membership } from '@prisma/client'
 import React from 'react'
+import { Input } from '@/components/ui/input'
 
 export const MembershipArraySchema = z.object({
   roles: z.array(
@@ -110,11 +111,26 @@ export default function MembershipArrayDialog(props: {
             <div className="grid grid-cols-2 items-baseline justify-between gap-x-4">
               {fieldArray.fields.map((f, index) => (
                 //<RoleSelectFormItem key={f.id} index={index} form={form} fieldArray={fieldArray} />
-                <input
-                  {...form.register(`roles.${index}.role` as const)}
-                  placeholder="Enter a text.."
+
+                <FormField
                   defaultValue={f.role}
-                  className="border border-gray-300 p-2"
+                  key={f.id}
+                  control={form.control}
+                  name={`roles.${index}.role`}
+                  render={({ field }) => (
+                    <FormItem className="mt-1">
+                      <MyLabel>Role</MyLabel>
+                      <FormControl>
+                        <Input
+                          // required={props.required}
+                          className="placeholder:text-muted-foregroundPage"
+                          {...field}
+                          //placeholder={props.placeholder}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               ))}
             </div>
@@ -273,7 +289,12 @@ type FieldArrayType = UseFieldArrayReturn<
   'id'
 >
 
-const RoleSelectFormItem = (props: { form: any; fieldArray: FieldArrayType; index: number }) => {
+const RoleSelectFormItem = (props: {
+  defaultValue: string
+  form: any
+  fieldArray: FieldArrayType
+  index: number
+}) => {
   const [roles, setRoles] = useState<string[]>([])
 
   const { data, isLoading } = api.membership.getRoleOptions.useQuery()
@@ -288,7 +309,9 @@ const RoleSelectFormItem = (props: { form: any; fieldArray: FieldArrayType; inde
 
   return (
     <FormField
-      control={props.form.control}
+      defaultValue={props.defaultValue}
+      //{...props.form.register(`roles.${props.index}.role` as const)}
+      //control={props.form.control}
       name="role"
       render={({ field }) => (
         <FormItem className="flex w-full flex-col">
