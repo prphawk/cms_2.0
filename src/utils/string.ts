@@ -16,8 +16,14 @@ export const _isNumeric = (str?: string | string[]) => {
   ); // ...and ensure strings of whitespace fail
 };
 
-export const _addYears = (date: Date, years: number) => {
+export const _addYears = (original: Date, years: number) => {
+  const date = new Date(original);
   date.setFullYear(date.getFullYear() + years);
+  return date;
+};
+export const _addMonths = (original: Date, months: number) => {
+  const date = new Date(original);
+  date.setMonth(date.getMonth() + months);
   return date;
 };
 
@@ -36,4 +42,9 @@ export const _formatCount = (
     active_count: obj.active ?? 'Loading...',
     total_count: obj.active + obj.inactive ?? 'Loading...',
   };
+};
+
+export const _isDateComing = (date: Date) => {
+  const limitDate = _addMonths(new Date(), 2);
+  return date.getTime() <= limitDate.getTime();
 };

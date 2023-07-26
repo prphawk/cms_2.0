@@ -1,8 +1,16 @@
 import { Committee } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { CommitteeHeaders } from '~/constants/headers';
-import { _toLocaleString } from '~/utils/string';
-import { CircleOffIcon, EyeIcon, HourglassIcon, LucideIcon, MoreHorizontal } from 'lucide-react';
+import { _isDateComing, _toLocaleString } from '~/utils/string';
+import {
+  AlertOctagonIcon,
+  AlertTriangleIcon,
+  CircleOffIcon,
+  EyeIcon,
+  HourglassIcon,
+  LucideIcon,
+  MoreHorizontal,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,27 +20,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
 import DataTableColumnHeader from '~/components/table/data-table-column-header';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import Link from 'next/link';
 import { Routes } from '~/constants/routes';
-import { cn } from '@/lib/utils';
-import { ReactNode } from 'react';
+import { IconBadge } from '~/components/badge';
 
 interface IActiveCount {
   active_count: number;
   total_count: number;
 }
-
-export const IconBadge = ({ children, className }: { children: ReactNode; className?: string }) => {
-  return (
-    <Badge className="ml-2 px-1 py-0.5" variant="outline">
-      {children}
-    </Badge>
-  );
-};
 
 export const getCommitteesColumns = (
   handleDeactivateCommittees: (ids: number[]) => void,
@@ -55,18 +53,22 @@ export const getCommitteesColumns = (
       const is_inactive = !row.original.is_active;
 
       return (
-        <div className="inline-block w-full truncate">
-          <strong className="">{value}</strong>
-          {is_temporary && (
-            <IconBadge>
-              <HourglassIcon className="h-3 w-3 text-white" />
-            </IconBadge>
-          )}
-          {is_inactive && (
-            <IconBadge>
-              <CircleOffIcon className="h-3 w-3 text-white" />
-            </IconBadge>
-          )}
+        <div className="flex flex-row">
+          <div className="max-w-[300px] truncate">
+            <strong className="truncate">{value}</strong>
+          </div>
+          <span>
+            {is_temporary && (
+              <IconBadge>
+                <HourglassIcon className="h-3 w-3 text-white" />
+              </IconBadge>
+            )}
+            {is_inactive && (
+              <IconBadge>
+                <CircleOffIcon className="h-3 w-3 text-white" />
+              </IconBadge>
+            )}
+          </span>
         </div>
       );
     },
@@ -104,7 +106,14 @@ export const getCommitteesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = row.getValue(column.id) as Date;
-      return <div>{_toLocaleString(date)}</div>;
+      return (
+        <div className="flex flex-row ">
+          {_toLocaleString(date)}
+          <span className="self-center ">
+            {_isDateComing(date) && <AlertTriangleIcon className=" ml-2 h-4 w-4 text-yellow-500" />}
+          </span>
+        </div>
+      );
     },
   },
   {

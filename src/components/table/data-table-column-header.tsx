@@ -2,7 +2,14 @@ import { Column } from '@tanstack/react-table';
 
 import { cn } from '@/lib/utils';
 
-import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon, EyeOffIcon } from 'lucide-react';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ChevronsUpDownIcon,
+  EyeOffIcon,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -37,9 +44,9 @@ export default function DataTableColumnHeader<TData, TValue>({
           >
             <strong>{title}</strong>
             {column.getIsSorted() === 'desc' ? (
-              <ArrowDownIcon className="ml-2 h-4 w-4" />
+              <ChevronDownIcon className="ml-2 h-4 w-4" />
             ) : column.getIsSorted() === 'asc' ? (
-              <ArrowUpIcon className="ml-2 h-4 w-4" />
+              <ChevronUpIcon className="ml-2 h-4 w-4" />
             ) : (
               <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
             )}
