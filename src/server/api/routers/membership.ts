@@ -25,7 +25,6 @@ export const membershipRouter = createTRPCRouter({
         role: z.string(),
         begin_date: z.date(),
         end_date: z.date(),
-        is_temporary: z.optional(z.boolean()),
         observations: z.optional(z.string()),
       }),
     )
@@ -71,7 +70,6 @@ export const membershipRouter = createTRPCRouter({
         begin_date: z.date(),
         end_date: z.date(),
         role: z.string(),
-        is_temporary: z.boolean().optional(),
         observations: z.string().optional(),
       }),
     )

@@ -72,16 +72,10 @@ export const getTemplateRoleHistoryColumns =
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row }) => {
         const value = row.original.employee?.name as string;
-        //const is_temporary = row.original.is_temporary;
         const is_inactive = !row.original.is_active;
 
         return (
           <div>
-            {/* {is_temporary && (
-              <Badge className="mr-2 text-white" variant="outline">
-              Temporário(a)
-              </Badge>
-            )} */}
             {is_inactive && (
               <Badge className="mr-2 text-white" variant="outline">
                 Inativo(a)
@@ -198,16 +192,10 @@ export const getCommitteeRoleHistoryColumns =
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row }) => {
         const value = row.original.employee?.name as string;
-        //const is_temporary = row.original.is_temporary;
         const is_inactive = !row.original.is_active;
 
         return (
           <div>
-            {/* {is_temporary && (
-              <Badge className="mr-2 text-white" variant="outline">
-                Temporário(a)
-              </Badge>
-            )} */}
             {is_inactive && (
               <Badge className="mr-2 text-white" variant="outline">
                 Inativo(a)
