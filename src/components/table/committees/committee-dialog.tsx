@@ -99,7 +99,7 @@ export default function CommitteeDialog(props: {
   return (
     <Dialog open={props.open} modal={false}>
       {props.open && (
-        <div className="fixed inset-0 z-50 bg-background/20 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <div className="fixed inset-0 z-50 bg-background/10 backdrop-blur data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
       )}
       <DialogContent>
         <DialogHeader>
@@ -135,6 +135,12 @@ export default function CommitteeDialog(props: {
               placeholder="ex: Órgão"
               required
             />
+            <CommonFormItem
+              form={form}
+              fieldName="ordinance"
+              label={CommitteeHeaders.ORDINANCE}
+              placeholder="ex: Portaria"
+            />
             <div className="flex flex-row justify-between gap-x-4 pt-2">
               <DateFormItem
                 form={form}
@@ -150,12 +156,6 @@ export default function CommitteeDialog(props: {
                 required
               />
             </div>
-            <CommonFormItem
-              form={form}
-              fieldName="ordinance"
-              label={CommitteeHeaders.ORDINANCE}
-              placeholder="ex: Portaria"
-            />
             <ObservationsFormItem form={form} label={CommitteeHeaders.OBSERVATIONS} />
             <TemplateSelectFormItem form={form} />
             <DialogFooter>

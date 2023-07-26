@@ -41,15 +41,15 @@ Classe -> tipo de comissões
 
 algumas comissões nao tem data de fim
 
-cada membro tem uma portaria
+cada membro tem uma portaria ✅
 
-campo novo de portaria em membro
+campo novo de portaria em membro ✅
 
-criar órgao colegiado/comissões -> criar órgao
+criar órgao colegiado/comissões -> criar órgao ✅
 
-Campo órgão -> arranjar outro nome "Vinculação"
+Campo órgão -> arranjar outro nome "Vinculação" ✅ (virou vínculo)
 
-datas vao embaixo da portaria no formulário e tabela
+datas vao embaixo da portaria no formulário e tabela ✅
 
 só suceder membros ativos
 

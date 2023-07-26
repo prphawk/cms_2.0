@@ -2,7 +2,7 @@ import { Employee, Membership } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { CommitteeHeaders, MenuHeaders, MembershipHeaders } from '~/constants/headers';
 import { _toLocaleString } from '~/utils/string';
-import { MoreHorizontal } from 'lucide-react';
+import { CircleOffIcon, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { Router } from 'next/router';
 import { Routes } from '~/constants/routes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { EndDate } from '~/components/badge';
+import { EndDate, IconBadge } from '~/components/badge';
 
 export const getMembershipColumns = (
   handleChangeMembership: (membership: Membership & { employee: Employee }) => void,
@@ -39,17 +39,12 @@ ColumnDef<Membership & { employee: Employee }>[] => [
 
       return (
         <div>
-          {is_temporary && (
-            <Badge className="mr-2 text-white" variant="outline">
-              Temporário(a)
-            </Badge>
-          )}
-          {is_inactive && (
-            <Badge className="mr-2 text-white" variant="outline">
-              Inativo(a)
-            </Badge>
-          )}
           <strong>{value}</strong>
+          {is_inactive && (
+            <IconBadge>
+              <CircleOffIcon className="h-3 w-3 text-white" />
+            </IconBadge>
+          )}
         </div>
       );
     },

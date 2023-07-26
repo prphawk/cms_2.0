@@ -105,7 +105,7 @@ export default function MembershipDialog(props: {
   return (
     <Dialog open={props.open} modal={false}>
       {props.open && (
-        <div className="fixed inset-0 z-50 bg-background/20 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <div className="fixed inset-0 z-50 bg-background/10 backdrop-blur data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
       )}
       <DialogContent>
         <DialogHeader>
@@ -126,15 +126,22 @@ export default function MembershipDialog(props: {
           <span className="sr-only">Close</span>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2" id="formMembership">
-            <div className="grid grid-cols-2 items-baseline justify-between gap-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3" id="formMembership">
+            <div className="grid grid-cols-2 items-baseline justify-between gap-x-4">
               {/* {props.members?.map((e, index) => ( */}
               <EmployeeSelectFormItem
                 form={form}
                 disabled={props.member?.employee.id !== undefined}
               />
               <RoleSelectFormItem form={form} />
-
+            </div>
+            <CommonFormItem
+              form={form}
+              fieldName="ordinance"
+              label={MembershipHeaders.ORDINANCE}
+              placeholder="ex: Portaria"
+            />
+            <div className="grid grid-cols-2 items-baseline justify-between gap-x-4 pt-2">
               <DateFormItem
                 form={form}
                 fieldName="begin_date"
@@ -148,12 +155,6 @@ export default function MembershipDialog(props: {
                 required
               />
             </div>
-            <CommonFormItem
-              form={form}
-              fieldName="ordinance"
-              label={MembershipHeaders.ORDINANCE}
-              placeholder="ex: Portaria"
-            />
             <ObservationsFormItem form={form} label={MembershipHeaders.OBSERVATIONS} />
             <DialogFooter>
               <Button type="submit" form="formMembership">
