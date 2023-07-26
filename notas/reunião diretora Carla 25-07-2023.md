@@ -53,9 +53,9 @@ datas vao embaixo da portaria no formulário e tabela ✅
 
 só suceder membros ativos
 
-tirar membros temporarios
+tirar membros temporarios ✅
 
-bolinha e ampulheta, ativo e permantente sem ícone, no filtro n tem icone e onde tem fica no fnal do filtro
+bolinha e ampulheta, ativo e permantente sem ícone, no filtro n tem icone e onde tem fica no fnal do filtro ✅
 
 suceder -> importar tudo EXCETO portaria, datas e observaçoes
 importa todos os membros desativados SEM as portarias e datas -> ja preenche a portaria nova (precisa de formulário sim -> remover membro ou mudar o cargo apenas) formulário simples com lista de membro e cargo

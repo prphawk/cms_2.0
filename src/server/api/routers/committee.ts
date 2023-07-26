@@ -44,7 +44,6 @@ export const committeeRouter = createTRPCRouter({
             include: { employee: true },
             where: {
               is_active: input.is_active,
-              is_temporary: input.is_temporary,
               role: { in: input.roles },
             },
           },
