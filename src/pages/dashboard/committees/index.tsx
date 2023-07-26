@@ -16,7 +16,6 @@ import {
 import { _toLocaleString, _formatCount } from '~/utils/string';
 import { Dot } from '~/components/dot';
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions';
-import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { z } from 'zod';
 import { CommitteeHeaders, MenuHeaders } from '~/constants/headers';
 import { dialogsEnum } from './[id]';
@@ -26,6 +25,7 @@ import {
   filterTProps,
   handleChangeActiveFilters,
 } from '~/components/filters';
+import CommitteeDialog, { CommitteeSchema } from '~/components/dialogs/committee-dialog';
 
 export default function Committees() {
   const router = useRouter();

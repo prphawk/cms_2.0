@@ -16,23 +16,18 @@ import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string';
 import { Committee, Employee, Membership } from '@prisma/client';
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions';
 import { Dot } from '~/components/dot';
-import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { z } from 'zod';
-import MembershipDialog, {
-  MembershipSchema,
-} from '~/components/table/membership/membership-dialog';
+
 import { MembershipHeaders } from '~/constants/headers';
-import { CircleIcon, CircleOffIcon, RefreshCwIcon, RefreshCwOffIcon } from 'lucide-react';
-import {
-  FilterStateType,
-  filterAProps,
-  filterTProps,
-  handleChangeActiveFilters,
-} from '~/components/filters';
+import { FilterStateType, filterAProps, handleChangeActiveFilters } from '~/components/filters';
+import CommitteeDialog, { CommitteeSchema } from '~/components/dialogs/committee-dialog';
+import MembershipDialog, { MembershipSchema } from '~/components/dialogs/membership-dialog';
+import MembershipArrayDialog from '~/components/dialogs/membership-array-dialog';
 
 export enum dialogsEnum {
   committee,
   membership,
+  membershipArray,
 }
 
 export default function CommitteeMembership() {
@@ -73,7 +68,7 @@ export default function CommitteeMembership() {
     Membership & { employee: Employee }
   >();
 
-  const [openDialog, setOpenDialog] = useState(-1);
+  const [openDialog, setOpenDialog] = useState(dialogsEnum.membershipArray);
 
   const handleOpenDialog = (dialogEnum: number) => {
     setOpenDialog(dialogEnum);
@@ -183,6 +178,13 @@ export default function CommitteeMembership() {
                 handleOpenDialog={handleOpenDialog}
                 handleSave={handleSaveMembership}
                 committee={{ id: data.id, begin_date: data.begin_date, end_date: data.end_date }}
+              />
+              <MembershipArrayDialog
+                members={data.members}
+                open={openDialog == dialogsEnum.membershipArray}
+                handleOpenDialog={handleOpenDialog}
+                handleSave={(data) => console.log(data)}
+                //committee={{ id: data.id, begin_date: data.begin_date, end_date: data.end_date }}
               />
             </>
           )}

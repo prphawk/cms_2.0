@@ -25,12 +25,7 @@ import {
   CommandItem,
 } from '@/components/ui/command';
 import { useEffect, useState } from 'react';
-import {
-  CommonFormItem,
-  DateFormItem,
-  MyLabel,
-  ObservationsFormItem,
-} from '../committees/committee-dialog';
+import { CommonFormItem, DateFormItem, MyLabel, ObservationsFormItem } from './committee-dialog';
 import { MembershipHeaders } from '~/constants/headers';
 import { api } from '~/utils/api';
 import { Employee, Membership } from '@prisma/client';

@@ -2,9 +2,9 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 import { _deactivateMembershipsByCommittee } from './membership';
 import { prisma } from '~/server/db';
-import { CommitteeSchema } from '~/components/table/committees/committee-dialog';
 import { _getTemplateByName } from './template';
 import { Prisma } from '@prisma/client';
+import { CommitteeSchema } from '~/components/dialogs/committee-dialog';
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({

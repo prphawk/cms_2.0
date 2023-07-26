@@ -62,7 +62,13 @@ const ActionsMenuButton = (props: {
         </DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
         {props.committee.committee_template_id && (
-          <DropdownMenuItem disabled>Suceder órgão</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              props.handleOpenDialog(dialogsEnum.membershipArray);
+            }}
+          >
+            Suceder órgão
+          </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         {
