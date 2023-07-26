@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { Router } from 'next/router';
 import { Routes } from '~/constants/routes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { EndDate } from '~/components/badge';
 
 export const getMembershipColumns = (
   handleChangeMembership: (membership: Membership & { employee: Employee }) => void,
@@ -70,6 +71,15 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     },
   },
   {
+    accessorKey: 'ordinance',
+    id: MembershipHeaders.ORDINANCE,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string;
+      return <div>{value}</div>;
+    },
+  },
+  {
     accessorKey: 'begin_date',
     id: MembershipHeaders.BEGIN_DATE,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
@@ -84,7 +94,7 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = (row.getValue(column.id) as Date) || committee_end_date;
-      return <div>{_toLocaleString(date)}</div>; // pode retornar JSX tbm
+      return <EndDate value={date} isActive={row.original?.is_active} />;
     },
   },
   {

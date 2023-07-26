@@ -25,7 +25,7 @@ import { Separator } from '@radix-ui/react-dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import Link from 'next/link';
 import { Routes } from '~/constants/routes';
-import { IconBadge } from '~/components/badge';
+import { EndDate, IconBadge } from '~/components/badge';
 
 interface IActiveCount {
   active_count: number;
@@ -106,14 +106,7 @@ export const getCommitteesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const date = row.getValue(column.id) as Date;
-      return (
-        <div className="flex flex-row ">
-          {_toLocaleString(date)}
-          <span className="self-center ">
-            {_isDateComing(date) && <AlertTriangleIcon className=" ml-2 h-4 w-4 text-yellow-500" />}
-          </span>
-        </div>
-      );
+      return <EndDate value={date} isActive={row.original?.is_active} />;
     },
   },
   {

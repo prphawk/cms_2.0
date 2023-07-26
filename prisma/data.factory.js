@@ -42,6 +42,7 @@ class DataFactory {
     return {
       employee_id: mockEmployeeId,
       committee_id: mockCommitteeId,
+      ordinance: 'Portaria ' + faker.string.alphanumeric(5),
       begin_date: new Date(),
       end_date: date,
       role: mockRole,

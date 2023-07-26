@@ -52,6 +52,7 @@ export const MembershipSchema = z
     begin_date: z.coerce.date({ required_error: `${MembershipHeaders.BEGIN_DATE} é obrigatória` }),
     end_date: z.coerce.date({ required_error: `${MembershipHeaders.END_DATE} é obrigatória` }),
     observations: z.string().optional(),
+    ordinance: z.string().optional(),
   })
   .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
     message: `${MembershipHeaders.END_DATE} não pode ocorrer antes de ${MembershipHeaders.BEGIN_DATE}.`,
@@ -76,6 +77,8 @@ export default function MembershipDialog(props: {
       end_date: _toString(
         props.member?.end_date || props.committee.end_date || _addYears(new Date(), 1),
       ),
+      ordinance: props.member?.ordinance || '',
+
       role: props.member?.role || '',
       observations: props.member?.observations || '',
     };
@@ -145,6 +148,12 @@ export default function MembershipDialog(props: {
                 required
               />
             </div>
+            <CommonFormItem
+              form={form}
+              fieldName="ordinance"
+              label={MembershipHeaders.ORDINANCE}
+              placeholder="ex: Portaria"
+            />
             <ObservationsFormItem form={form} label={MembershipHeaders.OBSERVATIONS} />
             <DialogFooter>
               <Button type="submit" form="formMembership">

@@ -17,6 +17,7 @@ export class CommitteeHeaders {
 export class MembershipHeaders {
   public static NAME = 'Servidor(a)';
   public static ROLE = 'Cargo';
+  public static ORDINANCE = 'Portaria';
   public static BEGIN_DATE = 'Data de Início';
   public static END_DATE = 'Data de Fim';
   public static OBSERVATIONS = 'Observações';
