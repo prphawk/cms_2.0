@@ -110,28 +110,34 @@ export default function MembershipArrayDialog(props: {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3" id="formMembership">
             <div className="grid grid-cols-2 items-baseline justify-between gap-x-4">
               {fieldArray.fields.map((f, index) => (
-                //<RoleSelectFormItem key={f.id} index={index} form={form} fieldArray={fieldArray} />
-
-                <FormField
+                <RoleSelectFormItem
                   defaultValue={f.role}
                   key={f.id}
-                  control={form.control}
-                  name={`roles.${index}.role`}
-                  render={({ field }) => (
-                    <FormItem className="mt-1">
-                      <MyLabel>Role</MyLabel>
-                      <FormControl>
-                        <Input
-                          // required={props.required}
-                          className="placeholder:text-muted-foregroundPage"
-                          {...field}
-                          //placeholder={props.placeholder}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  index={index}
+                  form={form}
+                  fieldArray={fieldArray}
                 />
+
+                // <FormField
+                //   defaultValue={f.role}
+                //   key={f.id}
+                //   control={form.control}
+                //   name={`roles.${index}.role`}
+                //   render={({ field }) => (
+                //     <FormItem className="mt-1">
+                //       <MyLabel>Role</MyLabel>
+                //       <FormControl>
+                //         <Input
+                //           // required={props.required}
+                //           className="placeholder:text-muted-foregroundPage"
+                //           {...field}
+                //           //placeholder={props.placeholder}
+                //         />
+                //       </FormControl>
+                //       <FormMessage />
+                //     </FormItem>
+                //   )}
+                // />
               ))}
             </div>
 
@@ -310,9 +316,8 @@ const RoleSelectFormItem = (props: {
   return (
     <FormField
       defaultValue={props.defaultValue}
-      //{...props.form.register(`roles.${props.index}.role` as const)}
-      //control={props.form.control}
-      name="role"
+      control={props.form.control}
+      name={`roles.${props.index}.role` as const}
       render={({ field }) => (
         <FormItem className="flex w-full flex-col">
           <MyLabel required className="pb-1">
