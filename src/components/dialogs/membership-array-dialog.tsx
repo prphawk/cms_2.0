@@ -143,9 +143,9 @@ export default function MembershipArrayDialog(props: {
                 {fieldArray.fields.map((f, index) => (
                   <div key={f.id} className={'flex flex-row items-end justify-between gap-x-4'}>
                     <Button
-                      className="mb-1 h-5 w-5"
+                      className="mb-[7px] h-5 w-5"
                       onClick={() => fieldArray.remove(index)}
-                      variant="ghost"
+                      variant="outline"
                       size="icon"
                     >
                       <XIcon className="h-4 w-4" />
@@ -204,8 +204,8 @@ export default function MembershipArrayDialog(props: {
                 type="button"
                 onClick={() => fieldArray.append(newAppendedValue() as any)}
               >
-                <PlusIcon className="mr-1 h-5 w-5" />
-                Novo
+                <PlusIcon className="mr-2 h-5 w-5" />
+                Criar novo(a) membro(a)
               </Button>
               <Button size="sm" disabled={isLoading} type="submit" form="formMembership">
                 <SaveIcon className="mr-1 h-5 w-5" />
