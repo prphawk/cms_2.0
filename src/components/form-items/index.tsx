@@ -17,40 +17,6 @@ import { UseFormReturn } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 
-type ArrayFormType = UseFormReturn<
-  {
-    members: {
-      employee: {
-        name: string
-        id?: number | undefined
-      }
-      role: string
-      begin_date: Date
-      end_date: Date
-      observations?: string | undefined
-      ordinance?: string | undefined
-    }[]
-  },
-  any,
-  undefined
->
-
-type FormType = UseFormReturn<
-  {
-    employee: {
-      name: string
-      id?: number | undefined
-    }
-    role: string
-    begin_date: Date
-    end_date: Date
-    observations?: string | undefined
-    ordinance?: string | undefined
-  },
-  any,
-  undefined
->
-
 export const RoleSelectFormItem = (props: {
   form: any
   fieldName: 'role' | `members.${number}.role`
