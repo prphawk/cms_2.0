@@ -5,6 +5,7 @@ import MembershipArrayDialog, { MembershipArraySchema } from '../membership-arra
 import { useEffect, useState } from 'react'
 import CommitteeDialog, { CommitteeSchema } from '../committee-dialog'
 import { Committee } from '@prisma/client'
+import { _addDays, _addMonths } from '~/utils/string'
 
 export default function SuccessionDialogs(props: {
   open1st: boolean
@@ -18,10 +19,13 @@ export default function SuccessionDialogs(props: {
     is_active: true
   })
 
-  useEffect(() => {
-    console.log(data?.begin_date)
-    if (data && data.end_date) data.begin_date = new Date(data.end_date)
-  }, [data])
+  // useEffect(() => {
+  //   if (data && data.end_date) {
+  //     data.ordinance = null
+  //     data.observations = null
+  //     data.begin_date = new Date(_addDays(data.end_date, 1))
+  //   }
+  // }, [data])
 
   const [data1st, setData1st] = useState<z.infer<typeof CommitteeSchema>>()
 

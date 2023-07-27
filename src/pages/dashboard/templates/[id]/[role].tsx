@@ -1,29 +1,29 @@
-import { useRouter } from 'next/router';
-import AuthenticatedPage from '~/components/authenticated-page';
-import PageLayout, { TitleLayout } from '~/layout';
-import { api } from '~/utils/api';
-import { _isNumeric, _toLocaleString } from '~/utils/string';
-import { DataTable } from '~/components/table/data-table';
-import { MembershipHeaders } from '~/constants/headers';
-import { getTemplateRoleHistoryColumns } from '~/components/table/role-history/role-history-columns';
+import { useRouter } from 'next/router'
+import AuthenticatedPage from '~/components/authenticated-page'
+import PageLayout, { TitleLayout } from '~/layout'
+import { api } from '~/utils/api'
+import { _isNumeric, _toLocaleString } from '~/utils/string'
+import { DataTable } from '~/components/table/data-table'
+import { CommitteeHeaders, MembershipHeaders } from '~/constants/headers'
+import { getTemplateRoleHistoryColumns } from '~/components/table/role-history/role-history-columns'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { PropsWithChildren } from 'react';
+  AccordionTrigger
+} from '@/components/ui/accordion'
+import { PropsWithChildren } from 'react'
 
 export default function TemplateRoleHistory() {
-  const router = useRouter();
+  const router = useRouter()
 
-  const template_id = Number(router.query.id);
-  const role = router.query.role as string;
+  const template_id = Number(router.query.id)
+  const role = router.query.role as string
 
   const { data } = api.membership.getRoleHistory.useQuery({
     template_id,
-    role,
-  });
+    role
+  })
 
   return (
     <AuthenticatedPage>
@@ -45,22 +45,25 @@ export default function TemplateRoleHistory() {
         </div>
       </PageLayout>
     </AuthenticatedPage>
-  );
+  )
 }
 
 const TemplateHistoryDetails = (props: { template_id: number; role: string }) => {
   const { data, isLoading } = api.template.getOne.useQuery({
-    template_id: props.template_id,
-  });
+    template_id: props.template_id
+  })
   return (
-    <HistoryDetails isLoading={isLoading} title={`Classe ${data?.name}: "${props.role}"`}>
+    <HistoryDetails
+      isLoading={isLoading}
+      title={`${CommitteeHeaders.TEMPLATE} ${data?.name}: "${props.role}"`}
+    >
       Something something
     </HistoryDetails>
-  );
-};
+  )
+}
 //todo arrumar essa historia aqui
 export const HistoryDetails = (
-  props: { title: string; isLoading?: boolean } & PropsWithChildren,
+  props: { title: string; isLoading?: boolean } & PropsWithChildren
 ) => {
   return (
     <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
@@ -71,5 +74,5 @@ export const HistoryDetails = (
         <AccordionContent className="tracking-wide">{props.children}</AccordionContent>
       </AccordionItem>
     </Accordion>
-  );
-};
+  )
+}

@@ -78,7 +78,11 @@ export default function CommitteeMembership() {
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterC, setFilterC] = useState<string[]>()
 
-  const { data, isLoading, isError } = api.committee.getOne.useQuery(
+  const {
+    data: committeeData,
+    isLoading,
+    isError
+  } = api.committee.getOne.useQuery(
     {
       id: param_id,
       is_active: filterA?.value,
@@ -120,15 +124,19 @@ export default function CommitteeMembership() {
     }
   ]
 
-  const handleSaveCommittee = (committee: z.infer<typeof CommitteeSchema> & { id?: number }) => {
-    if (committee.id) updateCommittee.mutate(committee as any)
+  const handleSaveCommittee = (
+    committeeSchema: z.infer<typeof CommitteeSchema> & { id?: number }
+  ) => {
+    if (committeeData?.id) {
+      updateCommittee.mutate({ id: committeeData.id, ...committeeSchema })
+    }
   }
 
-  const handleSaveMembership = (membership: z.infer<typeof MembershipSchema> & { id?: number }) => {
-    if (!data?.id) return
-    if (membership.id) {
-      updateMembership.mutate({ committee_id: data?.id, ...(membership as any) })
-    } else createMembership.mutate({ committee_id: data?.id, ...(membership as any) })
+  const handleSaveMembership = (membershipSchema: z.infer<typeof MembershipSchema>) => {
+    if (!committeeData?.id) return
+    if (selectedMembership) {
+      updateMembership.mutate({ id: selectedMembership.id, ...membershipSchema })
+    } else createMembership.mutate({ committee_id: committeeData.id, ...membershipSchema })
   }
 
   const handleClickAddMembershipButton = () => {
@@ -141,7 +149,7 @@ export default function CommitteeMembership() {
   }
 
   const propsActions = {
-    committee: data!,
+    committee: committeeData!,
     handleClickAddMembershipButton,
     handleDeactivateCommittees: () => {}, //TODO
     handleOpenDialog
@@ -151,24 +159,24 @@ export default function CommitteeMembership() {
     <AuthenticatedPage>
       <PageLayout>
         <div className="committee container my-10 mb-auto text-white ">
-          {data && (
+          {committeeData && (
             <>
-              <CommitteeDetails data={data} />
+              <CommitteeDetails data={committeeData} />
               <DataTable
                 isLoading={isLoading}
-                data={data?.members || []}
+                data={committeeData?.members || []}
                 columns={getMembershipColumns(
                   handleChangeMembership,
-                  data.committee_template_id,
-                  data.begin_date,
-                  data.end_date
+                  committeeData.committee_template_id,
+                  committeeData.begin_date,
+                  committeeData.end_date
                 )}
                 tableFilters={<TableToolbarFilter filters={propsFilters} />}
                 tableActions={<MembershipTableToolbarActions {...propsActions} />}
                 column={MembershipHeaders.NAME}
               />
               <CommitteeDialog
-                committee={data}
+                committee={committeeData}
                 open={openDialog == dialogsEnum.committee}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={handleSaveCommittee}
@@ -178,14 +186,18 @@ export default function CommitteeMembership() {
                 open={openDialog == dialogsEnum.membership}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={handleSaveMembership}
-                committee={{ id: data.id, begin_date: data.begin_date, end_date: data.end_date }}
+                committee={{
+                  id: committeeData.id,
+                  begin_date: committeeData.begin_date,
+                  end_date: committeeData.end_date
+                }}
               />
               <SuccessionDialogs
                 open1st={openDialog == dialogsEnum.succession1st}
                 open2nd={openDialog == dialogsEnum.succession2nd}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={(data) => console.log(data)}
-                committeeId={data.id}
+                committeeId={committeeData.id}
               />
             </>
           )}

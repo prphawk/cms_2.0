@@ -58,7 +58,7 @@ export default function MembershipDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: number) => void
   member?: Membership & { employee: Employee }
-  handleSave: (data: z.infer<typeof MembershipSchema>) => void
+  handleSave: (membershipSchema: z.infer<typeof MembershipSchema>) => void
   committee: { id: number; begin_date: Date | null; end_date: Date | null }
 }) {
   const myDefaultValues = () => {
@@ -73,7 +73,6 @@ export default function MembershipDialog(props: {
         props.member?.end_date || props.committee.end_date || _addYears(new Date(), 1)
       ),
       ordinance: props.member?.ordinance || '',
-
       observations: props.member?.observations || ''
     }
   }
@@ -83,11 +82,11 @@ export default function MembershipDialog(props: {
   })
 
   useEffect(() => {
-    if (props.open) form.reset(myDefaultValues as any)
+    if (props.open) form.reset(myDefaultValues() as any)
   }, [props.open, props.member])
 
-  function onSubmit(data: z.infer<typeof MembershipSchema>) {
-    props.handleSave(data)
+  function onSubmit(membershipSchema: z.infer<typeof MembershipSchema>) {
+    props.handleSave(membershipSchema)
     onClose()
   }
 

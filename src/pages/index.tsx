@@ -1,39 +1,39 @@
-import { useSession } from 'next-auth/react';
-import Head from 'next/head';
-import PageLayout, { TextLayout } from '~/layout';
-import { AuthButton } from '~/components/login';
-import { Routes } from '~/constants/routes';
-import LoadingLayout from '~/components/loading-layout';
-import AuthenticatedPage from '~/components/authenticated-page';
-import React from 'react';
-import { cn } from '@/lib/utils';
-import { MenuHeaders } from '~/constants/headers';
+import { useSession } from 'next-auth/react'
+import Head from 'next/head'
+import PageLayout, { TextLayout } from '~/layout'
+import { AuthButton } from '~/components/login'
+import { Routes } from '~/constants/routes'
+import LoadingLayout from '~/components/loading-layout'
+import AuthenticatedPage from '~/components/authenticated-page'
+import React from 'react'
+import { cn } from '@/lib/utils'
+import { MenuHeaders } from '~/constants/headers'
 
 export default function Home() {
-  const { status } = useSession();
+  const { status } = useSession()
 
   const components = [
     {
       title: MenuHeaders.COMMITTEES,
       href: Routes.COMMITTEES,
-      description: 'Coisas muito legais relacionadas as órgãos colegiados e comissões do INF.',
+      description: 'Coisas muito legais relacionadas as órgãos colegiados e comissões do INF.'
     },
     {
       title: MenuHeaders.EMPLOYEES,
       href: Routes.EMPLOYEES,
-      description: 'Under construction.',
+      description: 'Under construction.'
     },
     {
-      title: 'Classes',
+      title: 'Tipos',
       href: Routes.TEMPLATES,
-      description: 'Under construction.',
+      description: 'Under construction.'
     },
     {
       title: 'Configurações',
       href: Routes.SETTINGS,
-      description: 'Under construction.',
-    },
-  ];
+      description: 'Under construction.'
+    }
+  ]
   return (
     <>
       <Head>
@@ -57,19 +57,19 @@ export default function Home() {
         </PageLayout>
       </AuthenticatedPage>
     </>
-  );
+  )
 }
 
 const ListItem = ({
   className,
   title,
   children,
-  href,
+  href
 }: {
-  className?: string;
-  title: string;
-  children: any;
-  href: string;
+  className?: string
+  title: string
+  children: any
+  href: string
 }) => {
   return (
     <a
@@ -78,11 +78,11 @@ const ListItem = ({
         'w-64',
         'rounded-lg bg-transparent px-5 py-3 font-semibold text-white no-underline transition hover:bg-white/10',
         'block select-none font-light outline outline-1 outline-[#ffffff4f]',
-        className,
+        className
       )} //space-y-1 rounded-md bg-transparent p-3 leading-none transition-colors no-underline hover:bg-background/10 focus:bg-background/20
     >
       <div className="mb-5 text-2xl leading-none tracking-normal text-white">{title}</div>
       <p className="line-clamp-2 leading-snug text-muted-foregroundPage">{children}</p>
     </a>
-  );
-};
+  )
+}
