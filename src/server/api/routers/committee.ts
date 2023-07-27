@@ -134,6 +134,7 @@ export const committeeRouter = createTRPCRouter({
     .input(CommitteeSchema.innerType().merge(z.object({ id: z.number() })))
     .mutation(async ({ ctx, input }) => {
       const committee: Prisma.CommitteeUpdateInput = {
+        //TODO refactor pls
         bond: input.bond,
         name: input.name,
         begin_date: input.begin_date,
@@ -144,6 +145,7 @@ export const committeeRouter = createTRPCRouter({
       if (!input.committee_template_name) {
         committee.committee_template = { disconnect: true }
       } else {
+        //TODO fazer a mesma coisa q isso pra poder dar a chance de editar um employee numa membership
         const templateSearch = await _getTemplateByName(input.committee_template_name)
         committee.committee_template = templateSearch
           ? { connect: { id: templateSearch.id } }

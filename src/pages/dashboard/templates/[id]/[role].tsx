@@ -20,10 +20,13 @@ export default function TemplateRoleHistory() {
   const template_id = Number(router.query.id)
   const role = router.query.role as string
 
-  const { data } = api.membership.getRoleHistory.useQuery({
-    template_id,
-    role
-  })
+  const { data } = api.membership.getRoleHistory.useQuery(
+    {
+      template_id,
+      role
+    },
+    { enabled: !isNaN(template_id) && role != undefined }
+  )
 
   return (
     <AuthenticatedPage>

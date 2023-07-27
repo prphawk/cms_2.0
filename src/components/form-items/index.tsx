@@ -1,11 +1,10 @@
 import { Button } from '@/components/ui/button'
-import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form'
+import { FormField, FormItem, FormControl, FormMessage, FormLabel } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
 import { ChevronsUpDownIcon, CheckIcon } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, PropsWithChildren } from 'react'
 import { MembershipHeaders } from '~/constants/headers'
 import { api } from '~/utils/api'
-import { MyLabel } from '../dialogs/committee-dialog'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   Command,
@@ -15,8 +14,10 @@ import {
   CommandItem
 } from '@/components/ui/command'
 import { UseFormReturn } from 'react-hook-form'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
 
-type FormType = UseFormReturn<
+type ArrayFormType = UseFormReturn<
   {
     members: {
       employee: {
@@ -34,9 +35,25 @@ type FormType = UseFormReturn<
   undefined
 >
 
+type FormType = UseFormReturn<
+  {
+    employee: {
+      name: string
+      id?: number | undefined
+    }
+    role: string
+    begin_date: Date
+    end_date: Date
+    observations?: string | undefined
+    ordinance?: string | undefined
+  },
+  any,
+  undefined
+>
+
 export const RoleSelectFormItem = (props: {
-  form: FormType
-  fieldName: `members.${number}.role`
+  form: any
+  fieldName: 'role' | `members.${number}.role`
   hideLabel?: boolean
 }) => {
   const [roles, setRoles] = useState<string[]>([])
@@ -147,8 +164,8 @@ type EmployeeDataType = {
 }
 
 export const EmployeeSelectFormItem = (props: {
-  form: FormType
-  fieldName: `members.${number}.employee`
+  form: any
+  fieldName: `members.${number}.employee` | 'employee'
   disabled?: boolean
   hideLabel?: boolean
 }) => {
@@ -254,5 +271,91 @@ export const EmployeeSelectFormItem = (props: {
         </FormItem>
       )}
     />
+  )
+}
+
+export const ObservationsFormItem = (props: { form: any; label: string; fieldName: string }) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name={props.fieldName}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{props.label}</FormLabel>
+          <FormControl>
+            <Textarea
+              rows={1}
+              placeholder="Something something..."
+              className="resize-y placeholder:text-muted-foregroundPage"
+              {...field}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  )
+}
+
+export const MyLabel = (props: { required?: boolean; className?: string } & PropsWithChildren) => {
+  return (
+    <FormLabel className={props.className}>
+      {props.children}
+      {props.required ? <span className="ml-1 text-red-700">*</span> : <></>}
+    </FormLabel>
+  )
+}
+
+export const CommonFormItem = (props: {
+  form: any
+  fieldName: string
+  label: string
+  placeholder?: string
+  required?: boolean
+  className?: string
+  hideLabel?: boolean
+}) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name={props.fieldName}
+      render={({ field }) => (
+        <FormItem className={cn('mt-1', props.className)}>
+          {!props.hideLabel && <MyLabel required={props.required}>{props.label}</MyLabel>}{' '}
+          <FormControl>
+            <Input
+              // required={props.required}
+              className="placeholder:text-muted-foregroundPage"
+              {...field}
+              placeholder={props.placeholder}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  )
+}
+
+export const DateFormItem = (props: {
+  form: any
+  fieldName: string
+  label: string
+  required?: boolean
+  className?: string
+  hideLabel?: boolean
+}) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name={props.fieldName}
+      render={({ field }) => (
+        <FormItem className={cn('flex w-full flex-col', props.className)}>
+          {!props.hideLabel && <MyLabel required={props.required}>{props.label}</MyLabel>}
+          <Input type="date" {...field} />
+          <FormMessage />
+        </FormItem>
+      )}
+    ></FormField>
   )
 }

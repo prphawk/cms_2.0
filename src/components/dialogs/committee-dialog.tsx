@@ -18,7 +18,6 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { Committee } from '@prisma/client'
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -28,7 +27,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { cn } from '@/lib/utils'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Command,
   CommandEmpty,
@@ -36,8 +34,9 @@ import {
   CommandInput,
   CommandItem
 } from '@/components/ui/command'
-import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { api } from '~/utils/api'
+import { CommonFormItem, DateFormItem, ObservationsFormItem } from '../form-items'
 
 export const CommitteeSchema = z
   .object({
@@ -110,9 +109,10 @@ export default function CommitteeDialog(props: {
           <DialogDescription>
             {props.succession ? (
               <>
-                {`Nova instância de ${props.committee?.name}: ${_toLocaleString(
+                {`Nova instância de ${props.committee?.name} (${_toLocaleString(
                   props.committee?.begin_date
                 )} a ${_toLocaleString(props.committee?.end_date)}`}
+                )
               </>
             ) : (
               props.committee && (
@@ -285,92 +285,6 @@ const TemplateSelectFormItem = (props: { form: any; disabled?: boolean }) => {
             Instâncias de comissões <strong>permanentes</strong> devem pertencer a sua{' '}
             {CommitteeHeaders.TEMPLATE}.
           </FormDescription>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
-}
-
-export const MyLabel = (props: { required?: boolean; className?: string } & PropsWithChildren) => {
-  return (
-    <FormLabel className={props.className}>
-      {props.children}
-      {props.required ? <span className="ml-1 text-red-700">*</span> : <></>}
-    </FormLabel>
-  )
-}
-
-export const CommonFormItem = (props: {
-  form: any
-  fieldName: string
-  label: string
-  placeholder?: string
-  required?: boolean
-  className?: string
-  hideLabel?: boolean
-}) => {
-  return (
-    <FormField
-      control={props.form.control}
-      name={props.fieldName}
-      render={({ field }) => (
-        <FormItem className={cn('mt-1', props.className)}>
-          {!props.hideLabel && <MyLabel required={props.required}>{props.label}</MyLabel>}{' '}
-          <FormControl>
-            <Input
-              // required={props.required}
-              className="placeholder:text-muted-foregroundPage"
-              {...field}
-              placeholder={props.placeholder}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
-}
-
-export const DateFormItem = (props: {
-  form: any
-  fieldName: string
-  label: string
-  required?: boolean
-  className?: string
-  hideLabel?: boolean
-}) => {
-  return (
-    <FormField
-      control={props.form.control}
-      name={props.fieldName}
-      render={({ field }) => (
-        <FormItem className={cn('flex w-full flex-col', props.className)}>
-          {!props.hideLabel && <MyLabel required={props.required}>{props.label}</MyLabel>}
-          <Input type="date" {...field} />
-          <FormMessage />
-        </FormItem>
-      )}
-    ></FormField>
-  )
-}
-
-export const ObservationsFormItem = (props: { form: any; label: string; fieldName: string }) => {
-  return (
-    <FormField
-      control={props.form.control}
-      name={props.fieldName}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{props.label}</FormLabel>
-          <FormControl>
-            <Textarea
-              rows={1}
-              placeholder="Something something..."
-              className="resize-y placeholder:text-muted-foregroundPage"
-              {...field}
-            />
-          </FormControl>
           <FormMessage />
         </FormItem>
       )}
