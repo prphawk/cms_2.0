@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input'
 import { Committee } from '@prisma/client'
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { CommitteeHeaders } from '~/constants/headers'
+import { CommitteeHeaders, MenuHeaders } from '~/constants/headers'
 import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -56,7 +56,7 @@ export const CommitteeSchema = z
     committee_template_name: z.string().optional()
   })
   .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
-    message: `${CommitteeHeaders.END_DATE} não pode ocorrer antes de ${CommitteeHeaders.BEGIN_DATE}.`,
+    message: `${CommitteeHeaders.END_DATE} não pode ser igual/antes de ${CommitteeHeaders.BEGIN_DATE}.`,
     path: ['end_date']
   })
 
@@ -65,6 +65,7 @@ export default function CommitteeDialog(props: {
   handleOpenDialog: (dialogEnum: number) => void
   committee?: Committee & { committee_template?: { name: string } | null }
   handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void
+  succession?: boolean
 }) {
   const myDefaultValues = () => {
     return {
@@ -83,12 +84,12 @@ export default function CommitteeDialog(props: {
   })
 
   useEffect(() => {
-    form.reset(myDefaultValues as any)
+    if (props.open) form.reset(myDefaultValues() as any)
   }, [props.open])
 
   function onSubmit(data: z.infer<typeof CommitteeSchema>) {
-    props.handleSave({ id: props.committee?.id || undefined, ...data })
     onClose()
+    props.handleSave({ id: props.committee?.id || undefined, ...data })
   }
 
   function onClose() {
@@ -103,12 +104,22 @@ export default function CommitteeDialog(props: {
       )}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{props.committee ? 'Editar' : 'Criar'} Órgão Colegiado</DialogTitle>
+          <DialogTitle>{`${
+            props.succession ? 'Sucessão de ' : props.committee ? 'Editar' : 'Criar'
+          } ${MenuHeaders.COMMITTEE}`}</DialogTitle>
           <DialogDescription>
-            {props.committee && (
+            {props.succession ? (
               <>
-                Ao editar, os dados anteriores do órgão serão <strong>descartados</strong>.
+                {`Nova instância de ${props.committee?.name}: ${_toLocaleString(
+                  props.committee?.begin_date
+                )} a ${_toLocaleString(props.committee?.end_date)}`}
               </>
+            ) : (
+              props.committee && (
+                <>
+                  Ao editar, os dados anteriores do órgão serão <strong>descartados</strong>.
+                </>
+              )
             )}
           </DialogDescription>
         </DialogHeader>
@@ -152,7 +163,6 @@ export default function CommitteeDialog(props: {
                 form={form}
                 fieldName="end_date"
                 label={CommitteeHeaders.END_DATE}
-                //dontSelectBefore={form.getValues('begin_date')}
                 required
               />
             </div>
@@ -161,10 +171,10 @@ export default function CommitteeDialog(props: {
               form={form}
               label={CommitteeHeaders.OBSERVATIONS}
             />
-            <TemplateSelectFormItem form={form} />
+            <TemplateSelectFormItem form={form} disabled={props.succession} />
             <DialogFooter>
               <Button type="submit" form="formCommittee">
-                Salvar
+                {props.succession ? 'Próximo' : 'Salvar'}
               </Button>
             </DialogFooter>
           </form>
@@ -174,7 +184,7 @@ export default function CommitteeDialog(props: {
   )
 }
 
-const TemplateSelectFormItem = (props: { form: any }) => {
+const TemplateSelectFormItem = (props: { form: any; disabled?: boolean }) => {
   const [templates, setTemplates] = useState<string[]>([])
 
   const { data, isLoading } = api.template.getAll.useQuery()
@@ -198,6 +208,7 @@ const TemplateSelectFormItem = (props: { form: any }) => {
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
+                  disabled={props.disabled}
                   variant="outline"
                   role="combobox"
                   className={cn(

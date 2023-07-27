@@ -22,12 +22,13 @@ import { MembershipHeaders } from '~/constants/headers'
 import { FilterStateType, filterAProps, handleChangeActiveFilters } from '~/components/filters'
 import CommitteeDialog, { CommitteeSchema } from '~/components/dialogs/committee-dialog'
 import MembershipDialog, { MembershipSchema } from '~/components/dialogs/membership-dialog'
-import MembershipArrayDialog from '~/components/dialogs/membership-array-dialog'
+import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 
 export enum dialogsEnum {
   committee,
   membership,
-  membershipArray
+  succession1st,
+  succession2nd
 }
 
 export default function CommitteeMembership() {
@@ -68,7 +69,7 @@ export default function CommitteeMembership() {
     Membership & { employee: Employee }
   >()
 
-  const [openDialog, setOpenDialog] = useState(dialogsEnum.membershipArray)
+  const [openDialog, setOpenDialog] = useState(-1)
 
   const handleOpenDialog = (dialogEnum: number) => {
     setOpenDialog(dialogEnum)
@@ -179,9 +180,9 @@ export default function CommitteeMembership() {
                 handleSave={handleSaveMembership}
                 committee={{ id: data.id, begin_date: data.begin_date, end_date: data.end_date }}
               />
-              <MembershipArrayDialog
-                //members={data.members}
-                open={openDialog == dialogsEnum.membershipArray}
+              <SuccessionDialogs
+                open1st={openDialog == dialogsEnum.succession1st}
+                open2nd={openDialog == dialogsEnum.succession2nd}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={(data) => console.log(data)}
                 committeeId={data.id}

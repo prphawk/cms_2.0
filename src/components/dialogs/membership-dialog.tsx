@@ -53,7 +53,6 @@ export const MembershipSchema = z
     message: `${MembershipHeaders.END_DATE} não pode ocorrer antes de ${MembershipHeaders.BEGIN_DATE}.`,
     path: ['end_date']
   })
-//.array();
 
 export default function MembershipDialog(props: {
   open: boolean
@@ -84,7 +83,7 @@ export default function MembershipDialog(props: {
   })
 
   useEffect(() => {
-    form.reset(myDefaultValues as any)
+    if (props.open) form.reset(myDefaultValues as any)
   }, [props.open, props.member])
 
   function onSubmit(data: z.infer<typeof MembershipSchema>) {
