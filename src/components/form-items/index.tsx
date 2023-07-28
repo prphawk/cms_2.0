@@ -13,7 +13,6 @@ import {
   CommandInput,
   CommandItem
 } from '@/components/ui/command'
-import { UseFormReturn } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 
@@ -36,7 +35,6 @@ export const RoleSelectFormItem = (props: {
 
   return (
     <FormField
-      //defaultValue={props.defaultValue}
       control={props.form.control}
       name={props.fieldName}
       render={({ field }) => (
@@ -124,17 +122,17 @@ export const RoleSelectFormItem = (props: {
   )
 }
 
-type EmployeeDataType = {
-  id?: number
-  name: string
-}
-
 export const EmployeeSelectFormItem = (props: {
   form: any
   fieldName: `members.${number}.employee` | 'employee'
   disabled?: boolean
   hideLabel?: boolean
 }) => {
+  type EmployeeDataType = {
+    id?: number
+    name: string
+  }
+
   const [employees, setEmployees] = useState<EmployeeDataType[]>([])
 
   const { data, isLoading } = api.employee.getOptions.useQuery()

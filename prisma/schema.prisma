@@ -75,8 +75,8 @@ model Committee {
   id    						    Int                 @default(autoincrement()) @id
   bond  						    String              //Vínculo 
   name  						    String              //Órgão
-  begin_date 				    DateTime?
-  end_date 					    DateTime?
+  begin_date 				    DateTime
+  end_date 					    DateTime
   ordinance 				    String?             //Portaria 
   observations 			    String?
   is_active 				    Boolean             @default(true)

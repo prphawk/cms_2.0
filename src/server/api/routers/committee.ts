@@ -3,8 +3,10 @@ import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 import { _deactivateMembershipsByCommittee } from './membership'
 import { prisma } from '~/server/db'
 import { _getTemplateByName } from './template'
-import { Prisma } from '@prisma/client'
+import { Membership, Prisma } from '@prisma/client'
 import { CommitteeSchema } from '~/components/dialogs/committee-dialog'
+import { MembershipArraySchema } from '~/components/dialogs/membership-array-dialog'
+import { MembershipSchema } from '~/components/dialogs/membership-dialog'
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({
@@ -126,6 +128,63 @@ export const committeeRouter = createTRPCRouter({
     }
     return ctx.prisma.committee.create({ data: committee })
   }),
+
+  succession: protectedProcedure
+    .input(
+      CommitteeSchema.innerType()
+        .merge(MembershipArraySchema)
+        .merge(
+          z.object({
+            committee_template: z.object({
+              id: z.number(),
+              name: z.string()
+            })
+          })
+        )
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { committee_template, members, committee_template_name, ...data } = input
+
+      const reduce = members.reduce(
+        (obj, curr) => {
+          //prisma complains about the additional employee object
+          const { employee, ...rest } = curr
+          obj[curr.employee.id ? 'membershipsWithEmployee' : 'membershipsWithoutEmployee'].push(
+            curr.employee.id
+              ? { employee_id: curr.employee.id, ...rest }
+              : { employee_id: curr.employee.id, employee, ...rest }
+          )
+          return obj
+        },
+        {
+          membershipsWithEmployee: new Array<any>(),
+          membershipsWithoutEmployee: new Array<any>()
+        }
+      )
+
+      const committee = await ctx.prisma.committee.create({
+        data: {
+          ...data,
+          committee_template: { connect: { id: committee_template.id } },
+          members: { createMany: { data: reduce.membershipsWithEmployee } }
+        }
+      })
+
+      const promises = reduce.membershipsWithoutEmployee.map((m) => {
+        const { employee, employee_id, ...rest } = m
+        return ctx.prisma.membership.create({
+          data: {
+            ...rest,
+            employee: { create: { name: employee.name } },
+            committee: { connect: { id: committee.id } }
+          }
+        })
+      })
+
+      await Promise.all(promises)
+
+      return committee
+    }),
 
   // TODO adicionar as nested?
   // members?: MembershipCreateNestedManyWithoutCommitteeInput

@@ -36,7 +36,7 @@ export default function MembershipArrayDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: number) => void
   handleSave: (data: z.infer<typeof MembershipArraySchema>) => void
-  committee?: z.infer<typeof CommitteeSchema>
+  committee?: Committee
   members: (Membership & { employee: Employee })[]
 }) {
   const newAppendedValue = () => {
