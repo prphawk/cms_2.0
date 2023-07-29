@@ -9,7 +9,8 @@ import {
   EyeIcon,
   HourglassIcon,
   LucideIcon,
-  MoreHorizontal
+  MoreHorizontal,
+  Users2Icon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -161,7 +162,7 @@ export const getCommitteesColumns = (
             className="h-8 w-8 p-0"
           >
             <span className="sr-only">Ver detalhes</span>
-            <EyeIcon className="h-4 w-4" />
+            <Users2Icon className="h-4 w-4" />
           </Button>
           <CommitteeActionsMenuColumn
             committee={committee}

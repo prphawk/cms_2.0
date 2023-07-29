@@ -3,10 +3,9 @@ import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 import { _deactivateMembershipsByCommittee } from './membership'
 import { prisma } from '~/server/db'
 import { _getTemplateByName } from './template'
-import { Membership, Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { CommitteeSchema } from '~/components/dialogs/committee-dialog'
 import { MembershipArraySchema } from '~/components/dialogs/membership-array-dialog'
-import { MembershipSchema } from '~/components/dialogs/membership-dialog'
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({
@@ -147,11 +146,10 @@ export const committeeRouter = createTRPCRouter({
 
       const reduce = members.reduce(
         (obj, curr) => {
-          //prisma complains about the additional employee object
           const { employee, ...rest } = curr
           obj[curr.employee.id ? 'membershipsWithEmployee' : 'membershipsWithoutEmployee'].push(
             curr.employee.id
-              ? { employee_id: curr.employee.id, ...rest }
+              ? { employee_id: curr.employee.id, ...rest } //prisma complains about the additional employee object
               : { employee_id: curr.employee.id, employee, ...rest }
           )
           return obj
