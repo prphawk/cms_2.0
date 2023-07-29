@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { MenuHeaders } from '~/constants/headers'
 
 export default function MembershipTableToolbarActions(props: {
   committee: CommitteeDataType
@@ -58,28 +59,29 @@ const ActionsMenuButton = (props: {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => props.handleOpenDialog(dialogsEnum.committee)}>
-          Editar órgão
+          Editar {MenuHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
         {props.committee.committee_template_id && (
           <DropdownMenuItem
             onClick={() => {
-              props.handleOpenDialog(dialogsEnum.succession1st)
+              props.handleOpenDialog(dialogsEnum.succession)
             }}
           >
-            Suceder órgão
+            Suceder {MenuHeaders.COMMITTEE.toLowerCase()}
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         {
           <DropdownMenuItem
+            danger
             disabled={!props.committee.is_active}
             onClick={() => {
               props.handleDeactivateCommittees([props.committee.id])
               props.committee.is_active = false
             }}
           >
-            Desativar órgão
+            Encerrar {MenuHeaders.COMMITTEE.toLowerCase()}
           </DropdownMenuItem>
         }
       </DropdownMenuContent>

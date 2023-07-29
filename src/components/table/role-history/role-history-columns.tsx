@@ -1,30 +1,30 @@
-import { Committee, Employee, Membership } from '@prisma/client';
-import { ColumnDef } from '@tanstack/react-table';
-import { CommitteeHeaders, MenuHeaders, MembershipHeaders } from '~/constants/headers';
-import { _toLocaleString } from '~/utils/string';
-import { EyeIcon, MoreHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Committee, Employee, Membership } from '@prisma/client'
+import { ColumnDef } from '@tanstack/react-table'
+import { CommitteeHeaders, MenuHeaders, MembershipHeaders } from '~/constants/headers'
+import { _toLocaleString } from '~/utils/string'
+import { EyeIcon, MoreHorizontal } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import DataTableColumnHeader from '~/components/table/data-table-column-header';
-import Link from 'next/link';
-import { Router } from 'next/router';
-import { Routes } from '~/constants/routes';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Separator } from '@/components/ui/separator';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
+import DataTableColumnHeader from '~/components/table/data-table-column-header'
+import Link from 'next/link'
+import { Router } from 'next/router'
+import { Routes } from '~/constants/routes'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Separator } from '@/components/ui/separator'
 
 export const CommitteeActionsMenuColumn = ({
-  committee,
+  committee
 }: //handleDeactivateCommittees,
 {
-  committee: Committee;
+  committee: Committee
   //handleDeactivateCommittees: (ids: number[]) => void;
 }) => {
   return (
@@ -47,17 +47,18 @@ export const CommitteeActionsMenuColumn = ({
         )}
         <DropdownMenuItem
           disabled
+          danger
           // onClick={() => {
           //   handleDeactivateCommittees([committee.id]);
           //   committee.is_active = false;
           // }}
         >
-          Desativar órgão
+          Encerrar {MenuHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}
 
 export const getTemplateRoleHistoryColumns =
   (): //   handleChangeMembership: (membership: Membership & { employee: Employee }) => void,
@@ -71,8 +72,8 @@ export const getTemplateRoleHistoryColumns =
       id: MembershipHeaders.NAME,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row }) => {
-        const value = row.original.employee?.name as string;
-        const is_inactive = !row.original.is_active;
+        const value = row.original.employee?.name as string
+        const is_inactive = !row.original.is_active
 
         return (
           <div>
@@ -83,8 +84,8 @@ export const getTemplateRoleHistoryColumns =
             )}
             <strong>{value}</strong>
           </div>
-        );
-      },
+        )
+      }
     },
     {
       accessorKey: 'committee.name',
@@ -92,8 +93,8 @@ export const getTemplateRoleHistoryColumns =
       id: MenuHeaders.COMMITTEE,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row, column }) => {
-        const value = row.getValue(column.id) as string;
-        const is_inactive = !row.original.committee.is_active;
+        const value = row.getValue(column.id) as string
+        const is_inactive = !row.original.committee.is_active
 
         return (
           <div>
@@ -104,33 +105,33 @@ export const getTemplateRoleHistoryColumns =
             )}
             {value}
           </div>
-        );
-      },
+        )
+      }
     },
     {
       accessorKey: 'begin_date',
       id: MembershipHeaders.BEGIN_DATE,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row, column }) => {
-        const date = row.getValue(column.id) as Date;
-        return <div>{_toLocaleString(date)}</div>;
-      },
+        const date = row.getValue(column.id) as Date
+        return <div>{_toLocaleString(date)}</div>
+      }
     },
     {
       accessorKey: 'end_date',
       id: MembershipHeaders.END_DATE,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row, column }) => {
-        const date = row.getValue(column.id) as Date;
-        return <div>{_toLocaleString(date)}</div>; // pode retornar JSX tbm
-      },
+        const date = row.getValue(column.id) as Date
+        return <div>{_toLocaleString(date)}</div> // pode retornar JSX tbm
+      }
     },
     {
       accessorKey: 'observations',
       id: MembershipHeaders.OBSERVATIONS,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row, column }) => {
-        const value = row.getValue(column.id) as string;
+        const value = row.getValue(column.id) as string
         return (
           <TooltipProvider>
             <Tooltip>
@@ -140,8 +141,8 @@ export const getTemplateRoleHistoryColumns =
               <TooltipContent>{value}</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        );
-      },
+        )
+      }
     },
     {
       id: 'actions',
@@ -174,10 +175,10 @@ export const getTemplateRoleHistoryColumns =
               </DropdownMenuContent>
             </DropdownMenu>
           </>
-        );
-      },
-    },
-  ];
+        )
+      }
+    }
+  ]
 
 export const getCommitteeRoleHistoryColumns =
   (): //   handleChangeMembership: (membership: Membership & { employee: Employee }) => void,
@@ -191,8 +192,8 @@ export const getCommitteeRoleHistoryColumns =
       id: MembershipHeaders.NAME,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row }) => {
-        const value = row.original.employee?.name as string;
-        const is_inactive = !row.original.is_active;
+        const value = row.original.employee?.name as string
+        const is_inactive = !row.original.is_active
 
         return (
           <div>
@@ -203,33 +204,33 @@ export const getCommitteeRoleHistoryColumns =
             )}
             <strong>{value}</strong>
           </div>
-        );
-      },
+        )
+      }
     },
     {
       accessorKey: 'begin_date',
       id: MembershipHeaders.BEGIN_DATE,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row, column }) => {
-        const date = row.getValue(column.id) as Date;
-        return <div>{_toLocaleString(date)}</div>; // pode retornar JSX tbm
-      },
+        const date = row.getValue(column.id) as Date
+        return <div>{_toLocaleString(date)}</div> // pode retornar JSX tbm
+      }
     },
     {
       accessorKey: 'end_date',
       id: MembershipHeaders.END_DATE,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row, column }) => {
-        const date = row.getValue(column.id) as Date;
-        return <div>{_toLocaleString(date)}</div>; // pode retornar JSX tbm
-      },
+        const date = row.getValue(column.id) as Date
+        return <div>{_toLocaleString(date)}</div> // pode retornar JSX tbm
+      }
     },
     {
       accessorKey: 'observations',
       id: MembershipHeaders.OBSERVATIONS,
       header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
       cell: ({ row, column }) => {
-        const value = row.getValue(column.id) as string;
+        const value = row.getValue(column.id) as string
         return (
           <TooltipProvider>
             <Tooltip>
@@ -239,8 +240,8 @@ export const getCommitteeRoleHistoryColumns =
               <TooltipContent>{value}</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        );
-      },
+        )
+      }
     },
     {
       id: 'actions',
@@ -273,7 +274,7 @@ export const getCommitteeRoleHistoryColumns =
               </DropdownMenuContent>
             </DropdownMenu>
           </>
-        );
-      },
-    },
-  ];
+        )
+      }
+    }
+  ]

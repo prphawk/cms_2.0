@@ -18,7 +18,7 @@ export const _deactivateCommittee = async (committee_id: number) => {
     where: { id: committee_id },
     data: {
       is_active: false
-      //end_date: new Date()
+      //end_date: new Date() //TODO perguntar se é necessário?
     }
   })
 }
@@ -225,8 +225,8 @@ export const committeeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id } = input
 
-      await _deactivateMembershipsByCommittee(id)
-      await _deactivateCommittee(id)
+      _deactivateMembershipsByCommittee(id)
+      _deactivateCommittee(id)
     }),
 
   getRoleHistory: protectedProcedure

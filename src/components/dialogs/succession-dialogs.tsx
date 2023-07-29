@@ -1,17 +1,17 @@
 import { z } from 'zod'
 import { dialogsEnum } from '~/pages/dashboard/committees/[id]'
 import { api } from '~/utils/api'
-import MembershipArrayDialog, { MembershipArraySchema } from '../membership-array-dialog'
 import { useEffect, useState } from 'react'
-import CommitteeDialog, { CommitteeSchema } from '../committee-dialog'
 import { Committee, CommitteeTemplate, Employee, Membership } from '@prisma/client'
 import { _addDays, _addMonths, _addYears } from '~/utils/string'
 import { useRouter } from 'next/router'
 import { Routes } from '~/constants/routes'
+import CommitteeDialog, { CommitteeSchema } from './committee-dialog'
+import MembershipArrayDialog, { MembershipArraySchema } from './membership-array-dialog'
+import { AlertDialog } from './alert-dialog'
 
 export default function SuccessionDialogs(props: {
-  open1st: boolean
-  open2nd: boolean
+  open: dialogsEnum
   handleOpenDialog: (dialogEnum: number) => void
   handleSave: (data: z.infer<typeof MembershipArraySchema>) => void
   committeeId: number
@@ -40,12 +40,17 @@ export default function SuccessionDialogs(props: {
   const router = useRouter()
 
   const succession = api.committee.succession.useMutation({
-    // TODO onError
     onSuccess(data) {
-      console.log(data)
+      handleDeactivateCurrentCommittee()
       router.push(`${Routes.COMMITTEES}/${data.id}`)
     }
   })
+
+  const deactivate = api.committee.deactivate.useMutation()
+
+  const handleDeactivateCurrentCommittee = () => {
+    deactivate.mutate({ id: props.committeeId })
+  }
 
   const handleSave1st = (data1st: z.infer<typeof CommitteeSchema>) => {
     setSuccessionData({
@@ -64,15 +69,20 @@ export default function SuccessionDialogs(props: {
   return (
     committeeData && (
       <>
+        <AlertDialog
+          open={props.open === dialogsEnum.succession}
+          handleOpenDialog={props.handleOpenDialog}
+          handleContinue={() => props.handleOpenDialog(dialogsEnum.succession1st)}
+        />
         <CommitteeDialog
-          open={props.open1st}
+          open={props.open === dialogsEnum.succession1st}
           handleOpenDialog={props.handleOpenDialog}
           handleSave={handleSave1st}
           committee={successionData}
           succession
         />
         <MembershipArrayDialog
-          open={props.open2nd}
+          open={props.open === dialogsEnum.succession2nd}
           handleOpenDialog={props.handleOpenDialog}
           handleSave={handleSave2nd}
           committee={successionData}

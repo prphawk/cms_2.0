@@ -1,6 +1,6 @@
 import { Committee } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
-import { CommitteeHeaders } from '~/constants/headers'
+import { CommitteeHeaders, MenuHeaders } from '~/constants/headers'
 import { _isDateComing, _toLocaleString } from '~/utils/string'
 import {
   AlertOctagonIcon,
@@ -201,16 +201,17 @@ export const CommitteeActionsMenuColumn = ({
             disabled
             onClick={() => navigator.clipboard.writeText(committee.id.toString())}
           >
-            Suceder órgão
+            Suceder {MenuHeaders.COMMITTEE.toLowerCase()}
           </DropdownMenuItem>
         )}
         <DropdownMenuItem
+          danger
           onClick={() => {
             handleDeactivateCommittees([committee.id])
             committee.is_active = false
           }}
         >
-          Desativar órgão
+          Encerrar {MenuHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
