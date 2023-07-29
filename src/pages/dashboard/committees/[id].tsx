@@ -18,7 +18,7 @@ import MembershipTableToolbarActions from '~/components/table/membership/members
 import { Dot } from '~/components/dot'
 import { z } from 'zod'
 
-import { MembershipHeaders } from '~/constants/headers'
+import { MembershipHeaders, MenuHeaders } from '~/constants/headers'
 import { FilterStateType, filterAProps, handleChangeActiveFilters } from '~/components/filters'
 import CommitteeDialog, { CommitteeSchema } from '~/components/dialogs/committee-dialog'
 import MembershipDialog, { MembershipSchema } from '~/components/dialogs/membership-dialog'
@@ -27,6 +27,7 @@ import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 export enum dialogsEnum {
   committee,
   membership,
+  succession,
   succession1st,
   succession2nd
 }
@@ -193,8 +194,7 @@ export default function CommitteeMembership() {
                 }}
               />
               <SuccessionDialogs
-                open1st={openDialog == dialogsEnum.succession1st}
-                open2nd={openDialog == dialogsEnum.succession2nd}
+                open={openDialog}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={(data) => console.log(data)}
                 committeeId={committeeData.id}
@@ -239,14 +239,13 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
               <Dot />
             </>
           )}
-          <strong>Tipo: </strong>Órgão
+          <strong>Tipo: </strong>
+          {MenuHeaders.COMMITTEE}
           {data?.committee_template_id ? ' Permanente' : ' Temporário'}
           <Dot />
           <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
           <Dot />
-          <strong>Membros: </strong> {total_count}
-          <Dot />
-          <strong>Membros ativos: </strong> {active_count}
+          <strong>Membros ativos: </strong> {active_count} de {total_count}
         </AccordionContent>
       </AccordionItem>
     </Accordion>

@@ -25,7 +25,7 @@ import {
   CommandItem
 } from '@/components/ui/command'
 import { useEffect, useState } from 'react'
-import { MembershipHeaders } from '~/constants/headers'
+import { MembershipHeaders, MenuHeaders } from '~/constants/headers'
 import { api } from '~/utils/api'
 import { Employee, Membership } from '@prisma/client'
 import React from 'react'
@@ -37,6 +37,7 @@ import {
   ObservationsFormItem,
   RoleSelectFormItem
 } from '../form-items'
+import { MyDialog, MyDialogClose } from './my-dialog'
 
 export const MembershipSchema = z
   .object({
@@ -103,28 +104,20 @@ export default function MembershipDialog(props: {
   }
 
   return (
-    <Dialog open={props.open} modal={false}>
-      {props.open && (
-        <div className="fixed inset-0 z-50 bg-background/10 backdrop-blur data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-      )}
+    <MyDialog open={props.open}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{props.member ? 'Editar' : 'Criar'} Membro(s)</DialogTitle>
           <DialogDescription>
             {props.member && (
               <>
-                Ao editar, os dados anteriores do órgão serão <strong>descartados</strong>.
+                Ao editar, os dados anteriores do {MenuHeaders.COMMITTEE.toLowerCase()} serão{' '}
+                <strong>descartados</strong>.
               </>
             )}
           </DialogDescription>
         </DialogHeader>
-        <div
-          onClick={onClose}
-          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 hover:outline-2 hover:ring-2 hover:ring-ring hover:ring-offset-2 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-        >
-          <XIcon className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </div>
+        <MyDialogClose onClose={onClose} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3" id="formMembership">
             <div className="grid grid-cols-2 items-baseline justify-between gap-x-4">
@@ -169,6 +162,6 @@ export default function MembershipDialog(props: {
           </form>
         </Form>
       </DialogContent>
-    </Dialog>
+    </MyDialog>
   )
 }
