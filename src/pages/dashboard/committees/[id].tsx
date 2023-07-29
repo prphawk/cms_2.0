@@ -26,6 +26,9 @@ import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 import { CommitteeSchema } from '~/schemas/committee'
 import { MembershipSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
+import { AlertDialog } from '~/components/dialogs/alert-dialog'
+import { HourglassIcon, CircleOffIcon } from 'lucide-react'
+import { IconBadge } from '~/components/badge'
 
 export default function CommitteeMembership() {
   const router = useRouter()
@@ -58,6 +61,12 @@ export default function CommitteeMembership() {
     onSettled() {
       utils.committee.getOne.invalidate()
       utils.membership.getRoleOptionsByCommittee.invalidate()
+    }
+  })
+
+  const deactivateCommittee = api.committee.deactivate.useMutation({
+    onSuccess() {
+      utils.committee.getOne.invalidate()
     }
   })
 
@@ -144,10 +153,18 @@ export default function CommitteeMembership() {
     setSelectedMembership({ ...membership })
   }
 
+  const onDeactivateCommittee = () => {
+    handleOpenDialog(DialogsEnum.alert)
+  }
+
+  const handleDeactivateCommittee = () => {
+    deactivateCommittee.mutate({ id: param_id })
+  }
+
   const propsActions = {
     committee: committeeData!,
     handleClickAddMembershipButton,
-    handleDeactivateCommittees: () => {}, //TODO
+    onDeactivateCommittee,
     handleOpenDialog
   }
 
@@ -191,8 +208,20 @@ export default function CommitteeMembership() {
               <SuccessionDialogs
                 open={openDialog}
                 handleOpenDialog={handleOpenDialog}
-                handleSave={(data) => console.log(data)}
                 committeeId={committeeData.id}
+              />
+              <AlertDialog
+                open={openDialog == DialogsEnum.alert}
+                description={
+                  <>
+                    Esta ação irá <strong>encerrar</strong> o {Headers.COMMITTEE.toLowerCase()}{' '}
+                    atual e todas as suas participações.
+                    <br />
+                    Deseja continuar?
+                  </>
+                }
+                handleOpenDialog={handleOpenDialog}
+                handleContinue={handleDeactivateCommittee}
               />
             </>
           )}
@@ -214,7 +243,21 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
     <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <TitleLayout>{data?.name}</TitleLayout>
+          <TitleLayout>
+            {data?.name}{' '}
+            <span>
+              {!data.committee_template_id && (
+                <IconBadge>
+                  <HourglassIcon className="h-5 w-5 text-white" />
+                </IconBadge>
+              )}
+              {!data.is_active && (
+                <IconBadge>
+                  <CircleOffIcon className="h-5 w-5 text-white" />
+                </IconBadge>
+              )}
+            </span>
+          </TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">
           <strong>Vínculo: </strong> {data?.bond}

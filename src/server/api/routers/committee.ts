@@ -225,8 +225,8 @@ export const committeeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id } = input
 
-      _deactivateMembershipsByCommittee(id)
-      _deactivateCommittee(id)
+      await _deactivateMembershipsByCommittee(id)
+      await _deactivateCommittee(id)
     }),
 
   getRoleHistory: protectedProcedure

@@ -14,7 +14,6 @@ import { DialogsEnum } from '~/constants/enums'
 export default function SuccessionDialogs(props: {
   open: DialogsEnum
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
-  handleSave: (data: z.infer<typeof MembershipArraySchema>) => void
   committeeId: number
 }) {
   const { data: committeeData, isLoading } = api.committee.getOne.useQuery({

@@ -15,7 +15,7 @@ import { Headers } from '~/constants/headers'
 
 export default function MembershipTableToolbarActions(props: {
   committee: CommitteeDataType
-  handleDeactivateCommittees: () => void
+  onDeactivateCommittee: () => void
   handleClickAddMembershipButton: () => void
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
 }) {
@@ -35,7 +35,7 @@ export default function MembershipTableToolbarActions(props: {
       </Button>
       <ActionsMenuButton
         committee={props.committee}
-        handleDeactivateCommittees={props.handleDeactivateCommittees}
+        onDeactivateCommittee={props.onDeactivateCommittee}
         handleOpenDialog={props.handleOpenDialog}
       />
     </>
@@ -44,7 +44,7 @@ export default function MembershipTableToolbarActions(props: {
 
 const ActionsMenuButton = (props: {
   committee: Committee
-  handleDeactivateCommittees: (ids: number[]) => void
+  onDeactivateCommittee: () => void
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
 }) => {
   return (
@@ -78,10 +78,7 @@ const ActionsMenuButton = (props: {
           <DropdownMenuItem
             danger
             disabled={!props.committee.is_active}
-            onClick={() => {
-              props.handleDeactivateCommittees([props.committee.id])
-              props.committee.is_active = false
-            }}
+            onClick={props.onDeactivateCommittee}
           >
             Encerrar {Headers.COMMITTEE.toLowerCase()}
           </DropdownMenuItem>
