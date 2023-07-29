@@ -9,62 +9,29 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
+import { Form } from '@/components/ui/form'
 import { useForm } from 'react-hook-form'
 import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { cn } from '@/lib/utils'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem
-} from '@/components/ui/command'
-import { useEffect, useState } from 'react'
-import { MembershipHeaders, MenuHeaders } from '~/constants/headers'
-import { api } from '~/utils/api'
+import { useEffect } from 'react'
+import { MembershipHeaders, Headers } from '~/constants/headers'
 import { Employee, Membership } from '@prisma/client'
 import React from 'react'
 import {
   CommonFormItem,
   DateFormItem,
   EmployeeSelectFormItem,
-  MyLabel,
   ObservationsFormItem,
   RoleSelectFormItem
 } from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
-
-export const MembershipSchema = z
-  .object({
-    employee: z.object({
-      id: z.number().optional(),
-      name: z
-        .string({ required_error: `${MembershipHeaders.NAME} é obrigatório` })
-        .trim()
-        .min(1, { message: `${MembershipHeaders.NAME} é obrigatório` })
-    }),
-    role: z
-      .string({ required_error: `${MembershipHeaders.ROLE} é obrigatório` })
-      .trim()
-      .min(1, { message: `${MembershipHeaders.ROLE} é obrigatório` }),
-    begin_date: z.coerce.date({ required_error: `${MembershipHeaders.BEGIN_DATE} é obrigatória` }),
-    end_date: z.coerce.date({ required_error: `${MembershipHeaders.END_DATE} é obrigatória` }),
-    observations: z.string().optional(),
-    ordinance: z.string().optional()
-  })
-  .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
-    message: `${MembershipHeaders.END_DATE} não pode ocorrer antes de ${MembershipHeaders.BEGIN_DATE}.`,
-    path: ['end_date']
-  })
+import { MembershipSchema } from '~/schemas/membership'
+import { DialogsEnum } from '~/constants/enums'
 
 export default function MembershipDialog(props: {
   open: boolean
-  handleOpenDialog: (dialogEnum: number) => void
+  handleOpenDialog: (dialogEnum: DialogsEnum) => void
   member?: Membership & { employee: Employee }
   handleSave: (membershipSchema: z.infer<typeof MembershipSchema>) => void
   committee: { id: number; begin_date: Date | null; end_date: Date | null }
@@ -100,7 +67,7 @@ export default function MembershipDialog(props: {
 
   function onClose() {
     form.reset()
-    props.handleOpenDialog(-1)
+    props.handleOpenDialog(DialogsEnum.none)
   }
 
   return (
@@ -111,7 +78,7 @@ export default function MembershipDialog(props: {
           <DialogDescription>
             {props.member && (
               <>
-                Ao editar, os dados anteriores do {MenuHeaders.COMMITTEE.toLowerCase()} serão{' '}
+                Ao editar, os dados anteriores do {Headers.COMMITTEE.toLowerCase()} serão{' '}
                 <strong>descartados</strong>.
               </>
             )}

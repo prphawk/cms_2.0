@@ -7,19 +7,19 @@ import LoadingLayout from '~/components/loading-layout'
 import AuthenticatedPage from '~/components/authenticated-page'
 import React from 'react'
 import { cn } from '@/lib/utils'
-import { MenuHeaders } from '~/constants/headers'
+import { Headers } from '~/constants/headers'
 
 export default function Home() {
   const { status } = useSession()
 
   const components = [
     {
-      title: MenuHeaders.COMMITTEES,
+      title: Headers.COMMITTEES,
       href: Routes.COMMITTEES,
       description: 'Coisas muito legais relacionadas as órgãos colegiados e comissões do INF.'
     },
     {
-      title: MenuHeaders.EMPLOYEES,
+      title: Headers.EMPLOYEES,
       href: Routes.EMPLOYEES,
       description: 'Under construction.'
     },

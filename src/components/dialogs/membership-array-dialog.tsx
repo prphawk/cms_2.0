@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -16,10 +15,8 @@ import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useEffect } from 'react'
-import { CommitteeSchema } from './committee-dialog'
 import { MembershipHeaders } from '~/constants/headers'
 import React from 'react'
-import { MembershipSchema } from './membership-dialog'
 import { Committee, Employee, Membership } from '@prisma/client'
 import {
   CommonFormItem,
@@ -28,14 +25,12 @@ import {
   RoleSelectFormItem
 } from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
-
-export const MembershipArraySchema = z.object({
-  members: z.array(MembershipSchema)
-})
+import { MembershipArraySchema } from '~/schemas/membership'
+import { DialogsEnum } from '~/constants/enums'
 
 export default function MembershipArrayDialog(props: {
   open: boolean
-  handleOpenDialog: (dialogEnum: number) => void
+  handleOpenDialog: (dialogEnum: DialogsEnum) => void
   handleSave: (data: z.infer<typeof MembershipArraySchema>) => void
   committee?: Committee
   members: (Membership & { employee: Employee })[]
@@ -92,7 +87,7 @@ export default function MembershipArrayDialog(props: {
 
   function onClose() {
     form.reset()
-    props.handleOpenDialog(-1)
+    props.handleOpenDialog(DialogsEnum.none)
   }
 
   return (

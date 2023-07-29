@@ -9,17 +9,18 @@ import {
 import { PropsWithChildren } from 'react'
 import { _toLocaleString } from '~/utils/string'
 import { MyDialog, MyDialogClose } from './my-dialog'
+import { DialogsEnum } from '~/constants/enums'
 
 export const AlertDialog = (
   props: PropsWithChildren & {
     open: boolean
-    handleOpenDialog(dialogEnum: number): void
+    handleOpenDialog(dialogEnum: DialogsEnum): void
     handleContinue(): void
     description?: JSX.Element | string
   }
 ) => {
   function onClose() {
-    props.handleOpenDialog(-1)
+    props.handleOpenDialog(DialogsEnum.none)
   }
 
   function onContinue() {

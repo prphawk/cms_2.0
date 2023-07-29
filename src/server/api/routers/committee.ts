@@ -4,8 +4,8 @@ import { _deactivateMembershipsByCommittee } from './membership'
 import { prisma } from '~/server/db'
 import { _getTemplateByName } from './template'
 import { Prisma } from '@prisma/client'
-import { CommitteeSchema } from '~/components/dialogs/committee-dialog'
-import { MembershipArraySchema } from '~/components/dialogs/membership-array-dialog'
+import { CommitteeSchema } from '~/schemas/committee'
+import { MembershipArraySchema } from '~/schemas/membership'
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({

@@ -18,19 +18,14 @@ import MembershipTableToolbarActions from '~/components/table/membership/members
 import { Dot } from '~/components/dot'
 import { z } from 'zod'
 
-import { MembershipHeaders, MenuHeaders } from '~/constants/headers'
+import { MembershipHeaders, Headers } from '~/constants/headers'
 import { FilterStateType, filterAProps, handleChangeActiveFilters } from '~/components/filters'
-import CommitteeDialog, { CommitteeSchema } from '~/components/dialogs/committee-dialog'
-import MembershipDialog, { MembershipSchema } from '~/components/dialogs/membership-dialog'
+import CommitteeDialog from '~/components/dialogs/committee-dialog'
+import MembershipDialog from '~/components/dialogs/membership-dialog'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
-
-export enum dialogsEnum {
-  committee,
-  membership,
-  succession,
-  succession1st,
-  succession2nd
-}
+import { CommitteeSchema } from '~/schemas/committee'
+import { MembershipSchema } from '~/schemas/membership'
+import { DialogsEnum } from '~/constants/enums'
 
 export default function CommitteeMembership() {
   const router = useRouter()
@@ -70,9 +65,9 @@ export default function CommitteeMembership() {
     Membership & { employee: Employee }
   >()
 
-  const [openDialog, setOpenDialog] = useState(-1)
+  const [openDialog, setOpenDialog] = useState(DialogsEnum.none)
 
-  const handleOpenDialog = (dialogEnum: number) => {
+  const handleOpenDialog = (dialogEnum: DialogsEnum) => {
     setOpenDialog(dialogEnum)
   }
 
@@ -145,7 +140,7 @@ export default function CommitteeMembership() {
   }
 
   const handleChangeMembership = (membership: Membership & { employee: Employee }) => {
-    handleOpenDialog(dialogsEnum.membership)
+    handleOpenDialog(DialogsEnum.membership)
     setSelectedMembership({ ...membership })
   }
 
@@ -178,13 +173,13 @@ export default function CommitteeMembership() {
               />
               <CommitteeDialog
                 committee={committeeData}
-                open={openDialog == dialogsEnum.committee}
+                open={openDialog == DialogsEnum.committee}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={handleSaveCommittee}
               />
               <MembershipDialog
                 member={selectedMembership}
-                open={openDialog == dialogsEnum.membership}
+                open={openDialog == DialogsEnum.membership}
                 handleOpenDialog={handleOpenDialog}
                 handleSave={handleSaveMembership}
                 committee={{
@@ -240,7 +235,7 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
             </>
           )}
           <strong>Tipo: </strong>
-          {MenuHeaders.COMMITTEE}
+          {Headers.COMMITTEE}
           {data?.committee_template_id ? ' Permanente' : ' Temporário'}
           <Dot />
           <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}

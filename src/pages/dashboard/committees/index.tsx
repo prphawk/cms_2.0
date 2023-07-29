@@ -17,22 +17,23 @@ import { _toLocaleString, _formatCount } from '~/utils/string'
 import { Dot } from '~/components/dot'
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions'
 import { z } from 'zod'
-import { CommitteeHeaders, MenuHeaders } from '~/constants/headers'
-import { dialogsEnum } from './[id]'
+import { CommitteeHeaders, Headers } from '~/constants/headers'
+import { DialogsEnum } from '~/constants/enums'
 import {
   FilterStateType,
   filterAProps,
   filterTProps,
   handleChangeActiveFilters
 } from '~/components/filters'
-import CommitteeDialog, { CommitteeSchema } from '~/components/dialogs/committee-dialog'
+import CommitteeDialog from '~/components/dialogs/committee-dialog'
+import { CommitteeSchema } from '~/schemas/committee'
 
 export default function Committees() {
   const router = useRouter()
 
-  const [open, setOpen] = useState(-1)
+  const [open, setOpen] = useState(DialogsEnum.none)
 
-  const handleOpenDialog = (dialogEnum: number) => setOpen(dialogEnum)
+  const handleOpenDialog = (dialogEnum: DialogsEnum) => setOpen(dialogEnum)
 
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterT, setFilterT] = useState<FilterStateType>()
@@ -107,13 +108,13 @@ export default function Committees() {
             tableFilters={<TableToolbarFilter filters={propsFilters} />}
             tableActions={
               <CommitteesTableToolbarActions
-                handleCreateCommittee={() => handleOpenDialog(dialogsEnum.committee)}
+                handleCreateCommittee={() => handleOpenDialog(DialogsEnum.committee)}
               />
             }
             column={CommitteeHeaders.NAME}
           />
           <CommitteeDialog
-            open={open === dialogsEnum.committee}
+            open={open === DialogsEnum.committee}
             handleOpenDialog={handleOpenDialog}
             handleSave={handleSaveCommittee}
           />
@@ -134,13 +135,13 @@ const Header = () => {
       <Accordion className="mb-6" type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <TitleLayout>{MenuHeaders.COMMITTEES}</TitleLayout>
+            <TitleLayout>{Headers.COMMITTEES}</TitleLayout>
           </AccordionTrigger>
           <AccordionContent className="tracking-wide">
-            <strong>{MenuHeaders.COMMITTEES}: </strong>
+            <strong>{Headers.COMMITTEES}: </strong>
             {total_count}
             <Dot />
-            <strong>{MenuHeaders.COMMITTEES} ativos: </strong>
+            <strong>{Headers.COMMITTEES} ativos: </strong>
             {active_count}
           </AccordionContent>
         </AccordionItem>

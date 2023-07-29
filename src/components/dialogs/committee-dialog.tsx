@@ -2,67 +2,33 @@
 
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form'
+import { Form } from '@/components/ui/form'
 import { Committee } from '@prisma/client'
-import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { CommitteeHeaders, MenuHeaders } from '~/constants/headers'
+import { CommitteeHeaders, Headers } from '~/constants/headers'
 import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { cn } from '@/lib/utils'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useEffect } from 'react'
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem
-} from '@/components/ui/command'
-import { useEffect, useState } from 'react'
-import { api } from '~/utils/api'
-import { CommonFormItem, DateFormItem, ObservationsFormItem } from '../form-items'
+  CommonFormItem,
+  DateFormItem,
+  ObservationsFormItem,
+  TemplateSelectFormItem
+} from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
-
-export const CommitteeSchema = z
-  .object({
-    name: z
-      .string({ required_error: `${CommitteeHeaders.NAME} é obrigatório` })
-      .trim()
-      .min(1, { message: `${CommitteeHeaders.NAME} é obrigatório` }),
-    bond: z
-      .string({ required_error: `${CommitteeHeaders.BOND} é obrigatório` })
-      .trim()
-      .min(1, { message: `${CommitteeHeaders.BOND} é obrigatório` }),
-    begin_date: z.coerce.date({ required_error: `${CommitteeHeaders.BEGIN_DATE} é obrigatória` }),
-    end_date: z.coerce.date({ required_error: `${CommitteeHeaders.END_DATE} é obrigatória` }),
-    ordinance: z.string().optional(),
-    observations: z.string().optional(),
-    committee_template_name: z.string().optional()
-  })
-  .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
-    message: `${CommitteeHeaders.END_DATE} não pode ser igual/antes de ${CommitteeHeaders.BEGIN_DATE}.`,
-    path: ['end_date']
-  })
+import { CommitteeSchema } from '~/schemas/committee'
+import { DialogsEnum } from '~/constants/enums'
 
 export default function CommitteeDialog(props: {
   open: boolean
-  handleOpenDialog: (dialogEnum: number) => void
+  handleOpenDialog: (dialogEnum: DialogsEnum) => void
   committee?: Committee & { committee_template?: { name: string } | null }
   handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void
   succession?: boolean
@@ -94,7 +60,7 @@ export default function CommitteeDialog(props: {
 
   function onClose() {
     form.reset()
-    props.handleOpenDialog(-1)
+    props.handleOpenDialog(DialogsEnum.none)
   }
 
   return (
@@ -103,7 +69,7 @@ export default function CommitteeDialog(props: {
         <DialogHeader>
           <DialogTitle>{`${
             props.succession ? 'Sucessão de ' : props.committee ? 'Editar' : 'Criar'
-          } ${MenuHeaders.COMMITTEE}`}</DialogTitle>
+          } ${Headers.COMMITTEE}`}</DialogTitle>
           <DialogDescription>
             {props.succession ? (
               <>
@@ -115,7 +81,7 @@ export default function CommitteeDialog(props: {
             ) : (
               props.committee && (
                 <>
-                  Ao editar, os dados anteriores do {MenuHeaders.COMMITTEE.toLowerCase()} serão{' '}
+                  Ao editar, os dados anteriores do {Headers.COMMITTEE.toLowerCase()} serão{' '}
                   <strong>descartados</strong>.
                 </>
               )
@@ -174,113 +140,5 @@ export default function CommitteeDialog(props: {
         </Form>
       </DialogContent>
     </MyDialog>
-  )
-}
-
-const TemplateSelectFormItem = (props: { form: any; disabled?: boolean }) => {
-  const [templates, setTemplates] = useState<string[]>([])
-
-  const { data, isLoading } = api.template.getAll.useQuery()
-
-  useEffect(() => {
-    if (data) setTemplates([...data.map((e) => e.name)])
-  }, [data])
-
-  const [createdIndex, setCreatedIndex] = useState<number>()
-
-  const [commandSearch, setCommandSearch] = useState('')
-
-  return (
-    <FormField
-      control={props.form.control}
-      name="committee_template_name"
-      render={({ field }) => (
-        <FormItem className="flex flex-col">
-          <FormLabel className="pb-1">{CommitteeHeaders.TEMPLATE}</FormLabel>
-          <Popover>
-            <PopoverTrigger asChild>
-              <FormControl>
-                <Button
-                  disabled={props.disabled}
-                  variant="outline"
-                  role="combobox"
-                  className={cn(
-                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-                    !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage'
-                  )}
-                >
-                  {isLoading
-                    ? 'Loading...'
-                    : field.value
-                    ? templates.find((template) => template === field.value)
-                    : 'ex: Direção INF'}
-                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent className="offset w-96 p-0">
-              <Command isLoading={isLoading}>
-                <CommandInput
-                  placeholder={`Digite seu ${CommitteeHeaders.TEMPLATE}...`}
-                  className="h-9"
-                  onValueChange={(search) => setCommandSearch(search)}
-                />
-                <CommandEmpty className="p-0">
-                  {isLoading
-                    ? 'Loading...'
-                    : commandSearch && (
-                        <Button
-                          className="max-h-full w-full "
-                          variant="ghost"
-                          onClick={() => {
-                            if (createdIndex) templates.pop()
-                            setCreatedIndex(templates.length)
-                            setTemplates([...templates, commandSearch])
-                            props.form.setValue('committee_template_name', commandSearch)
-                          }}
-                        >
-                          <div className="truncate">
-                            Criar {CommitteeHeaders.TEMPLATE} "{commandSearch}"?
-                          </div>
-                        </Button>
-                      )}
-                </CommandEmpty>
-                <CommandGroup className="max-h-64 overflow-y-auto">
-                  {templates.map((template) => (
-                    <CommandItem
-                      value={template}
-                      key={template}
-                      onSelect={(value) => {
-                        let found: string | undefined
-                        if (
-                          value ===
-                          props.form.getValues('committee_template_name')?.toLocaleLowerCase()
-                        ) {
-                          found = undefined
-                        } else found = templates.find((t) => t.toLocaleLowerCase() === value)
-                        props.form.setValue('committee_template_name', found || '')
-                      }}
-                    >
-                      {template}
-                      <CheckIcon
-                        className={cn(
-                          'ml-auto h-4 w-4',
-                          template === field.value ? 'opacity-100' : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          <FormDescription className="-mb-1.5">
-            Instâncias de comissões <strong>permanentes</strong> devem pertencer a sua{' '}
-            {CommitteeHeaders.TEMPLATE}.
-          </FormDescription>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
   )
 }

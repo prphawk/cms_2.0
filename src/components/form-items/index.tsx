@@ -1,9 +1,16 @@
 import { Button } from '@/components/ui/button'
-import { FormField, FormItem, FormControl, FormMessage, FormLabel } from '@/components/ui/form'
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormMessage,
+  FormLabel,
+  FormDescription
+} from '@/components/ui/form'
 import { cn } from '@/lib/utils'
 import { ChevronsUpDownIcon, CheckIcon } from 'lucide-react'
 import { useState, useEffect, PropsWithChildren } from 'react'
-import { MembershipHeaders } from '~/constants/headers'
+import { CommitteeHeaders, MembershipHeaders } from '~/constants/headers'
 import { api } from '~/utils/api'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
@@ -321,5 +328,113 @@ export const DateFormItem = (props: {
         </FormItem>
       )}
     ></FormField>
+  )
+}
+
+export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean }) => {
+  const [templates, setTemplates] = useState<string[]>([])
+
+  const { data, isLoading } = api.template.getAll.useQuery()
+
+  useEffect(() => {
+    if (data) setTemplates([...data.map((e) => e.name)])
+  }, [data])
+
+  const [createdIndex, setCreatedIndex] = useState<number>()
+
+  const [commandSearch, setCommandSearch] = useState('')
+
+  return (
+    <FormField
+      control={props.form.control}
+      name="committee_template_name"
+      render={({ field }) => (
+        <FormItem className="flex flex-col">
+          <FormLabel className="pb-1">{CommitteeHeaders.TEMPLATE}</FormLabel>
+          <Popover>
+            <PopoverTrigger asChild>
+              <FormControl>
+                <Button
+                  disabled={props.disabled}
+                  variant="outline"
+                  role="combobox"
+                  className={cn(
+                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+                    !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage'
+                  )}
+                >
+                  {isLoading
+                    ? 'Loading...'
+                    : field.value
+                    ? templates.find((template) => template === field.value)
+                    : 'ex: Direção INF'}
+                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="offset w-96 p-0">
+              <Command isLoading={isLoading}>
+                <CommandInput
+                  placeholder={`Digite seu ${CommitteeHeaders.TEMPLATE}...`}
+                  className="h-9"
+                  onValueChange={(search) => setCommandSearch(search)}
+                />
+                <CommandEmpty className="p-0">
+                  {isLoading
+                    ? 'Loading...'
+                    : commandSearch && (
+                        <Button
+                          className="max-h-full w-full "
+                          variant="ghost"
+                          onClick={() => {
+                            if (createdIndex) templates.pop()
+                            setCreatedIndex(templates.length)
+                            setTemplates([...templates, commandSearch])
+                            props.form.setValue('committee_template_name', commandSearch)
+                          }}
+                        >
+                          <div className="truncate">
+                            Criar {CommitteeHeaders.TEMPLATE} "{commandSearch}"?
+                          </div>
+                        </Button>
+                      )}
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-y-auto">
+                  {templates.map((template) => (
+                    <CommandItem
+                      value={template}
+                      key={template}
+                      onSelect={(value) => {
+                        let found: string | undefined
+                        if (
+                          value ===
+                          props.form.getValues('committee_template_name')?.toLocaleLowerCase()
+                        ) {
+                          found = undefined
+                        } else found = templates.find((t) => t.toLocaleLowerCase() === value)
+                        props.form.setValue('committee_template_name', found || '')
+                      }}
+                    >
+                      {template}
+                      <CheckIcon
+                        className={cn(
+                          'ml-auto h-4 w-4',
+                          template === field.value ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <FormDescription className="-mb-1.5">
+            Instâncias de comissões <strong>permanentes</strong> devem pertencer a sua{' '}
+            {CommitteeHeaders.TEMPLATE}.
+          </FormDescription>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   )
 }

@@ -1,4 +1,4 @@
-export class MenuHeaders {
+export class Headers {
   public static COMMITTEE = 'Órgão'
   public static COMMITTEES = 'Órgãos'
   public static EMPLOYEE = 'Servidor'
