@@ -2,7 +2,8 @@ export enum DialogsEnum {
   none,
   committee,
   membership,
-  alert,
+  alert_committee,
+  alert_membership,
   succession,
   succession1st,
   succession2nd

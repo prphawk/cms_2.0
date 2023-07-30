@@ -10,6 +10,7 @@ import { AlertDialog } from './alert-dialog'
 import { CommitteeSchema } from '~/schemas/committee'
 import { MembershipArraySchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
+import { Headers } from '~/constants/headers'
 
 export default function SuccessionDialogs(props: {
   open: DialogsEnum
@@ -73,6 +74,14 @@ export default function SuccessionDialogs(props: {
           open={props.open === DialogsEnum.succession}
           handleOpenDialog={props.handleOpenDialog}
           handleContinue={() => props.handleOpenDialog(DialogsEnum.succession1st)}
+          description={
+            <>
+              Esta ação irá criar uma <strong>nova instância</strong> de "
+              {committeeData.committee_template?.name}", <strong>encerrando</strong> o{' '}
+              {Headers.COMMITTEE.toLowerCase()} atual e todas as suas participações. Deseja
+              continuar?
+            </>
+          }
         />
         <CommitteeDialog
           open={props.open === DialogsEnum.succession1st}

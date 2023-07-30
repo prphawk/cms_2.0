@@ -13,6 +13,7 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion'
 import { PropsWithChildren } from 'react'
+import { Routes } from '~/constants/routes'
 
 export default function TemplateRoleHistory() {
   const router = useRouter()
@@ -28,6 +29,10 @@ export default function TemplateRoleHistory() {
     { enabled: !isNaN(template_id) && role != undefined }
   )
 
+  const handleViewCommittee = (committee_id: number) => {
+    router.push(`${Routes.COMMITTEES}/${committee_id}`)
+  }
+
   return (
     <AuthenticatedPage>
       <PageLayout>
@@ -38,7 +43,7 @@ export default function TemplateRoleHistory() {
               <DataTable
                 //isLoading={isLoading}
                 data={data || []}
-                columns={getTemplateRoleHistoryColumns()}
+                columns={getTemplateRoleHistoryColumns(handleViewCommittee)}
                 // tableFilters={<TableToolbarFilter {...propsFilters} />}
                 // tableActions={<MembershipTableToolbarActions {...propsActions} />}
                 column={MembershipHeaders.NAME}

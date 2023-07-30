@@ -166,6 +166,7 @@ export const getCommitteesColumns = (
           </Button>
           <CommitteeActionsMenuColumn
             committee={committee}
+            onViewCommittee={() => handleViewCommittee(committee.id)}
             handleDeactivateCommittees={handleDeactivateCommittees}
           />
         </>
@@ -176,9 +177,11 @@ export const getCommitteesColumns = (
 
 export const CommitteeActionsMenuColumn = ({
   committee,
+  onViewCommittee,
   handleDeactivateCommittees
 }: {
   committee: Committee
+  onViewCommittee: () => void
   handleDeactivateCommittees: (ids: number[]) => void
 }) => {
   return (
@@ -192,18 +195,14 @@ export const CommitteeActionsMenuColumn = ({
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Ações</DropdownMenuLabel>
         <Separator />
-        <DropdownMenuItem>
-          <Link href={`${Routes.COMMITTEES}/${committee.id}`}>Ver membros</Link>
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onViewCommittee}>Ver membros</DropdownMenuItem>
         <DropdownMenuSeparator />
-        {committee.committee_template_id && (
-          <DropdownMenuItem
-            disabled
-            onClick={() => navigator.clipboard.writeText(committee.id.toString())}
-          >
-            Suceder {Headers.COMMITTEE.toLowerCase()}
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem
+          disabled
+          //disabled={!committee.is_active || !committee.committee_template_id}
+        >
+          Suceder {Headers.COMMITTEE.toLowerCase()}
+        </DropdownMenuItem>
         <DropdownMenuItem
           danger
           onClick={() => {

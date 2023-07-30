@@ -2,7 +2,7 @@ import { Committee, Employee, Membership } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
 import { Headers, MembershipHeaders } from '~/constants/headers'
 import { _toLocaleString } from '~/utils/string'
-import { MoreHorizontal } from 'lucide-react'
+import { CircleOffIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -14,48 +14,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import DataTableColumnHeader from '~/components/table/data-table-column-header'
-import Link from 'next/link'
-import { Routes } from '~/constants/routes'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Separator } from '@/components/ui/separator'
+import { IconBadge } from '~/components/badge'
 
-export const CommitteeActionsMenuColumn = ({ committee }: { committee: Committee }) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Abrir menu</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Ações</DropdownMenuLabel>
-        <Separator />
-        <DropdownMenuItem>
-          <Link href={`${Routes.COMMITTEES}/${committee.id}`}>Ver membros</Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {committee.committee_template_id && (
-          <DropdownMenuItem disabled>Suceder órgão</DropdownMenuItem>
-        )}
-        <DropdownMenuItem
-          disabled
-          danger
-          // onClick={() => {
-          //   handleDeactivateCommittees([committee.id]);
-          //   committee.is_active = false;
-          // }}
-        >
-          Encerrar {Headers.COMMITTEE.toLowerCase()}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-
-export const getTemplateRoleHistoryColumns = (): ColumnDef<
-  Membership & { employee: Employee } & { committee: Committee }
->[] => [
+export const getTemplateRoleHistoryColumns = (
+  handleViewCommittee: (committee_id: number) => void
+): ColumnDef<Membership & { employee: Employee } & { committee: Committee }>[] => [
   {
     accessorKey: 'employee.name',
     accessorFn: (row) => row.employee.name,
@@ -67,12 +31,12 @@ export const getTemplateRoleHistoryColumns = (): ColumnDef<
 
       return (
         <div>
-          {is_inactive && (
-            <Badge className="mr-2 text-white" variant="outline">
-              Inativo(a)
-            </Badge>
-          )}
           <strong>{value}</strong>
+          {is_inactive && (
+            <IconBadge>
+              <CircleOffIcon className="h-3 w-3 text-white" />
+            </IconBadge>
+          )}
         </div>
       )
     }
@@ -88,12 +52,12 @@ export const getTemplateRoleHistoryColumns = (): ColumnDef<
 
       return (
         <div>
+          <strong>{value}</strong>
           {is_inactive && (
-            <Badge className="mr-2 text-white" variant="outline">
-              Inativa
-            </Badge>
+            <IconBadge>
+              <CircleOffIcon className="h-3 w-3 text-white" />
+            </IconBadge>
           )}
-          {value}
         </div>
       )
     }
@@ -138,8 +102,17 @@ export const getTemplateRoleHistoryColumns = (): ColumnDef<
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
+      const committee_id = row.original.committee_id
       return (
         <>
+          <Button
+            onClick={() => handleViewCommittee(committee_id)}
+            variant="ghost"
+            className="h-8 w-8 p-0"
+          >
+            <span className="sr-only">Ver detalhes</span>
+            <Users2Icon className="h-4 w-4" />
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -150,15 +123,18 @@ export const getTemplateRoleHistoryColumns = (): ColumnDef<
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem disabled>Suceder cargo</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleViewCommittee(committee_id)}>
+                Ver membros
+              </DropdownMenuItem>
+              {/* <DropdownMenuItem disabled>Editar participação</DropdownMenuItem> //TODO perguntar se precisa ter */}
               <DropdownMenuItem
                 disabled
-                //  onClick={() => handleChangeMembership(row.original)}
+                //disabled={!row.original.is_active}
               >
-                Editar participação
+                Suceder cargo
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem disabled>Encerrar participação</DropdownMenuItem>
+              {/* <DropdownMenuSeparator /> */}
+              {/* <DropdownMenuItem danger disabled={!row.original.is_active}>Encerrar participação</DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         </>

@@ -64,25 +64,20 @@ const ActionsMenuButton = (props: {
           Editar {Headers.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
-        {props.committee.committee_template_id && (
-          <DropdownMenuItem
-            onClick={() => {
-              props.handleOpenDialog(DialogsEnum.succession)
-            }}
-          >
-            Suceder {Headers.COMMITTEE.toLowerCase()}
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem
+          disabled={!props.committee.is_active || !props.committee.committee_template_id}
+          onClick={() => props.handleOpenDialog(DialogsEnum.succession)}
+        >
+          Suceder {Headers.COMMITTEE.toLowerCase()}
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {
-          <DropdownMenuItem
-            danger
-            disabled={!props.committee.is_active}
-            onClick={props.onDeactivateCommittee}
-          >
-            Encerrar {Headers.COMMITTEE.toLowerCase()}
-          </DropdownMenuItem>
-        }
+        <DropdownMenuItem
+          danger
+          disabled={!props.committee.is_active}
+          onClick={props.onDeactivateCommittee}
+        >
+          Encerrar {Headers.COMMITTEE.toLowerCase()}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

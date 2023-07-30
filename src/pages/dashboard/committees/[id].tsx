@@ -30,6 +30,8 @@ import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { HourglassIcon, CircleOffIcon } from 'lucide-react'
 import { IconBadge } from '~/components/badge'
 
+export type MembershipWithEmployeeType = Membership & { employee: Employee }
+
 export default function CommitteeMembership() {
   const router = useRouter()
   const param_id = Number(router.query.id)
@@ -67,12 +69,12 @@ export default function CommitteeMembership() {
   const deactivateCommittee = api.committee.deactivate.useMutation({
     onSuccess() {
       utils.committee.getOne.invalidate()
+      utils.committee.getAll.invalidate() //TODO ver aquele negócio de mudar o resultado da chamada pra so mudar o status dessa comissão
     }
   })
+  const deactivateMembership = api.membership.deactivate.useMutation()
 
-  const [selectedMembership, setSelectedMembership] = useState<
-    Membership & { employee: Employee }
-  >()
+  const [selectedMembership, setSelectedMembership] = useState<MembershipWithEmployeeType>()
 
   const [openDialog, setOpenDialog] = useState(DialogsEnum.none)
 
@@ -148,17 +150,26 @@ export default function CommitteeMembership() {
     setSelectedMembership(undefined)
   }
 
-  const handleChangeMembership = (membership: Membership & { employee: Employee }) => {
+  const onChangeMembership = (membership: MembershipWithEmployeeType) => {
     handleOpenDialog(DialogsEnum.membership)
     setSelectedMembership({ ...membership })
   }
 
+  const onDeactivateMembership = (membership: MembershipWithEmployeeType) => {
+    handleOpenDialog(DialogsEnum.alert_membership)
+    setSelectedMembership({ ...membership })
+  }
+
   const onDeactivateCommittee = () => {
-    handleOpenDialog(DialogsEnum.alert)
+    handleOpenDialog(DialogsEnum.alert_committee)
   }
 
   const handleDeactivateCommittee = () => {
     deactivateCommittee.mutate({ id: param_id })
+  }
+
+  const handleDeactivateMembership = () => {
+    if (selectedMembership) deactivateMembership.mutate({ id: selectedMembership.id })
   }
 
   const propsActions = {
@@ -179,7 +190,8 @@ export default function CommitteeMembership() {
                 isLoading={isLoading}
                 data={committeeData?.members || []}
                 columns={getMembershipColumns(
-                  handleChangeMembership,
+                  onChangeMembership,
+                  onDeactivateMembership,
                   committeeData.committee_template_id,
                   committeeData.begin_date,
                   committeeData.end_date
@@ -211,17 +223,25 @@ export default function CommitteeMembership() {
                 committeeId={committeeData.id}
               />
               <AlertDialog
-                open={openDialog == DialogsEnum.alert}
+                open={openDialog == DialogsEnum.alert_committee}
                 description={
                   <>
                     Esta ação irá <strong>encerrar</strong> o {Headers.COMMITTEE.toLowerCase()}{' '}
-                    atual e todas as suas participações.
-                    <br />
-                    Deseja continuar?
+                    atual e todas as suas participações. Deseja continuar?
                   </>
                 }
                 handleOpenDialog={handleOpenDialog}
                 handleContinue={handleDeactivateCommittee}
+              />
+              <AlertDialog
+                open={openDialog == DialogsEnum.alert_membership}
+                description={
+                  <>
+                    Esta ação irá <strong>encerrar</strong> esta participação. Deseja continuar?
+                  </>
+                }
+                handleOpenDialog={handleOpenDialog}
+                handleContinue={handleDeactivateMembership}
               />
             </>
           )}

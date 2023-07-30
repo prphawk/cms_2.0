@@ -1,6 +1,6 @@
 import { Employee, Membership } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
-import { CommitteeHeaders, Headers, MembershipHeaders } from '~/constants/headers'
+import { MembershipHeaders } from '~/constants/headers'
 import { _toLocaleString } from '~/utils/string'
 import { CircleOffIcon, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -12,16 +12,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Badge } from '@/components/ui/badge'
 import DataTableColumnHeader from '~/components/table/data-table-column-header'
 import Link from 'next/link'
-import { Router } from 'next/router'
 import { Routes } from '~/constants/routes'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { EndDate, IconBadge } from '~/components/badge'
+import { MembershipWithEmployeeType } from '~/pages/dashboard/committees/[id]'
 
 export const getMembershipColumns = (
-  handleChangeMembership: (membership: Membership & { employee: Employee }) => void,
+  onChangeMembership: (membership: MembershipWithEmployeeType) => void,
+  onDeactivateMembership: (id: MembershipWithEmployeeType) => void,
   committee_template_id?: number | null,
   committee_begin_date?: Date | null,
   committee_end_date?: Date | null
@@ -136,12 +136,25 @@ ColumnDef<Membership & { employee: Employee }>[] => [
               ) : (
                 <></>
               )}
-              <DropdownMenuItem disabled>Suceder cargo</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleChangeMembership(row.original)}>
+              <DropdownMenuItem onClick={() => onChangeMembership(row.original)}>
                 Editar participação
               </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled
+                //disabled={!row.original.is_active}
+              >
+                Suceder cargo
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem disabled>Encerrar participação</DropdownMenuItem>
+              <DropdownMenuItem
+                danger
+                onClick={() => {
+                  onDeactivateMembership(row.original)
+                  row.original.is_active = false
+                }}
+              >
+                Encerrar participação
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </>
