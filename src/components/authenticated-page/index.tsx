@@ -30,20 +30,32 @@ export default function AuthenticatedPage(props: PropsWithChildren) {
         <ArrowLeftIcon className="mr-2 h-6 w-6" />
         <h1 className="mx-4 text-[1.5rem] font-extrabold">CMS 2.0</h1>
         <div className="ml-4 flex flex-row items-center space-x-2 pt-[4px]">
-          <a className="text-sm uppercase tracking-wider hover:underline " href={Routes.COMMITTEES}>
+          <a
+            className="text-sm font-semibold tracking-wider hover:underline "
+            href={Routes.COMMITTEES}
+          >
             {Headers.COMMITTEES}
           </a>
           <Dot className="p-1" />
-          <a className="text-sm uppercase tracking-wider hover:underline" href={Routes.EMPLOYEES}>
+          <a
+            className="text-sm font-semibold tracking-wider hover:underline"
+            href={Routes.EMPLOYEES}
+          >
             {Headers.EMPLOYEES}
           </a>
           <Dot className="p-1" />
-          <a className="text-sm uppercase tracking-wider hover:underline" href={Routes.SETTINGS}>
+          <a
+            className="text-sm font-semibold tracking-wider hover:underline"
+            href={Routes.SETTINGS}
+          >
             Configurações
           </a>
         </div>
         <div className="ml-auto flex flex-row items-center">
-          <a className="mr-4 text-sm font-thin uppercase hover:underline" href={Routes.SETTINGS}>
+          <a
+            className="mr-4 text-sm font-semibold tracking-wider hover:underline"
+            href={Routes.SETTINGS}
+          >
             Sign Out
           </a>
           <LogOutIcon />
