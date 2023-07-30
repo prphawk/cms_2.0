@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Column } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 import { Check, ListFilterIcon, PlusCircleIcon, SlidersHorizontalIcon } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -58,8 +57,8 @@ export function DataTableFacetedFilter<TData, TValue>({
               </Badge>
               <div className="hidden space-x-1 lg:flex">
                 {selectedValues.size > 2 ? (
-                  <Badge variant="secondary" className="rounded-sm px-1 font-normal">
-                    {selectedValues.size} selected
+                  <Badge variant="secondary" className="truncate rounded-sm px-1 font-normal">
+                    {selectedValues.size} selecionados
                   </Badge>
                 ) : (
                   options

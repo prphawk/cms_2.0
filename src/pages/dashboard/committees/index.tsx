@@ -23,7 +23,7 @@ import {
   FilterStateType,
   filterAProps,
   filterTProps,
-  handleChangeActiveFilters
+  handleChangeComplementaryFilters
 } from '~/components/filters'
 import CommitteeDialog from '~/components/dialogs/committee-dialog'
 import { CommitteeSchema } from '~/schemas/committee'
@@ -54,13 +54,13 @@ export default function Committees() {
       ...filterAProps,
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeActiveFilters('is_active', setFilterA, labels)
+        handleChangeComplementaryFilters('is_active', setFilterA, labels)
     },
     {
       ...filterTProps,
       activeFilters: filterT?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeActiveFilters('is_temporary', setFilterT, labels)
+        handleChangeComplementaryFilters('is_temporary', setFilterT, labels)
     }
   ]
 
@@ -97,30 +97,28 @@ export default function Committees() {
 
   return (
     <AuthenticatedPage>
-      <PageLayout>
-        {/* <LoadingLayout loading={isLoading}> */}
-        <div className="committees container my-10 mb-auto text-white ">
-          <Header />
-          <DataTable
-            data={data || []}
-            isLoading={isLoading}
-            columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
-            tableFilters={<TableToolbarFilter filters={propsFilters} />}
-            tableActions={
-              <CommitteesTableToolbarActions
-                handleCreateCommittee={() => handleOpenDialog(DialogsEnum.committee)}
-              />
-            }
-            column={CommitteeHeaders.NAME}
-          />
-          <CommitteeDialog
-            open={open === DialogsEnum.committee}
-            handleOpenDialog={handleOpenDialog}
-            handleSave={handleSaveCommittee}
-          />
-        </div>
-        {/* </LoadingLayout> */}
-      </PageLayout>
+      {/* <LoadingLayout loading={isLoading}> */}
+      <div className="committees container my-6 mb-auto rounded-xl bg-gray-800/20 pb-4 text-white drop-shadow-md">
+        <Header />
+        <DataTable
+          data={data || []}
+          isLoading={isLoading}
+          columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
+          tableFilters={<TableToolbarFilter filters={propsFilters} />}
+          tableActions={
+            <CommitteesTableToolbarActions
+              handleCreateCommittee={() => handleOpenDialog(DialogsEnum.committee)}
+            />
+          }
+          column={CommitteeHeaders.NAME}
+        />
+        <CommitteeDialog
+          open={open === DialogsEnum.committee}
+          handleOpenDialog={handleOpenDialog}
+          handleSave={handleSaveCommittee}
+        />
+      </div>
+      {/* </LoadingLayout> */}
     </AuthenticatedPage>
   )
 }

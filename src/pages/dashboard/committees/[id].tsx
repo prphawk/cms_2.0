@@ -5,7 +5,7 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AuthenticatedPage from '~/components/authenticated-page'
 import { getMembershipColumns } from '~/components/table/membership/membership-columns'
 import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar'
@@ -17,9 +17,12 @@ import { Committee, Employee, Membership } from '@prisma/client'
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions'
 import { Dot } from '~/components/dot'
 import { z } from 'zod'
-
 import { MembershipHeaders, Headers } from '~/constants/headers'
-import { FilterStateType, filterAProps, handleChangeActiveFilters } from '~/components/filters'
+import {
+  FilterStateType,
+  filterAProps,
+  handleChangeComplementaryFilters
+} from '~/components/filters'
 import CommitteeDialog from '~/components/dialogs/committee-dialog'
 import MembershipDialog from '~/components/dialogs/membership-dialog'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
@@ -112,6 +115,10 @@ export default function CommitteeMembership() {
     return <span>Error: sowwyyyy</span> //TODO pelo amor de deus kk
   }
 
+  useEffect(() => {
+    console.debug(filterA)
+  }, [filterA])
+
   const handleChangeActiveFiltersC = (values?: string[]) => {
     setFilterC(!values?.length ? undefined : values)
   }
@@ -121,7 +128,7 @@ export default function CommitteeMembership() {
       ...filterAProps,
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeActiveFilters('is_active', setFilterA, labels)
+        handleChangeComplementaryFilters('is_active', setFilterA, labels)
     },
     {
       title: 'Cargo',

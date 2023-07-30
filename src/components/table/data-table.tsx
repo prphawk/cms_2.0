@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   ColumnDef,
@@ -9,8 +9,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+  useReactTable
+} from '@tanstack/react-table'
 
 import {
   Table,
@@ -18,15 +18,15 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import DataTablePagination from './data-table-pagination';
-import { ReactNode, useState } from 'react';
-import { TableToolbar } from './data-table-toolbar';
+  TableRow
+} from '@/components/ui/table'
+import DataTablePagination from './data-table-pagination'
+import { ReactNode, useState } from 'react'
+import { TableToolbar } from './data-table-toolbar'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
 }
 
 // const getPaginationProps = () => {
@@ -50,15 +50,15 @@ export function DataTable<TData, TValue>({
   isLoading,
   tableFilters,
   tableActions,
-  column,
+  column
 }: DataTableProps<TData, TValue> & {
-  tableFilters?: JSX.Element;
-  isLoading?: boolean;
-  tableActions?: JSX.Element;
-  column: string;
+  tableFilters?: JSX.Element
+  isLoading?: boolean
+  tableActions?: JSX.Element
+  column: string
 }) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const table = useReactTable({
     // https://tanstack.com/table/v8/docs/api/features/pagination
     data,
@@ -72,9 +72,9 @@ export function DataTable<TData, TValue>({
     //enableGlobalFilter: true,
     state: {
       sorting,
-      columnFilters,
-    },
-  });
+      columnFilters
+    }
+  })
 
   return (
     <>
@@ -96,7 +96,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
-                  );
+                  )
                 })}
               </TableRow>
             ))}
@@ -124,5 +124,5 @@ export function DataTable<TData, TValue>({
       </div>
       <DataTablePagination table={table} />
     </>
-  );
+  )
 }
