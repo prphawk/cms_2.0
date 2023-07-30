@@ -264,16 +264,20 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
       <AccordionItem value="item-1">
         <AccordionTrigger>
           <TitleLayout>
-            {data?.name}{' '}
+            {data?.name}
             <span>
               {!data.committee_template_id && (
-                <IconBadge>
-                  <HourglassIcon className="h-5 w-5 text-white" />
+                <IconBadge className="ml-3 px-1.5 py-1">
+                  <HourglassIcon className="h-5 w-4" />
+                  {/* <span className="mr-0.5 text-[0.9rem] font-normal tracking-tight">
+                    Temporário
+                  </span> */}
                 </IconBadge>
               )}
               {!data.is_active && (
-                <IconBadge>
-                  <CircleOffIcon className="h-5 w-5 text-white" />
+                <IconBadge className="p-1 px-1.5 py-1">
+                  <CircleOffIcon className="h-5 w-4 " />
+                  {/* <span className=" mr-0.5 text-[0.9rem] font-normal tracking-tight">Inativo</span> */}
                 </IconBadge>
               )}
             </span>

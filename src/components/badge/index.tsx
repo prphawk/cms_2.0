@@ -1,16 +1,16 @@
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { AlertTriangleIcon } from 'lucide-react';
-import { ReactNode } from 'react';
-import { _toLocaleString, _isDateComing } from '~/utils/string';
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+import { AlertTriangleIcon } from 'lucide-react'
+import { ReactNode } from 'react'
+import { _toLocaleString, _isDateComing } from '~/utils/string'
 
 export const IconBadge = ({ children, className }: { children: ReactNode; className?: string }) => {
   return (
-    <Badge className={cn('ml-2 px-1 py-0.5 text-inherit', className)} variant="outline">
+    <Badge className={cn('ml-2 p-[0.20rem] text-inherit', className)} variant="outline">
       {children}
     </Badge>
-  );
-};
+  )
+}
 
 export const EndDate = ({ value, isActive }: { value: Date; isActive: boolean }) => {
   return isActive ? (
@@ -22,5 +22,5 @@ export const EndDate = ({ value, isActive }: { value: Date; isActive: boolean })
     </div>
   ) : (
     <div>{_toLocaleString(value)}</div>
-  );
-};
+  )
+}
