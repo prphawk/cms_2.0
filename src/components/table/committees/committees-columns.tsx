@@ -34,7 +34,8 @@ interface IActiveCount {
 }
 
 export const getCommitteesColumns = (
-  handleDeactivateCommittees: (ids: number[]) => void,
+  onDeactivateCommittee: (id: number) => void,
+  onCommitteeSuccession: (id: number) => void,
   handleViewCommittee: (id: number) => void
 ): ColumnDef<
   Committee & {
@@ -176,7 +177,8 @@ export const getCommitteesColumns = (
           <CommitteeActionsMenuColumn
             committee={committee}
             onViewCommittee={() => handleViewCommittee(committee.id)}
-            handleDeactivateCommittees={handleDeactivateCommittees}
+            onDeactivateCommittee={onDeactivateCommittee}
+            onCommitteeSuccession={onCommitteeSuccession}
           />
         </div>
       )
@@ -187,11 +189,13 @@ export const getCommitteesColumns = (
 export const CommitteeActionsMenuColumn = ({
   committee,
   onViewCommittee,
-  handleDeactivateCommittees
+  onCommitteeSuccession,
+  onDeactivateCommittee
 }: {
   committee: Committee
   onViewCommittee: () => void
-  handleDeactivateCommittees: (ids: number[]) => void
+  onCommitteeSuccession: (id: number) => void
+  onDeactivateCommittee: (id: number) => void
 }) => {
   return (
     <DropdownMenu>
@@ -207,17 +211,15 @@ export const CommitteeActionsMenuColumn = ({
         <DropdownMenuItem onClick={onViewCommittee}>Ver membros</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          disabled
-          //disabled={!committee.is_active || !committee.committee_template_id}
+          disabled={!committee.is_active || !committee.committee_template_id}
+          onClick={() => onCommitteeSuccession(committee.id)}
         >
           Suceder {MyHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
         <DropdownMenuItem
           danger
-          onClick={() => {
-            handleDeactivateCommittees([committee.id])
-            committee.is_active = false
-          }}
+          disabled={!committee.is_active}
+          onClick={() => onDeactivateCommittee(committee.id)}
         >
           Encerrar {MyHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>

@@ -12,6 +12,19 @@ export default function PageLayout(props: PropsWithChildren) {
   )
 }
 
+export function TableLayout(props: PropsWithChildren & { className?: string }) {
+  return (
+    <div
+      className={cn(
+        'container my-6 mb-auto min-h-[90vh] rounded-xl bg-gray-900/25 pb-4 text-white shadow-lg',
+        props.className
+      )}
+    >
+      {props.children}
+    </div>
+  )
+}
+
 export function TextLayout(props: PropsWithChildren & { className?: string }) {
   return (
     <div className={cn('text-lg font-bold tracking-tight text-white', props.className)}>

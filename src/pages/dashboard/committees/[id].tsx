@@ -10,7 +10,7 @@ import AuthenticatedPage from '~/components/authenticated-page'
 import { getMembershipColumns } from '~/components/table/membership/membership-columns'
 import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar'
 import { DataTable } from '~/components/table/data-table'
-import PageLayout, { TitleLayout } from '~/layout'
+import PageLayout, { TableLayout, TitleLayout } from '~/layout'
 import { api } from '~/utils/api'
 import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string'
 import { Committee, Employee, Membership } from '@prisma/client'
@@ -163,12 +163,12 @@ export default function CommitteeMembership() {
   }
 
   const onDeactivateMembership = (membership: MembershipWithEmployeeType) => {
-    handleOpenDialog(DialogsEnum.alert_membership)
+    handleOpenDialog(DialogsEnum.alert_deactivate)
     setSelectedMembership({ ...membership })
   }
 
   const onDeactivateCommittee = () => {
-    handleOpenDialog(DialogsEnum.alert_committee)
+    handleOpenDialog(DialogsEnum.alert_succession)
   }
 
   const handleDeactivateCommittee = () => {
@@ -188,72 +188,70 @@ export default function CommitteeMembership() {
 
   return (
     <AuthenticatedPage>
-      <PageLayout>
-        <div className="committee container my-10 mb-auto text-white ">
-          {committeeData && (
-            <>
-              <CommitteeDetails data={committeeData} />
-              <DataTable
-                isLoading={isLoading}
-                data={committeeData?.members || []}
-                columns={getMembershipColumns(
-                  onChangeMembership,
-                  onDeactivateMembership,
-                  committeeData.committee_template_id,
-                  committeeData.begin_date,
-                  committeeData.end_date
-                )}
-                tableFilters={<TableToolbarFilter filters={propsFilters} />}
-                tableActions={<MembershipTableToolbarActions {...propsActions} />}
-                column={MembershipHeaders.NAME}
-              />
-              <CommitteeDialog
-                committee={committeeData}
-                open={openDialog == DialogsEnum.committee}
-                handleOpenDialog={handleOpenDialog}
-                handleSave={handleSaveCommittee}
-              />
-              <MembershipDialog
-                member={selectedMembership}
-                open={openDialog == DialogsEnum.membership}
-                handleOpenDialog={handleOpenDialog}
-                handleSave={handleSaveMembership}
-                committee={{
-                  id: committeeData.id,
-                  begin_date: committeeData.begin_date,
-                  end_date: committeeData.end_date
-                }}
-              />
-              <SuccessionDialogs
-                open={openDialog}
-                handleOpenDialog={handleOpenDialog}
-                committeeId={committeeData.id}
-              />
-              <AlertDialog
-                open={openDialog == DialogsEnum.alert_committee}
-                description={
-                  <>
-                    Esta ação irá <strong>encerrar</strong> o {MyHeaders.COMMITTEE.toLowerCase()}{' '}
-                    atual e todas as suas participações. Deseja continuar?
-                  </>
-                }
-                handleOpenDialog={handleOpenDialog}
-                handleContinue={handleDeactivateCommittee}
-              />
-              <AlertDialog
-                open={openDialog == DialogsEnum.alert_membership}
-                description={
-                  <>
-                    Esta ação irá <strong>encerrar</strong> esta participação. Deseja continuar?
-                  </>
-                }
-                handleOpenDialog={handleOpenDialog}
-                handleContinue={handleDeactivateMembership}
-              />
-            </>
-          )}
-        </div>
-      </PageLayout>
+      <TableLayout className="committee">
+        {committeeData && (
+          <>
+            <CommitteeDetails data={committeeData} />
+            <DataTable
+              isLoading={isLoading}
+              data={committeeData?.members || []}
+              columns={getMembershipColumns(
+                onChangeMembership,
+                onDeactivateMembership,
+                committeeData.committee_template_id,
+                committeeData.begin_date,
+                committeeData.end_date
+              )}
+              tableFilters={<TableToolbarFilter filters={propsFilters} />}
+              tableActions={<MembershipTableToolbarActions {...propsActions} />}
+              column={MembershipHeaders.NAME}
+            />
+            <CommitteeDialog
+              committee={committeeData}
+              open={openDialog == DialogsEnum.committee}
+              handleOpenDialog={handleOpenDialog}
+              handleSave={handleSaveCommittee}
+            />
+            <MembershipDialog
+              member={selectedMembership}
+              open={openDialog == DialogsEnum.membership}
+              handleOpenDialog={handleOpenDialog}
+              handleSave={handleSaveMembership}
+              committee={{
+                id: committeeData.id,
+                begin_date: committeeData.begin_date,
+                end_date: committeeData.end_date
+              }}
+            />
+            <SuccessionDialogs
+              open={openDialog}
+              handleOpenDialog={handleOpenDialog}
+              committeeId={committeeData.id}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_succession}
+              description={
+                <>
+                  Esta ação irá <strong>encerrar</strong> o {MyHeaders.COMMITTEE.toLowerCase()}{' '}
+                  atual e todas as suas participações. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeactivateCommittee}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_deactivate}
+              description={
+                <>
+                  Esta ação irá <strong>encerrar</strong> esta participação. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeactivateMembership}
+            />
+          </>
+        )}
+      </TableLayout>
     </AuthenticatedPage>
   )
 }

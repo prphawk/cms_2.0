@@ -1,7 +1,7 @@
 import AuthenticatedPage from '~/components/authenticated-page'
 import { getCommitteesColumns } from '~/components/table/committees/committees-columns'
 import { DataTable } from '~/components/table/data-table'
-import PageLayout, { TitleLayout } from '~/layout'
+import PageLayout, { TableLayout, TitleLayout } from '~/layout'
 import { api } from '~/utils/api'
 import { useState } from 'react'
 import { IFilter, TableToolbarFilter } from '../../../components/table/data-table-toolbar'
@@ -28,13 +28,19 @@ import {
 import CommitteeDialog from '~/components/dialogs/committee-dialog'
 import { CommitteeSchema } from '~/schemas/committee'
 import LoadingLayout from '~/components/loading-layout'
+import { AlertDialog } from '~/components/dialogs/alert-dialog'
+import { Committee } from '@prisma/client'
+import { type } from 'os'
+import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 
 export default function Committees() {
   const router = useRouter()
 
-  const [open, setOpen] = useState(DialogsEnum.none)
+  const [openDialog, setOpenDialog] = useState(DialogsEnum.none)
 
-  const handleOpenDialog = (dialogEnum: DialogsEnum) => setOpen(dialogEnum)
+  const [selectedCommittee, setSelectedCommittee] = useState<Committee | number>()
+
+  const handleOpenDialog = (dialogEnum: DialogsEnum) => setOpenDialog(dialogEnum)
 
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterT, setFilterT] = useState<FilterStateType>()
@@ -82,11 +88,24 @@ export default function Committees() {
     }
   })
 
-  function handleDeactivateCommittees(ids: number[]) {
-    //TODO pelo amor de deus vai invalidar tudo 500 vezes
-    // faz a função no prisma com IN pra ver os ids
-    ids.forEach((id) => deactivate.mutate({ id }))
+  function onDeactivateCommittee(id: number) {
+    setSelectedCommittee(id)
+    setOpenDialog(DialogsEnum.alert_deactivate)
   }
+  function handleDeactivateCommittee() {
+    if (selectedCommittee && typeof selectedCommittee == 'number')
+      deactivate.mutate({ id: selectedCommittee })
+  }
+
+  function onCommitteeSuccession(id: number) {
+    setSelectedCommittee(id)
+    setOpenDialog(DialogsEnum.succession)
+  }
+
+  // function handleCommitteeSuccession() {
+  //   if (selectedCommittee && typeof selectedCommittee == 'number')
+  //     setOpenDialog(DialogsEnum.succession)
+  // }
 
   function handleViewCommittee(id: number) {
     router.push(`${Routes.COMMITTEES}/${id}`)
@@ -96,29 +115,52 @@ export default function Committees() {
     create.mutate(data)
   }
 
+  const handleCreateCommittee = () => {
+    setSelectedCommittee(undefined)
+    handleOpenDialog(DialogsEnum.committee)
+  }
+
   return (
     <AuthenticatedPage>
       {/* <LoadingLayout loading={isLoading}> */}
-      <div className="committees container my-6 mb-auto min-h-[90vh] rounded-xl bg-gray-900/20 pb-4 text-white drop-shadow-lg">
+      <TableLayout className="committees">
         <ContentHeader />
         <DataTable
           data={data || []}
           isLoading={isLoading}
-          columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
+          columns={getCommitteesColumns(
+            onDeactivateCommittee,
+            onCommitteeSuccession,
+            handleViewCommittee
+          )}
           tableFilters={<TableToolbarFilter filters={propsFilters} />}
           tableActions={
-            <CommitteesTableToolbarActions
-              handleCreateCommittee={() => handleOpenDialog(DialogsEnum.committee)}
-            />
+            <CommitteesTableToolbarActions handleCreateCommittee={handleCreateCommittee} />
           }
           column={CommitteeHeaders.NAME}
         />
         <CommitteeDialog
-          open={open === DialogsEnum.committee}
+          open={openDialog === DialogsEnum.committee}
           handleOpenDialog={handleOpenDialog}
           handleSave={handleSaveCommittee}
         />
-      </div>
+        <SuccessionDialogs
+          open={openDialog}
+          handleOpenDialog={handleOpenDialog}
+          committeeId={selectedCommittee as number}
+        />
+        <AlertDialog
+          open={openDialog == DialogsEnum.alert_deactivate}
+          description={
+            <>
+              Esta ação irá <strong>encerrar</strong> o {MyHeaders.COMMITTEE.toLowerCase()} atual e
+              <strong>todas</strong> as suas participações. Deseja continuar?
+            </>
+          }
+          handleOpenDialog={handleOpenDialog}
+          handleContinue={handleDeactivateCommittee}
+        />
+      </TableLayout>
       {/* </LoadingLayout> */}
     </AuthenticatedPage>
   )

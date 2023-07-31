@@ -17,10 +17,13 @@ export default function SuccessionDialogs(props: {
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
   committeeId: number
 }) {
-  const { data: committeeData, isLoading } = api.committee.getOne.useQuery({
-    id: props.committeeId,
-    is_active: true
-  })
+  const { data: committeeData, isLoading } = api.committee.getOne.useQuery(
+    {
+      id: props.committeeId,
+      is_active: true
+    },
+    { enabled: typeof props.committeeId == 'number' }
+  )
 
   const [successionData, setSuccessionData] = useState<any>()
   //// Committee & { committee_template: CommitteeTemplate} & { members: (Membership & { employee: Employee })[] }
