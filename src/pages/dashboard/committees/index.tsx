@@ -1,7 +1,7 @@
 import AuthenticatedPage from '~/components/authenticated-page'
 import { getCommitteesColumns } from '~/components/table/committees/committees-columns'
 import { DataTable } from '~/components/table/data-table'
-import { TableLayout, TitleLayout } from '~/layout'
+import { ContentLayout, TitleLayout } from '~/layout'
 import { api } from '~/utils/api'
 import { useState } from 'react'
 import { IFilter, TableToolbarFilter } from '../../../components/table/data-table-toolbar'
@@ -29,6 +29,7 @@ import { CommitteeSchema } from '~/schemas/committee'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { Committee } from '@prisma/client'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
+import ErrorPage from '~/pages/500'
 
 export default function Committees() {
   const router = useRouter()
@@ -50,7 +51,7 @@ export default function Committees() {
   })
 
   if (isError) {
-    return <span>Error: sowwyyyy</span>
+    return <ErrorPage />
   }
 
   const propsFilters: IFilter[] = [
@@ -115,7 +116,7 @@ export default function Committees() {
 
   return (
     <AuthenticatedPage>
-      <TableLayout className="committees">
+      <ContentLayout className="committees">
         <CommitteeTableTitle />
         <DataTable
           data={data || []}
@@ -152,7 +153,7 @@ export default function Committees() {
           handleOpenDialog={handleOpenDialog}
           handleContinue={handleDeactivateCommittee}
         />
-      </TableLayout>
+      </ContentLayout>
     </AuthenticatedPage>
   )
 }

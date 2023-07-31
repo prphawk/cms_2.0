@@ -10,7 +10,7 @@ import AuthenticatedPage from '~/components/authenticated-page'
 import { getMembershipColumns } from '~/components/table/membership/membership-columns'
 import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar'
 import { DataTable } from '~/components/table/data-table'
-import { TableLayout, TitleLayout } from '~/layout'
+import { ContentLayout, TitleLayout } from '~/layout'
 import { api } from '~/utils/api'
 import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string'
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions'
@@ -31,11 +31,8 @@ import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { HourglassIcon, CircleOffIcon } from 'lucide-react'
 import { IconBadge } from '~/components/badge'
-import {
-  CommitteeWithMembersDataType,
-  CommitteeWithOptionalTemplateDataType,
-  MembershipWithEmployeeDataType
-} from '~/types'
+import { CommitteeWithOptionalTemplateDataType, MembershipWithEmployeeDataType } from '~/types'
+import ErrorPage from '~/pages/500'
 
 export default function CommitteeMembership() {
   const router = useRouter()
@@ -43,17 +40,13 @@ export default function CommitteeMembership() {
 
   const utils = api.useContext()
 
-  //TODO replace w/ upsert? that would b cool
   const updateCommittee = api.committee.update.useMutation({
-    // TODO onError
     onSettled() {
       return utils.committee.getOne.invalidate()
     }
   })
 
-  //TODO upsert?
   const updateMembership = api.membership.update.useMutation({
-    // TODO onError
     onSettled() {
       utils.committee.getOne.invalidate()
       utils.membership.getRoleOptionsByCommittee.invalidate()
@@ -61,7 +54,6 @@ export default function CommitteeMembership() {
   })
 
   const createMembership = api.membership.create.useMutation({
-    // TODO onError
     onSuccess() {
       utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
     },
@@ -114,16 +106,9 @@ export default function CommitteeMembership() {
     { enabled: !isNaN(param_id) }
   )
 
-  if (
-    isError
-    //|| deactivate.isError
-  ) {
-    return <span>Error: sowwyyyy</span> //TODO pelo amor de deus kk
+  if (isError) {
+    return <ErrorPage />
   }
-
-  useEffect(() => {
-    console.debug(filterA)
-  }, [filterA])
 
   const handleChangeActiveFiltersC = (values?: string[]) => {
     setFilterC(!values?.length ? undefined : values)
@@ -194,7 +179,7 @@ export default function CommitteeMembership() {
 
   return (
     <AuthenticatedPage>
-      <TableLayout className="committee">
+      <ContentLayout className="committee">
         {committeeData && (
           <>
             <CommitteesTableTitle data={committeeData} />
@@ -255,7 +240,7 @@ export default function CommitteeMembership() {
             />
           </>
         )}
-      </TableLayout>
+      </ContentLayout>
     </AuthenticatedPage>
   )
 }

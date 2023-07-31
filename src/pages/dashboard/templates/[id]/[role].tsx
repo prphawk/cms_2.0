@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import AuthenticatedPage from '~/components/authenticated-page'
-import PageLayout, { TableLayout, TitleLayout } from '~/layout'
+import PageLayout, { ContentLayout, TitleLayout } from '~/layout'
 import { api } from '~/utils/api'
 import { _isNumeric, _toLocaleString } from '~/utils/string'
 import { DataTable } from '~/components/table/data-table'
@@ -35,7 +35,7 @@ export default function TemplateRoleHistory() {
 
   return (
     <AuthenticatedPage>
-      <TableLayout className="role">
+      <ContentLayout className="role">
         {data && (
           <>
             <TemplateHistoryTableTitle {...{ template_id, role }} />
@@ -49,7 +49,7 @@ export default function TemplateRoleHistory() {
             />
           </>
         )}
-      </TableLayout>
+      </ContentLayout>
     </AuthenticatedPage>
   )
 }

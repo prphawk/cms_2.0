@@ -20,7 +20,6 @@ export function TableToolbar<TData>(
   props: TableToolbarProps<TData> & {
     tableFilters?: JSX.Element
     tableActions?: JSX.Element
-    column: string
     searchPlaceholder?: string
     globalFilter: string
     onChange: (value: string) => void

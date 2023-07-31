@@ -21,28 +21,13 @@ import {
   TableRow
 } from '@/components/ui/table'
 import DataTablePagination from './data-table-pagination'
-import { ReactNode, useState } from 'react'
+import { useState } from 'react'
 import { TableToolbar } from './data-table-toolbar'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
-
-// const getPaginationProps = () => {
-//   return {
-//     manualPagination: true,
-//     pageCount: -1,
-//     getPageCount,
-//     nextPage,
-//     previousPage,
-//     getCanPreviousPage,
-//     getCanNextPage,
-//     getPageOptions: [10, 25, 50, 100],
-//     setPageSize,
-//     setPageCount
-//   };
-// };
 
 export function DataTable<TData, TValue>({
   columns,
@@ -86,7 +71,6 @@ export function DataTable<TData, TValue>({
         globalFilter={globalFilter}
         onChange={setGlobalFilter}
         tableActions={tableActions}
-        column={column}
       />
       <div className="mt-3 h-fit rounded-md border">
         <Table>

@@ -12,7 +12,7 @@ export default function PageLayout(props: PropsWithChildren) {
   )
 }
 
-export function TableLayout(props: PropsWithChildren & { className?: string }) {
+export function ContentLayout(props: PropsWithChildren & { className?: string }) {
   return (
     <div
       className={cn(
