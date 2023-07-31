@@ -49,12 +49,12 @@ export default function Home() {
       <PageLayout>
         <LoadingLayout loading={status === 'loading'}>
           <TableLayout className="flex w-[100vh] flex-col items-center justify-center">
-            <div>
+            <div className="mt-4">
               <CMS />
               {/* <hr className="mx-3 mt-1 border-[#ffffff4f]" /> */}
             </div>
             <TextLayout className="mt-16 text-[5rem] font-extrabold">Home</TextLayout>
-            <div className="my-6 grid grid-cols-2 p-4">
+            <div className="mb-6 mt-4 grid grid-cols-2 p-4">
               {components.map((component) => (
                 <ListItem
                   key={component.title}
