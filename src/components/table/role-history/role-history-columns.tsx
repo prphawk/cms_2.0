@@ -73,19 +73,21 @@ export const getTemplateRoleHistoryColumns = (
   {
     accessorKey: 'begin_date',
     id: MembershipHeaders.BEGIN_DATE,
+    accessorFn: (row) => _toLocaleString(row.begin_date),
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const date = row.getValue(column.id) as Date
-      return <div>{_toLocaleString(date)}</div>
+      const value = row.getValue(column.id) as string
+      return <div>{value}</div>
     }
   },
   {
     accessorKey: 'end_date',
     id: MembershipHeaders.END_DATE,
+    accessorFn: (row) => _toLocaleString(row.end_date),
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const date = row.getValue(column.id) as Date
-      return <div>{_toLocaleString(date)}</div>
+      const value = row.getValue(column.id) as string
+      return <div>{value}</div>
     }
   },
   {

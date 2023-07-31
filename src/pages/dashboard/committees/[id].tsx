@@ -31,7 +31,11 @@ import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { HourglassIcon, CircleOffIcon } from 'lucide-react'
 import { IconBadge } from '~/components/badge'
-import { CommitteeWithMembersDataType, MembershipWithEmployeeDataType } from '~/types'
+import {
+  CommitteeWithMembersDataType,
+  CommitteeWithOptionalTemplateDataType,
+  MembershipWithEmployeeDataType
+} from '~/types'
 
 export default function CommitteeMembership() {
   const router = useRouter()
@@ -200,9 +204,7 @@ export default function CommitteeMembership() {
               columns={getMembershipColumns(
                 onChangeMembership,
                 onDeactivateMembership,
-                committeeData.committee_template_id,
-                committeeData.begin_date,
-                committeeData.end_date
+                committeeData
               )}
               tableFilters={<TableToolbarFilter filters={propsFilters} />}
               tableActions={<MembershipTableToolbarActions {...propsActions} />}
@@ -258,7 +260,7 @@ export default function CommitteeMembership() {
   )
 }
 
-const CommitteesTableTitle = ({ data }: { data: CommitteeWithMembersDataType }) => {
+const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDataType }) => {
   const { data: countData, isLoading } = api.membership.groupByActivity.useQuery({
     committee_id: data.id
   })
@@ -270,19 +272,15 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithMembersDataType }) 
         <AccordionTrigger>
           <TitleLayout>
             {data?.name}
-            <span>
+            <span className="ml-1">
               {!data.committee_template_id && (
-                <IconBadge className="ml-3 px-1.5 py-1">
-                  <HourglassIcon className="h-5 w-4" />
-                  {/* <span className="mr-0.5 text-[0.9rem] font-normal tracking-tight">
-                    Temporário
-                  </span> */}
+                <IconBadge>
+                  <HourglassIcon className="h-4 w-4" />
                 </IconBadge>
               )}
               {!data.is_active && (
-                <IconBadge className="p-1 px-1.5 py-1">
-                  <CircleOffIcon className="h-5 w-4 " />
-                  {/* <span className=" mr-0.5 text-[0.9rem] font-normal tracking-tight">Inativo</span> */}
+                <IconBadge>
+                  <CircleOffIcon className="h-4 w-4 " />
                 </IconBadge>
               )}
             </span>
@@ -310,6 +308,16 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithMembersDataType }) 
           {MyHeaders.COMMITTEE}
           {data?.committee_template_id ? ' Permanente' : ' Temporário'}
           <Dot />
+          {data?.committee_template_id ? (
+            <>
+              <strong>Template: </strong>
+
+              {data?.committee_template?.name}
+              <Dot />
+            </>
+          ) : (
+            <></>
+          )}
           <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
           <Dot />
           <strong>Membros ativos: </strong> {active_count} de {total_count}

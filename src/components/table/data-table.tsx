@@ -59,6 +59,7 @@ export function DataTable<TData, TValue>({
 }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
   const table = useReactTable({
     // https://tanstack.com/table/v8/docs/api/features/pagination
     data,
@@ -69,10 +70,11 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    //enableGlobalFilter: true,
+    enableGlobalFilter: true,
     state: {
       sorting,
-      columnFilters
+      columnFilters,
+      globalFilter
     }
   })
 
@@ -81,6 +83,8 @@ export function DataTable<TData, TValue>({
       <TableToolbar
         table={table}
         tableFilters={tableFilters}
+        globalFilter={globalFilter}
+        onChange={setGlobalFilter}
         tableActions={tableActions}
         column={column}
       />

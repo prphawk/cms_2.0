@@ -17,14 +17,12 @@ import Link from 'next/link'
 import { Routes } from '~/constants/routes'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { EndDate, IconBadge } from '~/components/badge'
-import { MembershipWithEmployeeDataType } from '~/types'
+import { CommitteeWithMembersDataType, MembershipWithEmployeeDataType } from '~/types'
 
 export const getMembershipColumns = (
   onChangeMembership: (membership: MembershipWithEmployeeDataType) => void,
   onDeactivateMembership: (membership: MembershipWithEmployeeDataType) => void,
-  committee_template_id?: number | null,
-  committee_begin_date?: Date | null,
-  committee_end_date?: Date | null
+  committee: CommitteeWithMembersDataType
 ): ColumnDef<MembershipWithEmployeeDataType>[] => [
   {
     accessorKey: 'employee.name',
@@ -54,10 +52,10 @@ export const getMembershipColumns = (
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
       const role = row.original.role
-      return committee_template_id ? (
+      return committee.committee_template_id ? (
         <Link
           className="flex max-w-[280px] flex-row underline"
-          href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}
+          href={`${Routes.TEMPLATES}/${committee.committee_template_id}/${role}`}
         >
           <span className="truncate">{value}</span>
         </Link>
@@ -78,19 +76,21 @@ export const getMembershipColumns = (
   {
     accessorKey: 'begin_date',
     id: MembershipHeaders.BEGIN_DATE,
+    accessorFn: (row) => _toLocaleString(row.begin_date),
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const date = (row.getValue(column.id) as Date) || committee_begin_date
-      return <div>{_toLocaleString(date)}</div> // pode retornar JSX tbm
+      const value = row.getValue(column.id) as string
+      return <div>{value}</div>
     }
   },
   {
     accessorKey: 'end_date',
     id: MembershipHeaders.END_DATE,
+    accessorFn: (row) => _toLocaleString(row.end_date),
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const date = (row.getValue(column.id) as Date) || committee_end_date
-      return <EndDate value={date} isActive={row.original?.is_active} />
+      const value = row.getValue(column.id) as string
+      return <div>{value}</div>
     }
   },
   {
@@ -129,16 +129,19 @@ export const getMembershipColumns = (
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              {committee_template_id ? (
+              {committee.committee_template_id ? (
                 <DropdownMenuItem>
-                  <Link href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
+                  <Link href={`${Routes.TEMPLATES}/${committee.committee_template_id}/${role}`}>
                     Ver histórico do cargo
                   </Link>
                 </DropdownMenuItem>
               ) : (
                 <></>
               )}
-              <DropdownMenuItem onClick={() => onChangeMembership(row.original)}>
+              <DropdownMenuItem
+                disabled={!row.original.is_active}
+                onClick={() => onChangeMembership(row.original)}
+              >
                 Editar participação
               </DropdownMenuItem>
               <DropdownMenuItem

@@ -84,19 +84,21 @@ export const getCommitteesColumns = (
   {
     accessorKey: 'begin_date',
     id: CommitteeHeaders.BEGIN_DATE,
+    accessorFn: (row) => _toLocaleString(row.begin_date),
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const date = row.getValue(column.id) as Date
-      return <div className="text-sm">{_toLocaleString(date)}</div> // pode retornar JSX tbm
+      const value = row.getValue(column.id) as string
+      return <div>{value}</div>
     }
   },
   {
     accessorKey: 'end_date',
     id: CommitteeHeaders.END_DATE,
+    accessorFn: (row) => _toLocaleString(row.end_date),
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const date = row.getValue(column.id) as Date
-      return <EndDate value={date} isActive={row.original?.is_active} />
+      const value = row.getValue(column.id) as string
+      return <div>{value}</div>
     }
   },
   {

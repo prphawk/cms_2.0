@@ -29,6 +29,14 @@ export const TopNavigation = () => {
             {MyHeaders.EMPLOYEES}
           </a>
           <Dot className="p-1" />
+
+          <a
+            className="text-sm font-semibold tracking-wider hover:underline"
+            href={Routes.TEMPLATES}
+          >
+            {MyHeaders.TEMPLATES}
+          </a>
+          <Dot className="p-1" />
           <a
             className="text-sm font-semibold tracking-wider hover:underline"
             href={Routes.SETTINGS}

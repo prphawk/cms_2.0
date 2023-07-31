@@ -3,6 +3,7 @@ export class MyHeaders {
   public static COMMITTEES = 'Órgãos'
   public static EMPLOYEE = 'Servidor'
   public static EMPLOYEES = 'Servidores'
+  public static TEMPLATES = 'Templates'
 }
 export class CommitteeHeaders {
   public static BOND = 'Vínculo'

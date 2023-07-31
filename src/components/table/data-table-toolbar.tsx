@@ -21,17 +21,18 @@ export function TableToolbar<TData>(
     tableFilters?: JSX.Element
     tableActions?: JSX.Element
     column: string
+    searchPlaceholder?: string
+    globalFilter: string
+    onChange: (value: string) => void
   }
 ) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Buscar..."
-          value={(props.table.getColumn(props.column)?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            props.table.getColumn(props.column)?.setFilterValue(event.target.value)
-          }
+          placeholder={'Buscar...' || props.searchPlaceholder}
+          value={props.globalFilter}
+          onChange={(event) => props.onChange(event.target.value)}
           className="h-8 w-[150px] bg-transparent text-muted-foregroundPage lg:w-[250px]"
         />
         {props.tableFilters}

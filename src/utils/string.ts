@@ -5,7 +5,7 @@ export const _toLocaleString = (date?: Date | null) => {
     const arr = _toString(date)?.split('-')
     if (arr?.length) return `${arr[2]}/${arr[1]}/${arr[0]}`
   }
-  return '-'
+  return ''
 }
 
 export const _toString = (date?: Date | null) => {

@@ -4,7 +4,7 @@ import PageLayout, { TableLayout, TextLayout } from '~/layout'
 import { AuthButton } from '~/components/login'
 import { Routes } from '~/constants/routes'
 import LoadingLayout, { LoadingElement } from '~/components/loading-layout'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { cn } from '@/lib/utils'
 import { MyHeaders } from '~/constants/headers'
 import { CMS, SignOutButton } from '~/components/top-navigation'
@@ -27,7 +27,7 @@ export default function Home() {
       className: 'border-b-[1px] border-l-[1px] rounded-bl-lg'
     },
     {
-      title: 'Tipos',
+      title: MyHeaders.TEMPLATES,
       href: Routes.TEMPLATES,
       description: 'Under construction.',
       className: 'border-t-[1px] border-r-[1px] rounded-tr-lg'
@@ -56,7 +56,7 @@ export default function Home() {
                 <CMS />
                 {/* <hr className="mx-3 mt-1 border-[#ffffff4f]" /> */}
               </div>
-              <TextLayout className="mt-16 text-[5rem] font-extrabold">Home</TextLayout>
+              <TextLayout className="mb-2 mt-16 text-[5rem] font-extrabold">Home</TextLayout>
               <div className="mb-6 mt-4 grid grid-cols-2 p-4">
                 {components.map((component) => (
                   <ListItem
@@ -81,24 +81,24 @@ export default function Home() {
 const ListItem = ({
   className,
   title,
-  children,
   href
 }: {
   className?: string
   title: string
-  children: any
   href: string
-}) => {
+} & PropsWithChildren) => {
   return (
     <a
       href={href}
       className={cn(
-        'h-24 w-48 bg-transparent px-5 py-3 text-white no-underline transition hover:bg-white/10',
+        'h-[72px] w-[170px] bg-transparent text-white no-underline transition hover:bg-white/10',
         'my-auto flex select-none border-[#ffffff4f]',
         className
       )} //outline outline-1 outline-offset-8  space-y-1 rounded-md bg-transparent p-3 leading-none transition-colors no-underline hover:bg-background/10 focus:bg-background/20
     >
-      <div className="m-auto text-center align-middle text-xl text-white">{title}</div>
+      <div className="m-auto text-center align-middle text-xl tracking-tight text-white">
+        {title}
+      </div>
       {/* <p className="line-clamp-2 leading-snug text-muted-foregroundPage">{children}</p> */}
     </a>
   )
