@@ -54,21 +54,31 @@ export const getCommitteesColumns = (
       const is_inactive = !row.original.is_active
 
       return (
-        <div className="flex flex-row">
-          <div className="max-w-[300px] truncate">
-            <strong className="truncate">{value}</strong>
-          </div>
+        <div className="flex w-[280px] flex-row">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="truncate">
+                  <strong className="truncate">{value}</strong>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>{value}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           <span>
-            {is_temporary && (
-              <IconBadge>
-                <HourglassIcon className="h-3 w-3 text-white" />
-              </IconBadge>
-            )}
-            {is_inactive && (
-              <IconBadge>
-                <CircleOffIcon className="h-3 w-3 text-white" />
-              </IconBadge>
-            )}
+            <div className="flex flex-row">
+              {is_temporary && (
+                <IconBadge>
+                  <HourglassIcon className="h-3 w-3 text-white" />
+                </IconBadge>
+              )}
+              {is_inactive && (
+                <IconBadge>
+                  <CircleOffIcon className="h-3 w-3 text-white" />
+                </IconBadge>
+              )}
+            </div>
           </span>
         </div>
       )
@@ -89,7 +99,7 @@ export const getCommitteesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return <div>{value}</div>
+      return <div className="truncate">{value}</div>
     }
   },
   {
@@ -153,9 +163,8 @@ export const getCommitteesColumns = (
     enableHiding: false,
     cell: ({ row }) => {
       const committee = row.original
-
       return (
-        <>
+        <div className="min-w-[64px]">
           <Button
             onClick={() => handleViewCommittee(committee.id)}
             variant="ghost"
@@ -169,7 +178,7 @@ export const getCommitteesColumns = (
             onViewCommittee={() => handleViewCommittee(committee.id)}
             handleDeactivateCommittees={handleDeactivateCommittees}
           />
-        </>
+        </div>
       )
     }
   }
