@@ -25,11 +25,12 @@ import {
 import { MyDialog, MyDialogClose } from './my-dialog'
 import { CommitteeSchema } from '~/schemas/committee'
 import { DialogsEnum } from '~/constants/enums'
+import { CommitteeWithOptionalTemplateDataType } from '~/types'
 
 export default function CommitteeDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
-  committee?: Committee & { committee_template?: { name: string } | null }
+  committee?: CommitteeWithOptionalTemplateDataType
   handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void
   succession?: boolean
 }) {

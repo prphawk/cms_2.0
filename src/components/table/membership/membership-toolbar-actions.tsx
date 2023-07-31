@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button'
 import { MoreHorizontalIcon, PlusIcon } from 'lucide-react'
-import { CommitteeDataType } from '~/pages/dashboard/committees/[id]'
 import { DialogsEnum } from '~/constants/enums'
 
 import { Committee } from '@prisma/client'
@@ -12,18 +11,19 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { MyHeaders } from '~/constants/headers'
+import { CommitteeWithMembersDataType } from '~/types'
 
 export default function MembershipTableToolbarActions(props: {
-  committee: CommitteeDataType
+  committee: CommitteeWithMembersDataType
   onDeactivateCommittee: () => void
-  handleClickAddMembershipButton: () => void
+  onCreateMembership: () => void
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
 }) {
   return (
     <>
       <Button
         onClick={() => {
-          props.handleClickAddMembershipButton()
+          props.onCreateMembership()
           props.handleOpenDialog(DialogsEnum.membership)
         }}
         variant="outline"

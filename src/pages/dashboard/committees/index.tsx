@@ -1,7 +1,7 @@
 import AuthenticatedPage from '~/components/authenticated-page'
 import { getCommitteesColumns } from '~/components/table/committees/committees-columns'
 import { DataTable } from '~/components/table/data-table'
-import PageLayout, { TableLayout, TitleLayout } from '~/layout'
+import { TableLayout, TitleLayout } from '~/layout'
 import { api } from '~/utils/api'
 import { useState } from 'react'
 import { IFilter, TableToolbarFilter } from '../../../components/table/data-table-toolbar'
@@ -14,7 +14,6 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion'
 import { _toLocaleString, _formatCount } from '~/utils/string'
-import { Dot } from '~/components/dot'
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions'
 import { z } from 'zod'
 import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
@@ -27,10 +26,8 @@ import {
 } from '~/components/filters'
 import CommitteeDialog from '~/components/dialogs/committee-dialog'
 import { CommitteeSchema } from '~/schemas/committee'
-import LoadingLayout from '~/components/loading-layout'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { Committee } from '@prisma/client'
-import { type } from 'os'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 
 export default function Committees() {
@@ -92,6 +89,7 @@ export default function Committees() {
     setSelectedCommittee(id)
     setOpenDialog(DialogsEnum.alert_deactivate)
   }
+
   function handleDeactivateCommittee() {
     if (selectedCommittee && typeof selectedCommittee == 'number')
       deactivate.mutate({ id: selectedCommittee })
@@ -101,11 +99,6 @@ export default function Committees() {
     setSelectedCommittee(id)
     setOpenDialog(DialogsEnum.succession)
   }
-
-  // function handleCommitteeSuccession() {
-  //   if (selectedCommittee && typeof selectedCommittee == 'number')
-  //     setOpenDialog(DialogsEnum.succession)
-  // }
 
   function handleViewCommittee(id: number) {
     router.push(`${Routes.COMMITTEES}/${id}`)
@@ -122,9 +115,8 @@ export default function Committees() {
 
   return (
     <AuthenticatedPage>
-      {/* <LoadingLayout loading={isLoading}> */}
       <TableLayout className="committees">
-        <ContentHeader />
+        <CommitteeTableTitle />
         <DataTable
           data={data || []}
           isLoading={isLoading}
@@ -161,12 +153,11 @@ export default function Committees() {
           handleContinue={handleDeactivateCommittee}
         />
       </TableLayout>
-      {/* </LoadingLayout> */}
     </AuthenticatedPage>
   )
 }
 
-const ContentHeader = () => {
+const CommitteeTableTitle = () => {
   const { data: countData, isLoading } = api.committee.groupByActivity.useQuery()
 
   const { active_count, total_count } = _formatCount(isLoading, countData)

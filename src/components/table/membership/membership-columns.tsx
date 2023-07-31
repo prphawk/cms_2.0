@@ -17,16 +17,15 @@ import Link from 'next/link'
 import { Routes } from '~/constants/routes'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { EndDate, IconBadge } from '~/components/badge'
-import { MembershipWithEmployeeType } from '~/pages/dashboard/committees/[id]'
+import { MembershipWithEmployeeDataType } from '~/types'
 
 export const getMembershipColumns = (
-  onChangeMembership: (membership: MembershipWithEmployeeType) => void,
-  onDeactivateMembership: (id: MembershipWithEmployeeType) => void,
+  onChangeMembership: (membership: MembershipWithEmployeeDataType) => void,
+  onDeactivateMembership: (membership: MembershipWithEmployeeDataType) => void,
   committee_template_id?: number | null,
   committee_begin_date?: Date | null,
   committee_end_date?: Date | null
-): // handleDeactivateCommittees: (ids: number[]) => void,
-ColumnDef<Membership & { employee: Employee }>[] => [
+): ColumnDef<MembershipWithEmployeeDataType>[] => [
   {
     accessorKey: 'employee.name',
     accessorFn: (row) => row.employee.name,
@@ -37,8 +36,8 @@ ColumnDef<Membership & { employee: Employee }>[] => [
       const is_inactive = !row.original.is_active
 
       return (
-        <div>
-          <strong>{value}</strong>
+        <div className="flex w-[240px] flex-row">
+          <strong className="truncate">{value}</strong>
           {is_inactive && (
             <IconBadge>
               <CircleOffIcon className="h-3 w-3 text-white" />
@@ -56,8 +55,11 @@ ColumnDef<Membership & { employee: Employee }>[] => [
       const value = row.getValue(column.id) as string
       const role = row.original.role
       return committee_template_id ? (
-        <Link className="underline" href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
-          {value}
+        <Link
+          className="flex max-w-[280px] flex-row underline"
+          href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}
+        >
+          <span className="truncate">{value}</span>
         </Link>
       ) : (
         <>{value}</>
@@ -70,7 +72,7 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return <div>{value}</div>
+      return <div className="truncate">{value}</div>
     }
   },
   {
@@ -115,7 +117,7 @@ ColumnDef<Membership & { employee: Employee }>[] => [
     cell: ({ row }) => {
       const role = row.original.role
       return (
-        <>
+        <div className="min-w-[64px]">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -146,18 +148,12 @@ ColumnDef<Membership & { employee: Employee }>[] => [
                 Suceder cargo
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                danger
-                onClick={() => {
-                  onDeactivateMembership(row.original)
-                  row.original.is_active = false
-                }}
-              >
+              <DropdownMenuItem danger onClick={() => onDeactivateMembership(row.original)}>
                 Encerrar participação
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </>
+        </div>
       )
     }
   }

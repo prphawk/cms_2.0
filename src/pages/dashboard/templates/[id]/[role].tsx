@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import AuthenticatedPage from '~/components/authenticated-page'
-import PageLayout, { TitleLayout } from '~/layout'
+import PageLayout, { TableLayout, TitleLayout } from '~/layout'
 import { api } from '~/utils/api'
 import { _isNumeric, _toLocaleString } from '~/utils/string'
 import { DataTable } from '~/components/table/data-table'
@@ -35,38 +35,34 @@ export default function TemplateRoleHistory() {
 
   return (
     <AuthenticatedPage>
-      <PageLayout>
-        <div className="committee container my-10 mb-auto text-white ">
-          {data && (
-            <>
-              <TemplateHistoryDetails {...{ template_id, role }} />
-              <DataTable
-                //isLoading={isLoading}
-                data={data || []}
-                columns={getTemplateRoleHistoryColumns(handleViewCommittee)}
-                // tableFilters={<TableToolbarFilter {...propsFilters} />}
-                // tableActions={<MembershipTableToolbarActions {...propsActions} />}
-                column={MembershipHeaders.NAME}
-              />
-            </>
-          )}
-        </div>
-      </PageLayout>
+      <TableLayout className="role">
+        {data && (
+          <>
+            <TemplateHistoryTableTitle {...{ template_id, role }} />
+            <DataTable
+              //isLoading={isLoading}
+              data={data || []}
+              columns={getTemplateRoleHistoryColumns(handleViewCommittee)}
+              // tableFilters={<TableToolbarFilter {...propsFilters} />}
+              // tableActions={<MembershipTableToolbarActions {...propsActions} />}
+              column={MembershipHeaders.NAME}
+            />
+          </>
+        )}
+      </TableLayout>
     </AuthenticatedPage>
   )
 }
 
-const TemplateHistoryDetails = (props: { template_id: number; role: string }) => {
+const TemplateHistoryTableTitle = (props: { template_id: number; role: string }) => {
   const { data, isLoading } = api.template.getOne.useQuery({
     template_id: props.template_id
   })
   return (
     <HistoryDetails
       isLoading={isLoading}
-      title={`${CommitteeHeaders.TEMPLATE} ${data?.name}: "${props.role}"`}
-    >
-      Something something
-    </HistoryDetails>
+      title={`${data?.name}: Histórico de "${props.role}"`}
+    ></HistoryDetails>
   )
 }
 //todo arrumar essa historia aqui

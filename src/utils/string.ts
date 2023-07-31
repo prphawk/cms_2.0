@@ -1,3 +1,5 @@
+import { CountDataType, RawCountDataType } from '~/types'
+
 export const _toLocaleString = (date?: Date | null) => {
   if (date) {
     const arr = _toString(date)?.split('-')
@@ -45,8 +47,8 @@ export const _addDays = (original: Date, days: number) => {
 
 export const _formatCount = (
   isLoading: boolean,
-  data: { _count: any; is_active: boolean }[] | undefined
-): { active_count: number; total_count: number } => {
+  data: RawCountDataType[] | undefined
+): CountDataType => {
   let obj = { active: 0, inactive: 0 }
 
   if (!(isLoading || !data || !data.length)) {

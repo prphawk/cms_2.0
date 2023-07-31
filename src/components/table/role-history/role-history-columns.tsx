@@ -1,4 +1,3 @@
-import { Committee, Employee, Membership } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
 import { MyHeaders, MembershipHeaders } from '~/constants/headers'
 import { _toLocaleString } from '~/utils/string'
@@ -12,14 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Badge } from '@/components/ui/badge'
 import DataTableColumnHeader from '~/components/table/data-table-column-header'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge } from '~/components/badge'
+import { MembershipWithEmployeeAndCommitteeDataType } from '~/types'
 
 export const getTemplateRoleHistoryColumns = (
   handleViewCommittee: (committee_id: number) => void
-): ColumnDef<Membership & { employee: Employee } & { committee: Committee }>[] => [
+): ColumnDef<MembershipWithEmployeeAndCommitteeDataType>[] => [
   {
     accessorKey: 'employee.name',
     accessorFn: (row) => row.employee.name,
@@ -30,8 +29,8 @@ export const getTemplateRoleHistoryColumns = (
       const is_inactive = !row.original.is_active
 
       return (
-        <div>
-          <strong>{value}</strong>
+        <div className="flex w-[240px] flex-row">
+          <strong className="truncate">{value}</strong>
           {is_inactive && (
             <IconBadge>
               <CircleOffIcon className="h-3 w-3 text-white" />
@@ -51,8 +50,17 @@ export const getTemplateRoleHistoryColumns = (
       const is_inactive = !row.original.committee.is_active
 
       return (
-        <div>
-          <strong>{value}</strong>
+        <div className="flex max-w-[280px] flex-row">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="truncate">
+                  <strong className="truncate">{value}</strong>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>{value}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           {is_inactive && (
             <IconBadge>
               <CircleOffIcon className="h-3 w-3 text-white" />
@@ -104,7 +112,7 @@ export const getTemplateRoleHistoryColumns = (
     cell: ({ row }) => {
       const committee_id = row.original.committee_id
       return (
-        <>
+        <div className="min-w-[64px]">
           <Button
             onClick={() => handleViewCommittee(committee_id)}
             variant="ghost"
@@ -137,7 +145,7 @@ export const getTemplateRoleHistoryColumns = (
               {/* <DropdownMenuItem danger disabled={!row.original.is_active}>Encerrar participação</DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
-        </>
+        </div>
       )
     }
   }

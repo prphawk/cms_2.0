@@ -2,16 +2,7 @@ import { Committee } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
 import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import { _isDateComing, _toLocaleString } from '~/utils/string'
-import {
-  AlertOctagonIcon,
-  AlertTriangleIcon,
-  CircleOffIcon,
-  EyeIcon,
-  HourglassIcon,
-  LucideIcon,
-  MoreHorizontal,
-  Users2Icon
-} from 'lucide-react'
+import { CircleOffIcon, HourglassIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -24,27 +15,14 @@ import {
 import DataTableColumnHeader from '~/components/table/data-table-column-header'
 import { Separator } from '@radix-ui/react-dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import Link from 'next/link'
-import { Routes } from '~/constants/routes'
 import { EndDate, IconBadge } from '~/components/badge'
-
-interface IActiveCount {
-  active_count: number
-  total_count: number
-}
+import { CountDataType, CommitteeWithMembershipCountDataType } from '~/types'
 
 export const getCommitteesColumns = (
   onDeactivateCommittee: (id: number) => void,
   onCommitteeSuccession: (id: number) => void,
   handleViewCommittee: (id: number) => void
-): ColumnDef<
-  Committee & {
-    members_count: {
-      active_count: number
-      total_count: number
-    }
-  }
->[] => [
+): ColumnDef<CommitteeWithMembershipCountDataType>[] => [
   {
     accessorKey: 'name',
     id: CommitteeHeaders.NAME,
@@ -125,15 +103,15 @@ export const getCommitteesColumns = (
     accessorKey: 'members_count',
     accessorFn: (row) => row.members_count,
     sortingFn: (row1, row2, columnId) => {
-      return (row1.getValue(columnId) as IActiveCount).active_count >
-        (row2.getValue(columnId) as IActiveCount).active_count
+      return (row1.getValue(columnId) as CountDataType).active_count >
+        (row2.getValue(columnId) as CountDataType).active_count
         ? 1
         : -1
     },
     id: CommitteeHeaders.MEMBERS,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const value = row.getValue(column.id) as IActiveCount
+      const value = row.getValue(column.id) as CountDataType
       return (
         <div>
           {value.active_count} de {value.total_count} membros

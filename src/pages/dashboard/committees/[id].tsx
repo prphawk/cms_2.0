@@ -10,10 +10,9 @@ import AuthenticatedPage from '~/components/authenticated-page'
 import { getMembershipColumns } from '~/components/table/membership/membership-columns'
 import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar'
 import { DataTable } from '~/components/table/data-table'
-import PageLayout, { TableLayout, TitleLayout } from '~/layout'
+import { TableLayout, TitleLayout } from '~/layout'
 import { api } from '~/utils/api'
 import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string'
-import { Committee, Employee, Membership } from '@prisma/client'
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions'
 import { Dot } from '~/components/dot'
 import { z } from 'zod'
@@ -32,8 +31,7 @@ import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { HourglassIcon, CircleOffIcon } from 'lucide-react'
 import { IconBadge } from '~/components/badge'
-
-export type MembershipWithEmployeeType = Membership & { employee: Employee }
+import { CommitteeWithMembersDataType, MembershipWithEmployeeDataType } from '~/types'
 
 export default function CommitteeMembership() {
   const router = useRouter()
@@ -75,9 +73,13 @@ export default function CommitteeMembership() {
       utils.committee.getAll.invalidate() //TODO ver aquele negócio de mudar o resultado da chamada pra so mudar o status dessa comissão
     }
   })
-  const deactivateMembership = api.membership.deactivate.useMutation()
+  const deactivateMembership = api.membership.deactivate.useMutation({
+    onSuccess() {
+      utils.committee.getOne.invalidate()
+    }
+  })
 
-  const [selectedMembership, setSelectedMembership] = useState<MembershipWithEmployeeType>()
+  const [selectedMembership, setSelectedMembership] = useState<MembershipWithEmployeeDataType>()
 
   const [openDialog, setOpenDialog] = useState(DialogsEnum.none)
 
@@ -153,16 +155,16 @@ export default function CommitteeMembership() {
     } else createMembership.mutate({ committee_id: committeeData.id, ...membershipSchema })
   }
 
-  const handleClickAddMembershipButton = () => {
+  const onCreateMembership = () => {
     setSelectedMembership(undefined)
   }
 
-  const onChangeMembership = (membership: MembershipWithEmployeeType) => {
+  const onChangeMembership = (membership: MembershipWithEmployeeDataType) => {
     handleOpenDialog(DialogsEnum.membership)
     setSelectedMembership({ ...membership })
   }
 
-  const onDeactivateMembership = (membership: MembershipWithEmployeeType) => {
+  const onDeactivateMembership = (membership: MembershipWithEmployeeDataType) => {
     handleOpenDialog(DialogsEnum.alert_deactivate)
     setSelectedMembership({ ...membership })
   }
@@ -181,7 +183,7 @@ export default function CommitteeMembership() {
 
   const propsActions = {
     committee: committeeData!,
-    handleClickAddMembershipButton,
+    onCreateMembership,
     onDeactivateCommittee,
     handleOpenDialog
   }
@@ -191,7 +193,7 @@ export default function CommitteeMembership() {
       <TableLayout className="committee">
         {committeeData && (
           <>
-            <CommitteeDetails data={committeeData} />
+            <CommitteesTableTitle data={committeeData} />
             <DataTable
               isLoading={isLoading}
               data={committeeData?.members || []}
@@ -256,9 +258,7 @@ export default function CommitteeMembership() {
   )
 }
 
-export type CommitteeDataType = Committee & { members: Membership[] }
-
-const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
+const CommitteesTableTitle = ({ data }: { data: CommitteeWithMembersDataType }) => {
   const { data: countData, isLoading } = api.membership.groupByActivity.useQuery({
     committee_id: data.id
   })
