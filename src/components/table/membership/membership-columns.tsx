@@ -148,7 +148,11 @@ export const getMembershipColumns = (
                 Suceder cargo
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem danger onClick={() => onDeactivateMembership(row.original)}>
+              <DropdownMenuItem
+                danger
+                disabled={!row.original.is_active}
+                onClick={() => onDeactivateMembership(row.original)}
+              >
                 Encerrar participação
               </DropdownMenuItem>
             </DropdownMenuContent>
