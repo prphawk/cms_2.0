@@ -3,7 +3,7 @@ import Head from 'next/head'
 import PageLayout, { TableLayout, TextLayout } from '~/layout'
 import { AuthButton } from '~/components/login'
 import { Routes } from '~/constants/routes'
-import LoadingLayout from '~/components/loading-layout'
+import LoadingLayout, { LoadingElement } from '~/components/loading-layout'
 import React from 'react'
 import { cn } from '@/lib/utils'
 import { MyHeaders } from '~/constants/headers'
@@ -47,28 +47,32 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-        <LoadingLayout loading={status === 'loading'}>
-          <TableLayout className="flex w-[100vh] flex-col items-center justify-center">
-            <div className="mt-4">
-              <CMS />
-              {/* <hr className="mx-3 mt-1 border-[#ffffff4f]" /> */}
-            </div>
-            <TextLayout className="mt-16 text-[5rem] font-extrabold">Home</TextLayout>
-            <div className="mb-6 mt-4 grid grid-cols-2 p-4">
-              {components.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                  className={component.className}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </div>
-            <SignOutButton className="mx-auto mt-8" />
-          </TableLayout>
-        </LoadingLayout>
+        <TableLayout className="flex w-[100vh] flex-col items-center justify-center">
+          {status == 'loading' ? (
+            <LoadingElement />
+          ) : (
+            <>
+              <div className="mt-4">
+                <CMS />
+                {/* <hr className="mx-3 mt-1 border-[#ffffff4f]" /> */}
+              </div>
+              <TextLayout className="mt-16 text-[5rem] font-extrabold">Home</TextLayout>
+              <div className="mb-6 mt-4 grid grid-cols-2 p-4">
+                {components.map((component) => (
+                  <ListItem
+                    key={component.title}
+                    title={component.title}
+                    href={component.href}
+                    className={component.className}
+                  >
+                    {component.description}
+                  </ListItem>
+                ))}
+              </div>
+              <SignOutButton className="mx-auto mt-8" />
+            </>
+          )}
+        </TableLayout>
       </PageLayout>
     </>
   )
