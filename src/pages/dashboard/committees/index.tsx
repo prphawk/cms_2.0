@@ -99,7 +99,7 @@ export default function Committees() {
   return (
     <AuthenticatedPage>
       {/* <LoadingLayout loading={isLoading}> */}
-      <div className="committees container my-6 mb-auto min-h-[100vh] rounded-xl bg-gray-800/20 pb-4 text-white drop-shadow-md">
+      <div className="committees container my-6 mb-auto min-h-[90vh] rounded-xl bg-gray-900/20 pb-4 text-white drop-shadow-lg">
         <ContentHeader />
         <DataTable
           data={data || []}

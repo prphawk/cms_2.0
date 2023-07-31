@@ -8,7 +8,7 @@ export const TopNavigation = () => {
   const router = useRouter()
   return (
     <div className="m-auto mb-16 flex justify-center">
-      <div className="container absolute top-0 m-auto flex h-[4rem] w-full flex-row items-center rounded-b-xl bg-gray-800/30 p-6 tracking-wide text-white drop-shadow-md">
+      <div className="container absolute top-0 m-auto flex h-[4rem] w-full flex-row items-center rounded-b-xl bg-gray-900/25 p-6 tracking-wide text-white drop-shadow-lg">
         <button onClick={() => router.back()}>
           <ArrowLeftIcon className="mr-2 h-6 w-6" />
         </button>
