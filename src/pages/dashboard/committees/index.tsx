@@ -137,11 +137,8 @@ const ContentHeader = () => {
             <TitleLayout>{MyHeaders.COMMITTEES}</TitleLayout>
           </AccordionTrigger>
           <AccordionContent className="tracking-wide">
-            <strong>{MyHeaders.COMMITTEES}: </strong>
-            {total_count}
-            <Dot />
             <strong>{MyHeaders.COMMITTEES} ativos: </strong>
-            {active_count}
+            {active_count} de {total_count}
           </AccordionContent>
         </AccordionItem>
       </Accordion>
