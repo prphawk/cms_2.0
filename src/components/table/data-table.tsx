@@ -46,7 +46,6 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState('')
   const table = useReactTable({
-    // https://tanstack.com/table/v8/docs/api/features/pagination
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),

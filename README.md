@@ -29,7 +29,12 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
 ## References
 
+https://next-auth.js.org/getting-started/client
 https://www.prisma.io/docs/concepts/components/prisma-schema/relations/relation-mode#indexes
 https://www.prisma.io/docs/guides/database/planetscale#differences-to-consider
+https://tanstack.com/table/v8/docs/api/features/pagination
+https://next-auth.js.org/providers/email
+https://next-auth.js.org/configuration/options#session
+https://trpc.io/docs/client/nextjs/ssg
 
 `npx prisma db seed`

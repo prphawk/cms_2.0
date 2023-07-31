@@ -73,15 +73,13 @@ export default function Committees() {
     onMutate() {
       return utils.committee.getAll.cancel()
     },
-    // TODO onError
-    onSettled(data) {
+    onSettled() {
       return utils.committee.getAll.invalidate()
     }
   })
 
   const create = api.committee.create.useMutation({
-    // TODO onError
-    onSettled(data) {
+    onSettled() {
       return utils.committee.getAll.invalidate()
     }
   })
