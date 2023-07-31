@@ -1,20 +1,20 @@
-import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
-import { prisma } from '~/server/db';
-import { _findUniqueCommittee } from './committee';
+import { z } from 'zod'
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
+import { prisma } from '~/server/db'
+import { _findUniqueCommittee } from './committee'
 
 export const _deactivateMembershipsByCommittee = async (committee_id: number) => {
   return await prisma.membership.updateMany({
     where: { committee: { id: committee_id } },
-    data: { is_active: false },
-  });
-};
+    data: { is_active: false }
+  })
+}
 export const _deactivateMembershipsByEmployee = async (employee_id: number) => {
   return await prisma.membership.updateMany({
     where: { employee: { id: employee_id } },
-    data: { is_active: false },
-  });
-};
+    data: { is_active: false }
+  })
+}
 
 export const membershipRouter = createTRPCRouter({
   create: protectedProcedure
@@ -25,27 +25,28 @@ export const membershipRouter = createTRPCRouter({
         role: z.string(),
         begin_date: z.date(),
         end_date: z.date(),
-        observations: z.optional(z.string()),
-      }),
+        ordinance: z.string().optional(),
+        observations: z.optional(z.string())
+      })
     )
     .mutation(({ ctx, input }) => {
-      const { employee, committee_id, ...data } = input;
+      const { employee, committee_id, ...data } = input
       const employee_params = employee.id
         ? {
-            connect: { id: employee.id },
+            connect: { id: employee.id }
           }
         : {
             create: {
-              name: employee.name,
-            },
-          };
+              name: employee.name
+            }
+          }
       return ctx.prisma.membership.create({
         data: {
           committee: { connect: { id: committee_id } },
           employee: employee_params,
-          ...data,
-        },
-      });
+          ...data
+        }
+      })
     }),
 
   groupByActivity: protectedProcedure
@@ -55,12 +56,12 @@ export const membershipRouter = createTRPCRouter({
         by: ['is_active'],
         where: { committee_id: input.committee_id },
         _count: {
-          is_active: true,
+          is_active: true
         },
         orderBy: {
-          is_active: 'desc',
-        },
-      });
+          is_active: 'desc'
+        }
+      })
     }),
 
   update: protectedProcedure
@@ -70,16 +71,17 @@ export const membershipRouter = createTRPCRouter({
         begin_date: z.date(),
         end_date: z.date(),
         role: z.string(),
-        observations: z.string().optional(),
-      }),
+        ordinance: z.string().optional(),
+        observations: z.string().optional()
+      })
     )
     .mutation(({ ctx, input }) => {
-      const { id, ...data } = input;
+      const { id, ...data } = input
 
       return ctx.prisma.membership.update({
         where: { id },
-        data,
-      });
+        data
+      })
     }),
 
   // delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
@@ -89,73 +91,73 @@ export const membershipRouter = createTRPCRouter({
   deactivate: protectedProcedure
     .input(
       z.object({
-        id: z.number(),
-      }),
+        id: z.number()
+      })
     )
     .mutation(({ ctx, input }) => {
-      const { id } = input;
+      const { id } = input
       return ctx.prisma.membership.update({
         where: { id },
-        data: { is_active: false },
-      });
+        data: { is_active: false }
+      })
     }),
 
   getRoleHistory: protectedProcedure
     .input(
       z.object({
         role: z.string(),
-        template_id: z.number(),
-      }),
+        template_id: z.number()
+      })
     )
     .query(({ ctx, input }) => {
-      const { role, template_id } = input;
+      const { role, template_id } = input
 
       return ctx.prisma.membership.findMany({
         where: {
           committee: { committee_template_id: template_id },
-          role,
+          role
         },
         include: {
           committee: true,
-          employee: true,
-        },
-      });
+          employee: true
+        }
+      })
     }),
 
   getRoleOptionsByCommittee: protectedProcedure
     .input(
       z.object({
-        committee_id: z.number(),
-      }),
+        committee_id: z.number()
+      })
     )
     .query(async ({ ctx, input }) => {
       const result = await ctx.prisma.membership.findMany({
         where: {
-          committee: { id: input.committee_id },
+          committee: { id: input.committee_id }
         },
         select: {
-          role: true,
+          role: true
         },
         orderBy: {
-          role: 'asc',
+          role: 'asc'
         },
-        distinct: ['role'],
-      });
+        distinct: ['role']
+      })
       return result.map((e) => {
-        return { label: e.role, value: e.role };
-      });
+        return { label: e.role, value: e.role }
+      })
     }),
 
   getRoleOptions: protectedProcedure.query(async ({ ctx, input }) => {
     const result = await ctx.prisma.membership.findMany({
       select: {
-        role: true,
+        role: true
       },
       orderBy: {
-        role: 'asc',
+        role: 'asc'
       },
-      distinct: ['role'],
-    });
-    return result.map((e) => e.role);
-  }),
-});
+      distinct: ['role']
+    })
+    return result.map((e) => e.role)
+  })
+})

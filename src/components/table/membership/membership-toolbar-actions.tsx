@@ -1,27 +1,30 @@
-import { Button } from '@/components/ui/button';
-import { MoreHorizontalIcon, PlusIcon } from 'lucide-react';
-import { CommitteeDataType, dialogsEnum } from '~/pages/dashboard/committees/[id]';
-import { Committee } from '@prisma/client';
+import { Button } from '@/components/ui/button'
+import { MoreHorizontalIcon, PlusIcon } from 'lucide-react'
+import { DialogsEnum } from '~/constants/enums'
+
+import { Committee } from '@prisma/client'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { MyHeaders } from '~/constants/headers'
+import { CommitteeWithMembersDataType } from '~/types'
 
 export default function MembershipTableToolbarActions(props: {
-  committee: CommitteeDataType;
-  handleDeactivateCommittees: () => void;
-  handleClickAddMembershipButton: () => void;
-  handleOpenDialog: (dialogEnum: number) => void;
+  committee: CommitteeWithMembersDataType
+  onDeactivateCommittee: () => void
+  onCreateMembership: () => void
+  handleOpenDialog: (dialogEnum: DialogsEnum) => void
 }) {
   return (
     <>
       <Button
         onClick={() => {
-          props.handleClickAddMembershipButton();
-          props.handleOpenDialog(dialogsEnum.membership);
+          props.onCreateMembership()
+          props.handleOpenDialog(DialogsEnum.membership)
         }}
         variant="outline"
         size="sm"
@@ -32,17 +35,17 @@ export default function MembershipTableToolbarActions(props: {
       </Button>
       <ActionsMenuButton
         committee={props.committee}
-        handleDeactivateCommittees={props.handleDeactivateCommittees}
+        onDeactivateCommittee={props.onDeactivateCommittee}
         handleOpenDialog={props.handleOpenDialog}
       />
     </>
-  );
+  )
 }
 
 const ActionsMenuButton = (props: {
-  committee: Committee;
-  handleDeactivateCommittees: (ids: number[]) => void;
-  handleOpenDialog: (dialogEnum: number) => void;
+  committee: Committee
+  onDeactivateCommittee: () => void
+  handleOpenDialog: (dialogEnum: DialogsEnum) => void
 }) => {
   return (
     <DropdownMenu>
@@ -57,26 +60,25 @@ const ActionsMenuButton = (props: {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => props.handleOpenDialog(dialogsEnum.committee)}>
-          Editar órgão
+        <DropdownMenuItem onClick={() => props.handleOpenDialog(DialogsEnum.committee)}>
+          Editar {MyHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
-        {props.committee.committee_template_id && (
-          <DropdownMenuItem disabled>Suceder órgão</DropdownMenuItem>
-        )}
+        <DropdownMenuItem
+          disabled={!props.committee.is_active || !props.committee.committee_template_id}
+          onClick={() => props.handleOpenDialog(DialogsEnum.succession)}
+        >
+          Suceder {MyHeaders.COMMITTEE.toLowerCase()}
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {
-          <DropdownMenuItem
-            disabled={!props.committee.is_active}
-            onClick={() => {
-              props.handleDeactivateCommittees([props.committee.id]);
-              props.committee.is_active = false;
-            }}
-          >
-            Desativar órgão
-          </DropdownMenuItem>
-        }
+        <DropdownMenuItem
+          danger
+          disabled={!props.committee.is_active}
+          onClick={props.onDeactivateCommittee}
+        >
+          Encerrar {MyHeaders.COMMITTEE.toLowerCase()}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}

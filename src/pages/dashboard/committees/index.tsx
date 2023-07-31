@@ -1,51 +1,56 @@
-import AuthenticatedPage from '~/components/authenticated-page';
-import { getCommitteesColumns } from '~/components/table/committees/committees-columns';
-import { DataTable } from '~/components/table/data-table';
-import PageLayout, { TitleLayout } from '~/layout';
-import { api } from '~/utils/api';
-import { useState } from 'react';
-import { IFilter, TableToolbarFilter } from '../../../components/table/data-table-toolbar';
-import { useRouter } from 'next/router';
-import { Routes } from '~/constants/routes';
+import AuthenticatedPage from '~/components/authenticated-page'
+import { getCommitteesColumns } from '~/components/table/committees/committees-columns'
+import { DataTable } from '~/components/table/data-table'
+import { TableLayout, TitleLayout } from '~/layout'
+import { api } from '~/utils/api'
+import { useState } from 'react'
+import { IFilter, TableToolbarFilter } from '../../../components/table/data-table-toolbar'
+import { useRouter } from 'next/router'
+import { Routes } from '~/constants/routes'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { _toLocaleString, _formatCount } from '~/utils/string';
-import { Dot } from '~/components/dot';
-import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions';
-import CommitteeDialog, { CommitteeSchema } from '~/components/table/committees/committee-dialog';
-import { z } from 'zod';
-import { CommitteeHeaders, MenuHeaders } from '~/constants/headers';
-import { dialogsEnum } from './[id]';
+  AccordionTrigger
+} from '@/components/ui/accordion'
+import { _toLocaleString, _formatCount } from '~/utils/string'
+import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions'
+import { z } from 'zod'
+import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
+import { DialogsEnum } from '~/constants/enums'
 import {
   FilterStateType,
   filterAProps,
   filterTProps,
-  handleChangeActiveFilters,
-} from '~/components/filters';
+  handleChangeComplementaryFilters
+} from '~/components/filters'
+import CommitteeDialog from '~/components/dialogs/committee-dialog'
+import { CommitteeSchema } from '~/schemas/committee'
+import { AlertDialog } from '~/components/dialogs/alert-dialog'
+import { Committee } from '@prisma/client'
+import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 
 export default function Committees() {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [open, setOpen] = useState(-1);
+  const [openDialog, setOpenDialog] = useState(DialogsEnum.none)
 
-  const handleOpenDialog = (dialogEnum: number) => setOpen(dialogEnum);
+  const [selectedCommittee, setSelectedCommittee] = useState<Committee | number>()
 
-  const [filterA, setFilterA] = useState<FilterStateType>();
-  const [filterT, setFilterT] = useState<FilterStateType>();
+  const handleOpenDialog = (dialogEnum: DialogsEnum) => setOpenDialog(dialogEnum)
 
-  const utils = api.useContext();
+  const [filterA, setFilterA] = useState<FilterStateType>()
+  const [filterT, setFilterT] = useState<FilterStateType>()
+
+  const utils = api.useContext()
 
   const { data, isLoading, isError } = api.committee.getAll.useQuery({
     is_active: filterA?.value,
-    is_temporary: filterT?.value,
-  });
+    is_temporary: filterT?.value
+  })
 
   if (isError) {
-    return <span>Error: sowwyyyy</span>;
+    return <span>Error: sowwyyyy</span>
   }
 
   const propsFilters: IFilter[] = [
@@ -53,98 +58,123 @@ export default function Committees() {
       ...filterAProps,
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeActiveFilters('is_active', setFilterA, labels),
+        handleChangeComplementaryFilters('is_active', setFilterA, labels)
     },
     {
       ...filterTProps,
       activeFilters: filterT?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeActiveFilters('is_temporary', setFilterT, labels),
-    },
-  ];
+        handleChangeComplementaryFilters('is_temporary', setFilterT, labels)
+    }
+  ]
 
   const deactivate = api.committee.deactivate.useMutation({
     onMutate() {
-      return utils.committee.getAll.cancel();
+      return utils.committee.getAll.cancel()
     },
     // TODO onError
     onSettled(data) {
-      return utils.committee.getAll.invalidate();
-    },
-  });
+      return utils.committee.getAll.invalidate()
+    }
+  })
 
   const create = api.committee.create.useMutation({
     // TODO onError
     onSettled(data) {
-      return utils.committee.getAll.invalidate();
-    },
-  });
+      return utils.committee.getAll.invalidate()
+    }
+  })
 
-  function handleDeactivateCommittees(ids: number[]) {
-    //TODO pelo amor de deus vai invalidar tudo 500 vezes
-    // faz a função no prisma com IN pra ver os ids
-    ids.forEach((id) => deactivate.mutate({ id }));
+  function onDeactivateCommittee(id: number) {
+    setSelectedCommittee(id)
+    setOpenDialog(DialogsEnum.alert_deactivate)
+  }
+
+  function handleDeactivateCommittee() {
+    if (selectedCommittee && typeof selectedCommittee == 'number')
+      deactivate.mutate({ id: selectedCommittee })
+  }
+
+  function onCommitteeSuccession(id: number) {
+    setSelectedCommittee(id)
+    setOpenDialog(DialogsEnum.succession)
   }
 
   function handleViewCommittee(id: number) {
-    router.push(`${Routes.COMMITTEES}/${id}`);
+    router.push(`${Routes.COMMITTEES}/${id}`)
   }
 
   const handleSaveCommittee = (data: z.infer<typeof CommitteeSchema>) => {
-    create.mutate(data);
-  };
+    create.mutate(data)
+  }
+
+  const handleCreateCommittee = () => {
+    setSelectedCommittee(undefined)
+    handleOpenDialog(DialogsEnum.committee)
+  }
 
   return (
     <AuthenticatedPage>
-      <PageLayout>
-        {/* <LoadingLayout loading={isLoading}> */}
-        <div className="committees container my-10 mb-auto text-white ">
-          <Header />
-          <DataTable
-            data={data || []}
-            isLoading={isLoading}
-            columns={getCommitteesColumns(handleDeactivateCommittees, handleViewCommittee)}
-            tableFilters={<TableToolbarFilter filters={propsFilters} />}
-            tableActions={
-              <CommitteesTableToolbarActions
-                handleCreateCommittee={() => handleOpenDialog(dialogsEnum.committee)}
-              />
-            }
-            column={CommitteeHeaders.NAME}
-          />
-          <CommitteeDialog
-            open={open === dialogsEnum.committee}
-            handleOpenDialog={handleOpenDialog}
-            handleSave={handleSaveCommittee}
-          />
-        </div>
-        {/* </LoadingLayout> */}
-      </PageLayout>
+      <TableLayout className="committees">
+        <CommitteeTableTitle />
+        <DataTable
+          data={data || []}
+          isLoading={isLoading}
+          columns={getCommitteesColumns(
+            onDeactivateCommittee,
+            onCommitteeSuccession,
+            handleViewCommittee
+          )}
+          tableFilters={<TableToolbarFilter filters={propsFilters} />}
+          tableActions={
+            <CommitteesTableToolbarActions handleCreateCommittee={handleCreateCommittee} />
+          }
+          column={CommitteeHeaders.NAME}
+        />
+        <CommitteeDialog
+          open={openDialog === DialogsEnum.committee}
+          handleOpenDialog={handleOpenDialog}
+          handleSave={handleSaveCommittee}
+        />
+        <SuccessionDialogs
+          open={openDialog}
+          handleOpenDialog={handleOpenDialog}
+          committeeId={selectedCommittee as number}
+        />
+        <AlertDialog
+          open={openDialog == DialogsEnum.alert_deactivate}
+          description={
+            <>
+              Esta ação irá <strong>encerrar</strong> o {MyHeaders.COMMITTEE.toLowerCase()} atual e
+              <strong>todas</strong> as suas participações. Deseja continuar?
+            </>
+          }
+          handleOpenDialog={handleOpenDialog}
+          handleContinue={handleDeactivateCommittee}
+        />
+      </TableLayout>
     </AuthenticatedPage>
-  );
+  )
 }
 
-const Header = () => {
-  const { data: countData, isLoading } = api.committee.groupByActivity.useQuery();
+const CommitteeTableTitle = () => {
+  const { data: countData, isLoading } = api.committee.groupByActivity.useQuery()
 
-  const { active_count, total_count } = _formatCount(isLoading, countData);
+  const { active_count, total_count } = _formatCount(isLoading, countData)
 
   return (
     <>
       <Accordion className="mb-6" type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <TitleLayout>{MenuHeaders.COMMITTEES}</TitleLayout>
+            <TitleLayout>{MyHeaders.COMMITTEES}</TitleLayout>
           </AccordionTrigger>
           <AccordionContent className="tracking-wide">
-            <strong>Órgãos: </strong>
-            {total_count}
-            <Dot />
-            <strong>Órgãos ativos: </strong>
-            {active_count}
+            <strong>{MyHeaders.COMMITTEES} ativos: </strong>
+            {active_count} de {total_count}
           </AccordionContent>
         </AccordionItem>
       </Accordion>
     </>
-  );
-};
+  )
+}

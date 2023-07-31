@@ -1,37 +1,37 @@
-import { HourglassIcon } from 'lucide-react';
-import { CircleIcon, CircleOffIcon, RefreshCwIcon, RefreshCwOffIcon } from 'lucide-react';
+import { HourglassIcon } from 'lucide-react'
+import { CircleOffIcon } from 'lucide-react'
 
 export type FilterStateType =
   | {
-      value?: boolean;
-      labels?: string[];
+      value?: boolean
+      labels?: string[]
     }
-  | undefined;
+  | undefined
 
 export const filterAProps = {
   title: 'Status',
   options: [
     { label: 'Ativo(a)', value: 'is_active' },
-    { label: 'Inativo(a)', value: 'is_inactive', icon: CircleOffIcon },
-  ],
-};
+    { label: 'Inativo(a)', value: 'is_inactive', icon: CircleOffIcon }
+  ]
+}
 
 export const filterTProps = {
   title: 'Tipo',
   options: [
     { label: 'Permanente', value: 'is_permanent' },
-    { label: 'Temporário(a)', value: 'is_temporary', icon: HourglassIcon },
-  ],
-};
+    { label: 'Temporário(a)', value: 'is_temporary', icon: HourglassIcon }
+  ]
+}
 
-export const handleChangeActiveFilters = (
+export const handleChangeComplementaryFilters = (
   str: string,
   setFilterFn: (filter: FilterStateType) => void,
-  labels?: string[],
+  labels?: string[]
 ) => {
   if (!labels?.length || labels.length >= 2) {
-    setFilterFn(undefined);
+    setFilterFn({ value: undefined, labels })
   } else {
-    setFilterFn({ value: labels?.includes(str), labels });
+    setFilterFn({ value: labels?.includes(str), labels })
   }
-};
+}

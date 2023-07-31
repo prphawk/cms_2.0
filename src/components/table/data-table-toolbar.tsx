@@ -1,27 +1,27 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { XIcon } from 'lucide-react';
-import { DataTableFacetedFilter } from './data-table-faceted-filter';
-import { Table } from '@tanstack/react-table';
-import { SlidersHorizontalIcon } from 'lucide-react';
+'use client'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { XIcon } from 'lucide-react'
+import { DataTableFacetedFilter } from './data-table-faceted-filter'
+import { Table } from '@tanstack/react-table'
+import { SlidersHorizontalIcon } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 
 interface TableToolbarProps<TData> {
-  table: Table<TData>;
+  table: Table<TData>
 }
 
 export function TableToolbar<TData>(
   props: TableToolbarProps<TData> & {
-    tableFilters?: JSX.Element;
-    tableActions?: JSX.Element;
-    column: string;
-  },
+    tableFilters?: JSX.Element
+    tableActions?: JSX.Element
+    column: string
+  }
 ) {
   return (
     <div className="flex items-center justify-between">
@@ -39,28 +39,28 @@ export function TableToolbar<TData>(
       {props.tableActions}
       <TableViewOptions table={props.table} />
     </div>
-  );
+  )
 }
 
 export interface IFilterOptions {
-  label: string;
-  value: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  label: string
+  value: string
+  icon?: React.ComponentType<{ className?: string }>
 }
 
 export interface IFilter {
-  title: string;
-  options: IFilterOptions[];
-  activeFilters?: string[];
-  handleChangeActiveFilters: (value: string[] | undefined) => void;
+  title: string
+  options: IFilterOptions[]
+  activeFilters?: string[]
+  handleChangeActiveFilters: (value: string[] | undefined) => void
 }
 
 export const TableToolbarFilter = (props: { filters: IFilter[] }) => {
   const handleResetFilters = () => {
     props.filters.forEach((f) => {
-      f.handleChangeActiveFilters(undefined);
-    });
-  };
+      f.handleChangeActiveFilters(undefined)
+    })
+  }
 
   return (
     <>
@@ -83,11 +83,11 @@ export const TableToolbarFilter = (props: { filters: IFilter[] }) => {
         <></>
       )}
     </>
-  );
-};
+  )
+}
 
 interface DataTableViewOptionsProps<TData> {
-  table: Table<TData>;
+  table: Table<TData>
 }
 
 export function TableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
@@ -113,9 +113,9 @@ export function TableViewOptions<TData>({ table }: DataTableViewOptionsProps<TDa
               >
                 {column.id}
               </DropdownMenuCheckboxItem>
-            );
+            )
           })}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }
