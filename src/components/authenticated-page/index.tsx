@@ -4,7 +4,7 @@ import { PropsWithChildren } from 'react'
 import { Routes } from '~/constants/routes'
 import LoadingLayout from '../loading-layout'
 import PageLayout from '~/layout'
-import { TopNavigation } from '../header'
+import { TopNavigation } from '../top-navigation'
 
 export default function AuthenticatedPage(props: PropsWithChildren) {
   const { data: session, status } = useSession()

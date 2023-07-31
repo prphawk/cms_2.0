@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { ArrowLeftIcon, Dot, LogOutIcon } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
@@ -12,7 +13,7 @@ export const TopNavigation = () => {
         <button onClick={() => router.back()}>
           <ArrowLeftIcon className="mr-2 h-6 w-6" />
         </button>
-        <h1 className="mx-4 text-[1.5rem] font-extrabold">CMS 2.0</h1>
+        <CMS />
         <div className="ml-4 flex flex-row items-center space-x-2 pt-[4px]">
           <a
             className="text-sm font-semibold tracking-wider hover:underline "
@@ -35,14 +36,27 @@ export const TopNavigation = () => {
             Configurações
           </a>
         </div>
-        <button
-          className="ml-auto flex flex-row items-center text-sm font-semibold tracking-wider hover:underline"
-          onClick={() => signOut()}
-        >
-          Sign Out
-          <LogOutIcon className="ml-4" />
-        </button>
+        <SignOutButton />
       </div>
     </div>
+  )
+}
+
+export const CMS = () => {
+  return <h1 className="mx-4 text-[1.5rem] font-extrabold">CMS 2.0</h1>
+}
+
+export const SignOutButton = ({ className }: { className?: string }) => {
+  return (
+    <button
+      className={cn(
+        'ml-auto flex flex-row items-center text-sm font-semibold tracking-wider hover:underline',
+        className
+      )}
+      onClick={() => signOut()}
+    >
+      Sign Out
+      <LogOutIcon className="ml-4" />
+    </button>
   )
 }
