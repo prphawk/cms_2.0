@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({
         tableActions={tableActions}
         column={column}
       />
-      <div className="mt-3 rounded-md border">
+      <div className="mt-3 h-fit rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -11,7 +11,7 @@ import {
 import { Form } from '@/components/ui/form'
 import { Committee } from '@prisma/client'
 import { useForm } from 'react-hook-form'
-import { CommitteeHeaders, Headers } from '~/constants/headers'
+import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -69,7 +69,7 @@ export default function CommitteeDialog(props: {
         <DialogHeader>
           <DialogTitle>{`${
             props.succession ? 'Sucessão de ' : props.committee ? 'Editar' : 'Criar'
-          } ${Headers.COMMITTEE}`}</DialogTitle>
+          } ${MyHeaders.COMMITTEE}`}</DialogTitle>
           <DialogDescription>
             {props.succession ? (
               <>
@@ -81,7 +81,7 @@ export default function CommitteeDialog(props: {
             ) : (
               props.committee && (
                 <>
-                  Ao editar, os dados anteriores do {Headers.COMMITTEE.toLowerCase()} serão{' '}
+                  Ao editar, os dados anteriores do {MyHeaders.COMMITTEE.toLowerCase()} serão{' '}
                   <strong>descartados</strong>.
                 </>
               )

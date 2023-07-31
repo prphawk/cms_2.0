@@ -10,7 +10,7 @@ import { AlertDialog } from './alert-dialog'
 import { CommitteeSchema } from '~/schemas/committee'
 import { MembershipArraySchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
-import { Headers } from '~/constants/headers'
+import { MyHeaders } from '~/constants/headers'
 
 export default function SuccessionDialogs(props: {
   open: DialogsEnum
@@ -78,7 +78,7 @@ export default function SuccessionDialogs(props: {
             <>
               Esta ação irá criar uma <strong>nova instância</strong> de "
               {committeeData.committee_template?.name}", <strong>encerrando</strong> o{' '}
-              {Headers.COMMITTEE.toLowerCase()} atual e todas as suas participações. Deseja
+              {MyHeaders.COMMITTEE.toLowerCase()} atual e todas as suas participações. Deseja
               continuar?
             </>
           }

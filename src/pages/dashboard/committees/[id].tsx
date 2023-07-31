@@ -17,7 +17,7 @@ import { Committee, Employee, Membership } from '@prisma/client'
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions'
 import { Dot } from '~/components/dot'
 import { z } from 'zod'
-import { MembershipHeaders, Headers } from '~/constants/headers'
+import { MembershipHeaders, MyHeaders } from '~/constants/headers'
 import {
   FilterStateType,
   filterAProps,
@@ -233,7 +233,7 @@ export default function CommitteeMembership() {
                 open={openDialog == DialogsEnum.alert_committee}
                 description={
                   <>
-                    Esta ação irá <strong>encerrar</strong> o {Headers.COMMITTEE.toLowerCase()}{' '}
+                    Esta ação irá <strong>encerrar</strong> o {MyHeaders.COMMITTEE.toLowerCase()}{' '}
                     atual e todas as suas participações. Deseja continuar?
                   </>
                 }
@@ -309,7 +309,7 @@ const CommitteeDetails = ({ data }: { data: CommitteeDataType }) => {
             </>
           )}
           <strong>Tipo: </strong>
-          {Headers.COMMITTEE}
+          {MyHeaders.COMMITTEE}
           {data?.committee_template_id ? ' Permanente' : ' Temporário'}
           <Dot />
           <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}

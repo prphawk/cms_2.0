@@ -15,7 +15,7 @@ import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useEffect } from 'react'
-import { MembershipHeaders, Headers } from '~/constants/headers'
+import { MembershipHeaders, MyHeaders } from '~/constants/headers'
 import { Employee, Membership } from '@prisma/client'
 import React from 'react'
 import {
@@ -78,7 +78,7 @@ export default function MembershipDialog(props: {
           <DialogDescription>
             {props.member && (
               <>
-                Ao editar, os dados anteriores do {Headers.COMMITTEE.toLowerCase()} serão{' '}
+                Ao editar, os dados anteriores do {MyHeaders.COMMITTEE.toLowerCase()} serão{' '}
                 <strong>descartados</strong>.
               </>
             )}

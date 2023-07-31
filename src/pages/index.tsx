@@ -4,22 +4,21 @@ import PageLayout, { TextLayout } from '~/layout'
 import { AuthButton } from '~/components/login'
 import { Routes } from '~/constants/routes'
 import LoadingLayout from '~/components/loading-layout'
-import AuthenticatedPage from '~/components/authenticated-page'
 import React from 'react'
 import { cn } from '@/lib/utils'
-import { Headers } from '~/constants/headers'
+import { MyHeaders } from '~/constants/headers'
 
 export default function Home() {
   const { status } = useSession()
 
   const components = [
     {
-      title: Headers.COMMITTEES,
+      title: MyHeaders.COMMITTEES,
       href: Routes.COMMITTEES,
       description: 'Coisas muito legais relacionadas as órgãos colegiados e comissões do INF.'
     },
     {
-      title: Headers.EMPLOYEES,
+      title: MyHeaders.EMPLOYEES,
       href: Routes.EMPLOYEES,
       description: 'Under construction.'
     },
@@ -41,21 +40,19 @@ export default function Home() {
         <meta name="description" content="Committee Management System" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <AuthenticatedPage>
-        <PageLayout>
-          <LoadingLayout loading={status === 'loading'}>
-            <TextLayout>Home</TextLayout>
-            <div className="grid grid-cols-2 gap-4 p-4 ">
-              {components.map((component) => (
-                <ListItem key={component.title} title={component.title} href={component.href}>
-                  {component.description}
-                </ListItem>
-              ))}
-            </div>
-            <AuthButton />
-          </LoadingLayout>
-        </PageLayout>
-      </AuthenticatedPage>
+      <PageLayout>
+        <LoadingLayout loading={status === 'loading'}>
+          <TextLayout className="text-[5rem] font-extrabold">Home</TextLayout>
+          <div className="grid grid-cols-2 gap-4 p-4 ">
+            {components.map((component) => (
+              <ListItem key={component.title} title={component.title} href={component.href}>
+                {component.description}
+              </ListItem>
+            ))}
+          </div>
+          <AuthButton />
+        </LoadingLayout>
+      </PageLayout>
     </>
   )
 }

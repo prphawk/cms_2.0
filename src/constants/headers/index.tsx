@@ -1,4 +1,4 @@
-export class Headers {
+export class MyHeaders {
   public static COMMITTEE = 'Órgão'
   public static COMMITTEES = 'Órgãos'
   public static EMPLOYEE = 'Servidor'

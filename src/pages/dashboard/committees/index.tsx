@@ -17,7 +17,7 @@ import { _toLocaleString, _formatCount } from '~/utils/string'
 import { Dot } from '~/components/dot'
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions'
 import { z } from 'zod'
-import { CommitteeHeaders, Headers } from '~/constants/headers'
+import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import { DialogsEnum } from '~/constants/enums'
 import {
   FilterStateType,
@@ -27,6 +27,7 @@ import {
 } from '~/components/filters'
 import CommitteeDialog from '~/components/dialogs/committee-dialog'
 import { CommitteeSchema } from '~/schemas/committee'
+import LoadingLayout from '~/components/loading-layout'
 
 export default function Committees() {
   const router = useRouter()
@@ -98,8 +99,8 @@ export default function Committees() {
   return (
     <AuthenticatedPage>
       {/* <LoadingLayout loading={isLoading}> */}
-      <div className="committees container my-6 mb-auto rounded-xl bg-gray-800/20 pb-4 text-white drop-shadow-md">
-        <Header />
+      <div className="committees container my-6 mb-auto min-h-[100vh] rounded-xl bg-gray-800/20 pb-4 text-white drop-shadow-md">
+        <ContentHeader />
         <DataTable
           data={data || []}
           isLoading={isLoading}
@@ -123,7 +124,7 @@ export default function Committees() {
   )
 }
 
-const Header = () => {
+const ContentHeader = () => {
   const { data: countData, isLoading } = api.committee.groupByActivity.useQuery()
 
   const { active_count, total_count } = _formatCount(isLoading, countData)
@@ -133,13 +134,13 @@ const Header = () => {
       <Accordion className="mb-6" type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <TitleLayout>{Headers.COMMITTEES}</TitleLayout>
+            <TitleLayout>{MyHeaders.COMMITTEES}</TitleLayout>
           </AccordionTrigger>
           <AccordionContent className="tracking-wide">
-            <strong>{Headers.COMMITTEES}: </strong>
+            <strong>{MyHeaders.COMMITTEES}: </strong>
             {total_count}
             <Dot />
-            <strong>{Headers.COMMITTEES} ativos: </strong>
+            <strong>{MyHeaders.COMMITTEES} ativos: </strong>
             {active_count}
           </AccordionContent>
         </AccordionItem>

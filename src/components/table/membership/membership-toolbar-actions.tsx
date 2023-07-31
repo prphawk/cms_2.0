@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Headers } from '~/constants/headers'
+import { MyHeaders } from '~/constants/headers'
 
 export default function MembershipTableToolbarActions(props: {
   committee: CommitteeDataType
@@ -61,14 +61,14 @@ const ActionsMenuButton = (props: {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => props.handleOpenDialog(DialogsEnum.committee)}>
-          Editar {Headers.COMMITTEE.toLowerCase()}
+          Editar {MyHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
         <DropdownMenuItem
           disabled={!props.committee.is_active || !props.committee.committee_template_id}
           onClick={() => props.handleOpenDialog(DialogsEnum.succession)}
         >
-          Suceder {Headers.COMMITTEE.toLowerCase()}
+          Suceder {MyHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -76,7 +76,7 @@ const ActionsMenuButton = (props: {
           disabled={!props.committee.is_active}
           onClick={props.onDeactivateCommittee}
         >
-          Encerrar {Headers.COMMITTEE.toLowerCase()}
+          Encerrar {MyHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

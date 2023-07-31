@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { PropsWithChildren } from 'react'
 
 export default function PageLayout(props: PropsWithChildren) {
@@ -11,15 +12,14 @@ export default function PageLayout(props: PropsWithChildren) {
   )
 }
 
-export function TextLayout(props: PropsWithChildren) {
+export function TextLayout(props: PropsWithChildren & { className?: string }) {
   return (
-    <>
-      <main className="font-extrabold tracking-tight text-white sm:text-[5rem]">
-        {props.children}
-      </main>
-    </>
+    <div className={cn('text-lg font-bold tracking-tight text-white', props.className)}>
+      {props.children}
+    </div>
   )
 }
+
 export function TitleLayout(props: PropsWithChildren) {
   return (
     <>
