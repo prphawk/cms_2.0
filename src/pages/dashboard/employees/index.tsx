@@ -1,19 +1,186 @@
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 import AuthenticatedPage from '~/components/authenticated-page'
-import LoadingLayout from '~/components/loading-layout'
+import { AlertDialog } from '~/components/dialogs/alert-dialog'
+import {
+  FilterStateType,
+  filterAProps,
+  handleChangeComplementaryFilters
+} from '~/components/filters'
+import { DataTable } from '~/components/table/data-table'
+import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar'
+import { getEmployeesColumns } from '~/components/table/employees/employees-columns'
+import { DialogsEnum } from '~/constants/enums'
+import { MyHeaders } from '~/constants/headers'
+import { Routes } from '~/constants/routes'
+import { ContentLayout, TitleLayout } from '~/layout'
 import ErrorPage from '~/pages/500'
+import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
 import { api } from '~/utils/api'
+import { _toLocaleString } from '~/utils/string'
 
 export default function Employees() {
-  const { data, isLoading, isError } = api.employee.getAllActive.useQuery()
+  const router = useRouter()
+
+  const [openDialog, setOpenDialog] = useState(DialogsEnum.none)
+
+  const [selectedMembership, setSelectedMembership] =
+    useState<MembershipWithEmployeeCommitteeAndMembershipCountDataType>()
+
+  const handleOpenDialog = (dialogEnum: DialogsEnum) => setOpenDialog(dialogEnum)
+
+  const [filterAM, setFilterAM] = useState<FilterStateType>()
+  const [filterAE, setFilterAE] = useState<FilterStateType>()
+  const [filterC, setFilterC] = useState<string[]>()
+
+  const { data: roleOptions } = api.membership.getRoleOptions.useQuery({ filterFormat: true })
+
+  const handleChangeActiveFiltersC = (values?: string[]) => {
+    setFilterC(!values?.length ? undefined : values)
+  }
+
+  const propsFilters: IFilter[] = [
+    {
+      ...filterAProps(`${MyHeaders.EMPLOYEE}`),
+      activeFilters: filterAE?.labels,
+      handleChangeActiveFilters: (labels) =>
+        handleChangeComplementaryFilters('is_active', setFilterAE, labels)
+    },
+    {
+      ...filterAProps(`${MyHeaders.MEMBERSHIP}`),
+      activeFilters: filterAM?.labels,
+      handleChangeActiveFilters: (labels) =>
+        handleChangeComplementaryFilters('is_active', setFilterAM, labels)
+    },
+    {
+      title: 'Cargo',
+      options: roleOptions?.length ? (roleOptions as IFilterOptions[]) : [],
+      activeFilters: filterC,
+      handleChangeActiveFilters: handleChangeActiveFiltersC
+    }
+  ]
+
+  const utils = api.useContext()
+
+  const { data, isLoading, isError } = api.membership.getAll.useQuery({
+    is_membership_active: filterAM?.value,
+    is_employee_active: filterAE?.value,
+    roles: filterC
+  })
 
   if (isError) {
     return <ErrorPage />
   }
 
+  const handleViewCommittee = (
+    membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
+  ) => {
+    router.push(`${Routes.COMMITTEES}/${membership.committee_id}`)
+  }
+
+  const onDeactivateMembership = (
+    membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
+  ) => {
+    setSelectedMembership({ ...membership })
+    setOpenDialog(DialogsEnum.alert_deactivate)
+  }
+
+  const onDeactivateEmployee = (
+    membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
+  ) => {
+    setSelectedMembership({ ...membership })
+    setOpenDialog(DialogsEnum.alert_deactivate_employee)
+  }
+
+  const deactivateEmployee = api.employee.deactivate.useMutation({
+    onSuccess() {
+      utils.membership.getAll.invalidate() //TODO ver aquele negócio de mudar o resultado da chamada pra so mudar o status dessa comissão
+    }
+  })
+  const deactivateMembership = api.membership.deactivate.useMutation({
+    onSuccess() {
+      utils.membership.getAll.invalidate()
+    }
+  })
+
+  const handleDeactivateMembership = () => {
+    if (selectedMembership) deactivateMembership.mutate({ id: selectedMembership.id })
+  }
+
+  const handleDeactivateEmployee = () => {
+    if (selectedMembership) deactivateEmployee.mutate({ id: selectedMembership.employee_id })
+  }
+
   return (
     <AuthenticatedPage>
-      {/* TODO use suspense here while it loads? */}
-      <LoadingLayout loading={isLoading}></LoadingLayout>
+      <ContentLayout className="employees">
+        {data && (
+          <>
+            <EmployeesTableTitle data={data} />
+            <DataTable
+              isLoading={isLoading}
+              data={data || []}
+              columns={getEmployeesColumns(
+                handleViewCommittee,
+                onDeactivateMembership,
+                onDeactivateEmployee
+              )}
+              tableFilters={<TableToolbarFilter filters={propsFilters} />}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_deactivate_employee}
+              description={
+                <>
+                  Esta ação irá <strong>desativar</strong> o {MyHeaders.EMPLOYEE.toLowerCase()}{' '}
+                  atual e todas as suas participações. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeactivateEmployee}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_deactivate}
+              description={
+                <>
+                  Esta ação irá <strong>encerrar</strong> esta participação. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeactivateMembership}
+            />
+          </>
+        )}
+      </ContentLayout>
     </AuthenticatedPage>
+  )
+}
+
+const EmployeesTableTitle = ({
+  data
+}: {
+  data: MembershipWithEmployeeCommitteeAndMembershipCountDataType[]
+}) => {
+  // const { data: countData, isLoading } = api.membership.groupByActivity.useQuery({
+  //   committee_id: data.id
+  // })
+
+  // const { active_count, total_count } = _formatCount(isLoading, countData)
+  return (
+    <Accordion className="mb-6" type="single" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>
+          <TitleLayout>{MyHeaders.EMPLOYEES}</TitleLayout>
+        </AccordionTrigger>
+        <AccordionContent className="tracking-wide">
+          {/* <strong>Membros ativos: </strong> {active_count} de {total_count} */}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   )
 }

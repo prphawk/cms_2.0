@@ -40,12 +40,8 @@ export default function TemplateRoleHistory() {
           <>
             <TemplateHistoryTableTitle {...{ template_id, role }} />
             <DataTable
-              //isLoading={isLoading}
               data={data || []}
               columns={getTemplateRoleHistoryColumns(handleViewCommittee)}
-              // tableFilters={<TableToolbarFilter {...propsFilters} />}
-              // tableActions={<MembershipTableToolbarActions {...propsActions} />}
-              column={MembershipHeaders.NAME}
             />
           </>
         )}

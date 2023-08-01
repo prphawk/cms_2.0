@@ -29,8 +29,8 @@ export const getMembershipColumns = (
     accessorFn: (row) => row.employee.name,
     id: MembershipHeaders.NAME,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
-    cell: ({ row }) => {
-      const value = row.original.employee?.name as string
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string
       const is_inactive = !row.original.is_active
 
       return (
