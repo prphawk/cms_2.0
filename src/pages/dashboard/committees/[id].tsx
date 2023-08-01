@@ -116,7 +116,7 @@ export default function CommitteeMembership() {
 
   const propsFilters: IFilter[] = [
     {
-      ...filterAProps,
+      ...filterAProps(),
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
         handleChangeComplementaryFilters('is_active', setFilterA, labels)
@@ -193,7 +193,6 @@ export default function CommitteeMembership() {
               )}
               tableFilters={<TableToolbarFilter filters={propsFilters} />}
               tableActions={<MembershipTableToolbarActions {...propsActions} />}
-              column={MembershipHeaders.NAME}
             />
             <CommitteeDialog
               committee={committeeData}

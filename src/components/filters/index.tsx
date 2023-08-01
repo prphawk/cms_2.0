@@ -8,12 +8,14 @@ export type FilterStateType =
     }
   | undefined
 
-export const filterAProps = {
-  title: 'Status',
-  options: [
-    { label: 'Ativo(a)', value: 'is_active' },
-    { label: 'Inativo(a)', value: 'is_inactive', icon: CircleOffIcon }
-  ]
+export const filterAProps = (sufix?: string) => {
+  return {
+    title: 'Status' + (sufix ? ` de ${sufix}` : ''),
+    options: [
+      { label: 'Ativo(a)', value: 'is_active' },
+      { label: 'Inativo(a)', value: 'is_inactive', icon: CircleOffIcon }
+    ]
+  }
 }
 
 export const filterTProps = {

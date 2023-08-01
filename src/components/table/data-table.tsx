@@ -4,6 +4,7 @@ import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -34,17 +35,19 @@ export function DataTable<TData, TValue>({
   data,
   isLoading,
   tableFilters,
-  tableActions,
-  column
+  tableActions
 }: DataTableProps<TData, TValue> & {
   tableFilters?: JSX.Element
   isLoading?: boolean
   tableActions?: JSX.Element
-  column: string
 }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    Participações: false
+  })
+
   const table = useReactTable({
     data,
     columns,
@@ -58,8 +61,10 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnFilters,
-      globalFilter
-    }
+      globalFilter,
+      columnVisibility
+    },
+    onColumnVisibilityChange: setColumnVisibility
   })
 
   return (

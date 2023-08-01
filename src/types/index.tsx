@@ -18,3 +18,12 @@ export type MembershipWithEmployeeDataType = Membership & { employee: Employee }
 export type MembershipWithEmployeeAndCommitteeDataType = MembershipWithEmployeeDataType & {
   committee: Committee
 }
+
+type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
+
+type EmployeeWithMergedMembershipCountDataType = Id<Employee & { _count: { committees: number } }>
+export type MembershipWithEmployeeCommitteeAndMembershipCountDataType = Membership & {
+  committee: Committee
+} & {
+  employee: EmployeeWithMergedMembershipCountDataType
+}

@@ -49,6 +49,37 @@ export const membershipRouter = createTRPCRouter({
       })
     }),
 
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        is_employee_active: z.optional(z.boolean()),
+        is_membership_active: z.optional(z.boolean()),
+        roles: z.optional(z.string().array())
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.membership.findMany({
+        where: {
+          is_active: input.is_membership_active,
+          employee: {
+            is_active: input.is_employee_active
+          },
+          role: { in: input.roles }
+        },
+        orderBy: {
+          employee: { name: 'asc' }
+        },
+        include: {
+          committee: true,
+          employee: {
+            include: {
+              _count: true
+            }
+          }
+        }
+      })
+    }),
+
   groupByActivity: protectedProcedure
     .input(z.object({ committee_id: z.number() }))
     .query(({ ctx, input }) => {
@@ -148,16 +179,26 @@ export const membershipRouter = createTRPCRouter({
       })
     }),
 
-  getRoleOptions: protectedProcedure.query(async ({ ctx, input }) => {
-    const result = await ctx.prisma.membership.findMany({
-      select: {
-        role: true
-      },
-      orderBy: {
-        role: 'asc'
-      },
-      distinct: ['role']
+  getRoleOptions: protectedProcedure
+    .input(
+      z
+        .object({
+          filterFormat: z.boolean().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const result = await ctx.prisma.membership.findMany({
+        select: {
+          role: true
+        },
+        orderBy: {
+          role: 'asc'
+        },
+        distinct: ['role']
+      })
+      return result.map((e) => {
+        return input?.filterFormat ? { label: e.role, value: e.role } : e.role
+      })
     })
-    return result.map((e) => e.role)
-  })
 })

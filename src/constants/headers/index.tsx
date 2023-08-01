@@ -1,9 +1,13 @@
 export class MyHeaders {
   public static COMMITTEE = 'Órgão'
   public static COMMITTEES = 'Órgãos'
-  public static EMPLOYEE = 'Servidor'
+  public static EMPLOYEE = 'Servidor(a)'
   public static EMPLOYEES = 'Servidores'
   public static TEMPLATES = 'Templates'
+  public static MEMBERSHIP = 'Participação'
+}
+export class EmployeeHeaders {
+  public static MEMBERSHIP_COUNT = 'Participações' //don't change without changing its VisibilityState key on DataTable
 }
 export class CommitteeHeaders {
   public static BOND = 'Vínculo'

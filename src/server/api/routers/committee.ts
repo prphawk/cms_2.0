@@ -6,6 +6,7 @@ import { _getTemplateByName } from './template'
 import { Prisma } from '@prisma/client'
 import { CommitteeSchema } from '~/schemas/committee'
 import { MembershipArraySchema } from '~/schemas/membership'
+import { FilterSchema } from '~/schemas'
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({
@@ -63,37 +64,30 @@ export const committeeRouter = createTRPCRouter({
     })
   }),
 
-  getAll: protectedProcedure
-    .input(
-      z.object({
-        is_active: z.optional(z.boolean()),
-        is_temporary: z.optional(z.boolean())
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const result = await ctx.prisma.committee.findMany({
-        where: {
-          is_active: input.is_active,
-          committee_template:
-            input.is_temporary === false ? { isNot: null } : input.is_temporary && { is: null }
-        },
-        orderBy: { name: 'asc' },
-        include: {
-          members: {
-            select: { is_active: true } //for filtering the counting above
-          }
+  getAll: protectedProcedure.input(FilterSchema).query(async ({ ctx, input }) => {
+    const result = await ctx.prisma.committee.findMany({
+      where: {
+        is_active: input.is_active,
+        committee_template:
+          input.is_temporary === false ? { isNot: null } : input.is_temporary && { is: null }
+      },
+      orderBy: { name: 'asc' },
+      include: {
+        members: {
+          select: { is_active: true } //for filtering the counting above
         }
-      })
+      }
+    })
 
-      return result.map((c) => {
-        const members_count = { active_count: 0, total_count: c.members.length }
-        members_count.active_count = c.members.reduce(
-          (acum, curr) => acum + Number(curr.is_active),
-          0
-        )
-        return { ...c, members: undefined, members_count }
-      })
-    }),
+    return result.map((c) => {
+      const members_count = { active_count: 0, total_count: c.members.length }
+      members_count.active_count = c.members.reduce(
+        (acum, curr) => acum + Number(curr.is_active),
+        0
+      )
+      return { ...c, members: undefined, members_count }
+    })
+  }),
 
   getOptions: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.committee.findMany({

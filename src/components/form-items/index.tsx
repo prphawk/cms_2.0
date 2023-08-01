@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/command'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
+import { IFilterOptions } from '../table/data-table-toolbar'
 
 export const RoleSelectFormItem = (props: {
   form: any
@@ -33,7 +34,7 @@ export const RoleSelectFormItem = (props: {
   const { data, isLoading } = api.membership.getRoleOptions.useQuery()
 
   useEffect(() => {
-    if (data) setRoles([...data])
+    if (data) setRoles([...(data as string[])])
   }, [data])
 
   const [createdIndex, setCreatedIndex] = useState<number>()

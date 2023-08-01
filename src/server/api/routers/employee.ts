@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 import { _deactivateMembershipsByEmployee } from './membership'
+import { FilterSchema } from '~/schemas'
 
 // type commType = {
 //   role: string | null;
@@ -23,17 +24,17 @@ export const employeeRouter = createTRPCRouter({
     })
   }),
 
-  getAllActive: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.employee.findMany({
-      where: { is_active: true },
-      orderBy: { name: 'asc' },
-      include: {
-        committees: {
-          include: { committee: true }
-        }
-      }
-    })
-  }),
+  // getAllActive: protectedProcedure.query(({ ctx }) => {
+  //   return ctx.prisma.employee.findMany({
+  //     where: { is_active: true },
+  //     orderBy: { name: 'asc' },
+  //     include: {
+  //       committees: {
+  //         include: { committee: true }
+  //       }
+  //     }
+  //   })
+  // }),
 
   getOptions: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.employee.findMany({

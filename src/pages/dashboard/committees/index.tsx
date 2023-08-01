@@ -56,7 +56,7 @@ export default function Committees() {
 
   const propsFilters: IFilter[] = [
     {
-      ...filterAProps,
+      ...filterAProps(),
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
         handleChangeComplementaryFilters('is_active', setFilterA, labels)
@@ -128,7 +128,6 @@ export default function Committees() {
           tableActions={
             <CommitteesTableToolbarActions handleCreateCommittee={handleCreateCommittee} />
           }
-          column={CommitteeHeaders.NAME}
         />
         <CommitteeDialog
           open={openDialog === DialogsEnum.committee}
