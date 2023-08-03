@@ -14,7 +14,7 @@ export default function ErrorPage() {
 
   return (
     <PageLayout>
-      <ContentLayout className="flex w-[100vh] flex-col items-center justify-center text-center text-2xl font-bold">
+      <ContentLayout className="flex w-[70vh] flex-col items-center justify-center text-center text-2xl font-bold">
         <div>
           Opa! Aconteceu um erro inesperado.
           <hr className="my-4 border-[1px] border-[#ffffff4f]" />

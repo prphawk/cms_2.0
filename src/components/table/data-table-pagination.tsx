@@ -1,17 +1,17 @@
-import { Button } from '@/components/ui/button';
-import { ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from 'lucide-react';
-import { Table as TableType } from '@tanstack/react-table';
+import { Button } from '@/components/ui/button'
+import { ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from 'lucide-react'
+import { Table as TableType } from '@tanstack/react-table'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue
+} from '@/components/ui/select'
 
 export default function DataTablePagination<TData>({ table }: { table: TableType<TData> }) {
   return (
-    <div className=" flex items-center justify-between p-2">
+    <div className=" flex items-center justify-between px-1 py-4">
       <div className="flex-1 text-sm text-muted-foregroundPage">
         {/* TODO bulk {table.getFilteredSelectedRowModel().rows.length} of{' '}
         {table.getFilteredRowModel().rows.length} row(s) selected. */}
@@ -22,7 +22,7 @@ export default function DataTablePagination<TData>({ table }: { table: TableType
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
-              table.setPageSize(Number(value));
+              table.setPageSize(Number(value))
             }}
           >
             <SelectTrigger className="h-8 w-[65px] bg-transparent">
@@ -80,5 +80,5 @@ export default function DataTablePagination<TData>({ table }: { table: TableType
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -3,7 +3,7 @@ import { getCommitteesColumns } from '~/components/table/committees/committees-c
 import { DataTable } from '~/components/table/data-table'
 import { ContentLayout, TitleLayout } from '~/layout'
 import { api } from '~/utils/api'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IFilter, TableToolbarFilter } from '../../../components/table/data-table-toolbar'
 import { useRouter } from 'next/router'
 import { Routes } from '~/constants/routes'
@@ -22,6 +22,7 @@ import {
   FilterStateType,
   filterAProps,
   filterTProps,
+  getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'
 import CommitteeDialog from '~/components/dialogs/committee-dialog'
@@ -30,6 +31,7 @@ import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { Committee } from '@prisma/client'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 import ErrorPage from '~/pages/500'
+import { LS } from '~/constants/local_storage'
 
 export default function Committees() {
   const router = useRouter()
@@ -42,6 +44,13 @@ export default function Committees() {
 
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterT, setFilterT] = useState<FilterStateType>()
+
+  useEffect(() => {
+    // if (typeof window !== 'undefined') {
+    setFilterA(getComplementaryFilterValue(LS.COMMITTEE_A, 'is_active', 'is_inactive'))
+    setFilterT(getComplementaryFilterValue(LS.COMMITTEE_T, 'is_permanent', 'is_temporary'))
+    // }
+  }, [])
 
   const utils = api.useContext()
 
@@ -59,13 +68,13 @@ export default function Committees() {
       ...filterAProps(),
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeComplementaryFilters('is_active', setFilterA, labels)
+        handleChangeComplementaryFilters(LS.COMMITTEE_A, 'is_active', setFilterA, labels)
     },
     {
       ...filterTProps,
       activeFilters: filterT?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeComplementaryFilters('is_temporary', setFilterT, labels)
+        handleChangeComplementaryFilters(LS.COMMITTEE_T, 'is_temporary', setFilterT, labels)
     }
   ]
 

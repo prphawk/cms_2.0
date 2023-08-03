@@ -5,12 +5,13 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AuthenticatedPage from '~/components/authenticated-page'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import {
   FilterStateType,
   filterAProps,
+  getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'
 import { DataTable } from '~/components/table/data-table'
@@ -18,6 +19,7 @@ import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/
 import { getEmployeesColumns } from '~/components/table/employees/employees-columns'
 import { DialogsEnum } from '~/constants/enums'
 import { MyHeaders } from '~/constants/headers'
+import { LS } from '~/constants/local_storage'
 import { Routes } from '~/constants/routes'
 import { ContentLayout, TitleLayout } from '~/layout'
 import ErrorPage from '~/pages/500'
@@ -43,6 +45,10 @@ export default function Employees() {
 
   const handleChangeActiveFiltersC = (values?: string[]) => {
     setFilterC(!values?.length ? undefined : values)
+    // if (values?.length) {
+    //   localStorage.setItem(LS.EMPLOYEE_C, values.toString())
+    //   setFilterC(values)
+    // } else setFilterC(undefined)
   }
 
   const propsFilters: IFilter[] = [
@@ -50,13 +56,13 @@ export default function Employees() {
       ...filterAProps(`${MyHeaders.EMPLOYEE}`),
       activeFilters: filterAE?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeComplementaryFilters('is_active', setFilterAE, labels)
+        handleChangeComplementaryFilters(LS.EMPLOYEE_AE, 'is_active', setFilterAE, labels)
     },
     {
       ...filterAProps(`${MyHeaders.MEMBERSHIP}`),
       activeFilters: filterAM?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeComplementaryFilters('is_active', setFilterAM, labels)
+        handleChangeComplementaryFilters(LS.EMPLOYEE_AM, 'is_active', setFilterAM, labels)
     },
     {
       title: 'Cargo',
@@ -65,6 +71,12 @@ export default function Employees() {
       handleChangeActiveFilters: handleChangeActiveFiltersC
     }
   ]
+
+  useEffect(() => {
+    setFilterAM(getComplementaryFilterValue(LS.EMPLOYEE_AM, 'is_active', 'is_inactive'))
+    setFilterAE(getComplementaryFilterValue(LS.EMPLOYEE_AE, 'is_active', 'is_inactive'))
+    // setFilterC(getArrayFilterValue(LS.EMPLOYEE_C))
+  }, [])
 
   const utils = api.useContext()
 

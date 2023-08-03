@@ -20,6 +20,7 @@ import { MembershipHeaders, MyHeaders } from '~/constants/headers'
 import {
   FilterStateType,
   filterAProps,
+  getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'
 import CommitteeDialog from '~/components/dialogs/committee-dialog'
@@ -33,6 +34,7 @@ import { HourglassIcon, CircleOffIcon } from 'lucide-react'
 import { IconBadge } from '~/components/badge'
 import { CommitteeWithOptionalTemplateDataType, MembershipWithEmployeeDataType } from '~/types'
 import ErrorPage from '~/pages/500'
+import { LS } from '~/constants/local_storage'
 
 export default function CommitteeMembership() {
   const router = useRouter()
@@ -86,6 +88,10 @@ export default function CommitteeMembership() {
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterC, setFilterC] = useState<string[]>()
 
+  useEffect(() => {
+    setFilterA(getComplementaryFilterValue(LS.MEMBERSHIP_A, 'is_active', 'is_inactive'))
+  }, [])
+
   const {
     data: committeeData,
     isLoading,
@@ -119,7 +125,7 @@ export default function CommitteeMembership() {
       ...filterAProps(),
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
-        handleChangeComplementaryFilters('is_active', setFilterA, labels)
+        handleChangeComplementaryFilters(LS.MEMBERSHIP_A, 'is_active', setFilterA, labels)
     },
     {
       title: 'Cargo',
