@@ -11,7 +11,6 @@ import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import {
   FilterStateType,
   filterAProps,
-  getArrayFilterValue,
   getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'

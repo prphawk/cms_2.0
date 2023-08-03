@@ -38,7 +38,7 @@ export default function Home() {
   ]
   return (
     <PageLayout>
-      <ContentLayout className="flex w-[100vh] flex-col items-center justify-center">
+      <ContentLayout className="flex w-[80vh] flex-col items-center justify-center">
         {status == 'loading' ? (
           <LoadingElement />
         ) : (
@@ -48,7 +48,7 @@ export default function Home() {
               {/* <hr className="mx-3 mt-1 border-[#ffffff4f]" /> */}
             </div>
             <TextLayout className="mb-2 mt-16 text-[5rem] font-extrabold">Home</TextLayout>
-            <div className="mb-6 mt-4 grid grid-cols-2 p-4">
+            <div className="mb-6 mt-5 grid grid-cols-2 p-4">
               {components.map((component) => (
                 <ListItem
                   key={component.title}
@@ -82,7 +82,7 @@ const ListItem = ({
       href={href}
       className={cn(
         'h-[72px] w-[170px] bg-transparent text-white no-underline transition hover:bg-white/10',
-        'my-auto flex select-none border-[#ffffff4f]',
+        'my-auto flex select-none border-[#ffffff4f] font-bold',
         className
       )} //outline outline-1 outline-offset-8  space-y-1 rounded-md bg-transparent p-3 leading-none transition-colors no-underline hover:bg-background/10 focus:bg-background/20
     >

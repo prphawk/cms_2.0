@@ -16,7 +16,7 @@ export function ContentLayout(props: PropsWithChildren & { className?: string })
   return (
     <div
       className={cn(
-        'container my-6 mb-auto min-h-[90vh] rounded-xl bg-gray-900/25 pb-4 text-white shadow-lg',
+        'container my-6 mb-auto min-h-[90vh] rounded-xl bg-gray-900/30 pb-4 text-white shadow-lg',
         props.className
       )}
     >
