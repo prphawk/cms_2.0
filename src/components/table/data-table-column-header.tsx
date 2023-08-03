@@ -39,10 +39,6 @@ export default function DataTableColumnHeader<TData, TValue>({
     return <div className={cn(className)}>{title}</div>
   }
 
-  useEffect(() => {
-    console.log(title, columnSecondary)
-  }, [columnSecondary])
-
   return (
     <div className={cn('flex items-center space-x-2', className)}>
       <DropdownMenu>
@@ -62,7 +58,10 @@ export default function DataTableColumnHeader<TData, TValue>({
             ) : columnSecondary?.getIsSorted() === 'asc' ? (
               <ChevronsUpIcon className="ml-2 h-4 w-4" />
             ) : (
-              <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+              <>
+                <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                <span>{columnSecondary ? '*' : ''}</span>
+              </>
             )}
           </Button>
         </DropdownMenuTrigger>

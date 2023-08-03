@@ -1,3 +1,5 @@
+'use client'
+
 import { HourglassIcon } from 'lucide-react'
 import { CircleOffIcon } from 'lucide-react'
 
@@ -27,13 +29,37 @@ export const filterTProps = {
 }
 
 export const handleChangeComplementaryFilters = (
+  ls_key: string,
   str: string,
   setFilterFn: (filter: FilterStateType) => void,
   labels?: string[]
 ) => {
   if (!labels?.length || labels.length >= 2) {
     setFilterFn({ value: undefined, labels })
+    localStorage.removeItem(ls_key)
   } else {
-    setFilterFn({ value: labels?.includes(str), labels })
+    const value = labels?.includes(str)
+    setFilterFn({ value, labels })
+    localStorage.setItem(ls_key, value.toString())
   }
 }
+
+export const getComplementaryFilterValue = (ls_key: string, label_1: string, label_2: string) => {
+  const ls_value = localStorage.getItem(ls_key)
+  if (ls_value) {
+    const value = Boolean(ls_value)
+    return {
+      value,
+      labels: [value ? label_1 : label_2]
+    } as FilterStateType
+  }
+  return undefined
+}
+// export const getArrayFilterValue = (ls_key: string) => {
+//   const ls_value = localStorage.getItem(ls_key)
+//   if (ls_value) {
+//     const value = ls_value.split(',')
+//     return value
+//   }
+//   return undefined
+// }
