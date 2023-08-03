@@ -38,11 +38,11 @@ export default function Home() {
   ]
   return (
     <PageLayout>
-      <ContentLayout className="flex w-[80vh] flex-col items-center justify-center">
+      <ContentLayout className="flex h-full w-[550px] flex-col justify-center">
         {status == 'loading' ? (
           <LoadingElement />
         ) : (
-          <>
+          <div className="flex flex-col items-center border-2 border-solid border-[#ffffff4f] py-8">
             <div className="mt-4">
               <CMS />
               {/* <hr className="mx-3 mt-1 border-[#ffffff4f]" /> */}
@@ -61,7 +61,7 @@ export default function Home() {
               ))}
             </div>
             <SignOutButton className="mx-auto mt-8" />
-          </>
+          </div>
         )}
       </ContentLayout>
     </PageLayout>
