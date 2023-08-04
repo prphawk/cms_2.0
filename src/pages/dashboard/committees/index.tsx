@@ -48,10 +48,11 @@ export default function Committees() {
   useEffect(() => {
     const valueA = getComplementaryFilterValue(LS.COMMITTEE_A, 'is_active', 'is_inactive')
     const valueT = getComplementaryFilterValue(LS.COMMITTEE_T, 'is_temporary', 'is_permanent')
-    if (valueA || valueT) utils.committee.getAll.cancel()
-    setFilterA(valueA)
-    console.log(valueT)
-    setFilterT(valueT)
+    if (valueA || valueT) {
+      utils.committee.getAll.cancel()
+      setFilterA(valueA)
+      setFilterT(valueT)
+    }
   }, [])
 
   const utils = api.useContext()

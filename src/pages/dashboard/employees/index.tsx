@@ -150,7 +150,8 @@ export default function Employees() {
               description={
                 <>
                   Esta ação irá <strong>desativar</strong> o {MyHeaders.EMPLOYEE.toLowerCase()}{' '}
-                  atual e todas as suas participações. Deseja continuar?
+                  atual e <strong>encerrar</strong> todas as suas participações ativas. Deseja
+                  continuar?
                 </>
               }
               handleOpenDialog={handleOpenDialog}

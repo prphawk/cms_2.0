@@ -9,7 +9,7 @@ export class MyHeaders {
   public static STATUS_F = 'Status'
 }
 export class EmployeeHeaders {
-  public static MEMBERSHIP_COUNT = 'Participações ' //don't change without changing its VisibilityState key on DataTable
+  public static MEMBERSHIP_COUNT = 'Participações' //don't change without changing its VisibilityState key on DataTable
 }
 export class CommitteeHeaders {
   public static BOND = 'Vínculo'
