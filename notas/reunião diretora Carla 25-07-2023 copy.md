@@ -57,9 +57,9 @@ tirar membros temporarios ✅
 
 bolinha e ampulheta, ativo e permantente sem ícone, no filtro n tem icone e onde tem fica no fnal do filtro ✅
 
-suceder -> importar tudo EXCETO portaria, datas e observaçoes
+suceder -> importar tudo EXCETO portaria, datas e observaçoes ✅
 importa todos os membros desativados SEM as portarias e datas -> ja preenche a portaria nova (precisa de formulário sim -> remover membro ou mudar o cargo apenas) formulário simples com lista de membro e cargo
 
-UMA UNICA TABELA PARA SERVIDORES -> filtros: status (da participação), comissão
+UMA UNICA TABELA PARA SERVIDORES -> filtros: status (da participação), comissão ✅
 
 checkbox ativo/inativo nos formulários
