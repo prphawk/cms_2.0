@@ -45,13 +45,17 @@ export const handleChangeComplementaryFilters = (
   }
 }
 
-export const getComplementaryFilterValue = (ls_key: string, label_1: string, label_2: string) => {
+export const getComplementaryFilterValue = (
+  ls_key: string,
+  true_label: string,
+  false_label: string
+) => {
   const ls_value = localStorage.getItem(ls_key)
   if (ls_value) {
-    const value = Boolean(ls_value)
+    const value = JSON.parse(ls_value) as boolean
     return {
       value,
-      labels: [value ? label_1 : label_2]
+      labels: [value ? true_label : false_label]
     } as FilterStateType
   }
   return undefined

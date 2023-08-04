@@ -46,18 +46,23 @@ export default function Committees() {
   const [filterT, setFilterT] = useState<FilterStateType>()
 
   useEffect(() => {
-    // if (typeof window !== 'undefined') {
-    setFilterA(getComplementaryFilterValue(LS.COMMITTEE_A, 'is_active', 'is_inactive'))
-    setFilterT(getComplementaryFilterValue(LS.COMMITTEE_T, 'is_permanent', 'is_temporary'))
-    // }
+    const valueA = getComplementaryFilterValue(LS.COMMITTEE_A, 'is_active', 'is_inactive')
+    const valueT = getComplementaryFilterValue(LS.COMMITTEE_T, 'is_temporary', 'is_permanent')
+    if (valueA || valueT) utils.committee.getAll.cancel()
+    setFilterA(valueA)
+    console.log(valueT)
+    setFilterT(valueT)
   }, [])
 
   const utils = api.useContext()
 
-  const { data, isLoading, isError } = api.committee.getAll.useQuery({
-    is_active: filterA?.value,
-    is_temporary: filterT?.value
-  })
+  const { data, isLoading, isError } = api.committee.getAll.useQuery(
+    {
+      is_active: filterA?.value,
+      is_temporary: filterT?.value
+    },
+    { enabled: filterA != undefined && filterT != undefined }
+  )
 
   if (isError) {
     return <ErrorPage />
