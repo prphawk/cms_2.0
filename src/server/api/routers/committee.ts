@@ -73,7 +73,7 @@ export const committeeRouter = createTRPCRouter({
       },
       orderBy: { name: 'asc' },
       include: {
-        committee_template: true,
+        //committee_template: true,
         members: {
           select: { is_active: true } //for filtering the counting above
         }

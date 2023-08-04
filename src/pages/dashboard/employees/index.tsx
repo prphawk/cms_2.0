@@ -73,9 +73,13 @@ export default function Employees() {
   ]
 
   useEffect(() => {
-    setFilterAM(getComplementaryFilterValue(LS.EMPLOYEE_AM, 'is_active', 'is_inactive'))
-    setFilterAE(getComplementaryFilterValue(LS.EMPLOYEE_AE, 'is_active', 'is_inactive'))
-    // setFilterC(getArrayFilterValue(LS.EMPLOYEE_C))
+    const valueAM = getComplementaryFilterValue(LS.EMPLOYEE_AM, 'is_active', 'is_inactive')
+    const valueAE = getComplementaryFilterValue(LS.EMPLOYEE_AE, 'is_active', 'is_inactive')
+    if (valueAM || valueAE) {
+      utils.membership.getAll.cancel()
+      setFilterAM(valueAM)
+      setFilterAE(valueAE)
+    }
   }, [])
 
   const utils = api.useContext()
