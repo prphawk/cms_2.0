@@ -429,10 +429,10 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
               </Command>
             </PopoverContent>
           </Popover>
-          <FormDescription className="-mb-1.5">
+          {/* <FormDescription className="-mb-1.5">
             Instâncias de comissões <strong>permanentes</strong> devem pertencer a sua{' '}
             {CommitteeHeaders.TEMPLATE}.
-          </FormDescription>
+          </FormDescription> */}
           <FormMessage />
         </FormItem>
       )}

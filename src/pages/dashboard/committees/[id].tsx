@@ -16,7 +16,7 @@ import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string'
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions'
 import { Dot } from '~/components/dot'
 import { z } from 'zod'
-import { MembershipHeaders, MyHeaders } from '~/constants/headers'
+import { CommitteeHeaders, MembershipHeaders, MyHeaders } from '~/constants/headers'
 import {
   FilterStateType,
   filterAProps,
@@ -277,40 +277,39 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
           </TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">
-          <strong>Vínculo: </strong> {data?.bond}
+          <strong>{CommitteeHeaders.BOND}: </strong> {data?.bond}
           <Dot />
-          <strong>Portaria: </strong>
+          <strong>{CommitteeHeaders.ORDINANCE}: </strong>
           {data?.ordinance || '-'}
           <Dot />
-          <strong>Data de Início: </strong>
+          <strong>{CommitteeHeaders.BEGIN_DATE}: </strong>
           {_toLocaleString(data?.begin_date)}
           <Dot />
-          <strong>Data de Fim: </strong>
+          <strong>{CommitteeHeaders.END_DATE}: </strong>
           {_toLocaleString(data?.end_date)}
           <Dot />
           {data.observations && (
             <>
-              <strong>Observações: </strong> "{data.observations}"
+              <strong>{CommitteeHeaders.OBSERVATIONS}: </strong> "{data.observations}"
               <Dot />
             </>
           )}
-          <strong>Tipo: </strong>
+          <strong>{MyHeaders.CATEGORY_F}: </strong>
           {MyHeaders.COMMITTEE}
           {data?.committee_template_id ? ' Permanente' : ' Temporário'}
           <Dot />
           {data?.committee_template_id ? (
             <>
-              <strong>Template: </strong>
-
+              <strong>{CommitteeHeaders.TEMPLATE}: </strong>
               {data?.committee_template?.name}
               <Dot />
             </>
           ) : (
             <></>
           )}
-          <strong>Status: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
+          <strong>{MyHeaders.STATUS_F}: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
           <Dot />
-          <strong>Membros ativos: </strong> {active_count} de {total_count}
+          <strong>{CommitteeHeaders.MEMBERS}: </strong> {active_count} de {total_count}
         </AccordionContent>
       </AccordionItem>
     </Accordion>

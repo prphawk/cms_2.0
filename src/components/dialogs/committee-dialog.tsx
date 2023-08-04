@@ -74,7 +74,7 @@ export default function CommitteeDialog(props: {
           <DialogDescription>
             {props.succession ? (
               <>
-                {`Nova instância de ${props.committee?.name} (${_toLocaleString(
+                {`Novo mandato de ${props.committee?.name} (${_toLocaleString(
                   props.committee?.begin_date
                 )} a ${_toLocaleString(props.committee?.end_date)}`}
                 )

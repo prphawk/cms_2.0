@@ -2,6 +2,7 @@
 
 import { HourglassIcon } from 'lucide-react'
 import { CircleOffIcon } from 'lucide-react'
+import { MyHeaders } from '~/constants/headers'
 
 export type FilterStateType =
   | {
@@ -21,7 +22,7 @@ export const filterAProps = (sufix?: string) => {
 }
 
 export const filterTProps = {
-  title: 'Tipo',
+  title: MyHeaders.CATEGORY_F,
   options: [
     { label: 'Permanente', value: 'is_permanent' },
     { label: 'Temporário(a)', value: 'is_temporary', icon: HourglassIcon }

@@ -4,13 +4,13 @@ checkbox ativo/inativo nos formulários
 
 mudar instancia -> novo MANDATO de [órgão]
 
-tirar descrição Instâncias de comissões permanentes devem pertencer a sua Tipo.
+tirar descrição "Instâncias de comissões permanentes devem pertencer a sua Tipo."
 
-templates -> tipo
+templates -> tipo ✅
 
-Template: Comissão A -> tipo
+Template: Comissão A -> tipo ✅
 
-categoria: orgao permanente
+categoria: orgao permanente ✅
 
 configurações -> about
 

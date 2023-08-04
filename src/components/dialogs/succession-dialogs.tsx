@@ -79,10 +79,10 @@ export default function SuccessionDialogs(props: {
           handleContinue={() => props.handleOpenDialog(DialogsEnum.succession1st)}
           description={
             <>
-              Esta ação irá criar uma <strong>nova instância</strong> de "
+              Esta ação irá criar um <strong>novo mandato</strong> de "
               {committeeData.committee_template?.name}", <strong>encerrando</strong> o{' '}
-              {MyHeaders.COMMITTEE.toLowerCase()} atual e todas as suas participações. Deseja
-              continuar?
+              {MyHeaders.COMMITTEE.toLowerCase()} atual "{committeeData.name}" e todas as suas
+              participações. Deseja continuar?
             </>
           }
         />
