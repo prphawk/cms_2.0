@@ -177,7 +177,7 @@ export const committeeRouter = createTRPCRouter({
   update: protectedProcedure
     .input(CommitteeSchema.innerType().merge(z.object({ id: z.number() })))
     .mutation(async ({ ctx, input }) => {
-      const { committee_template_name, ...rest } = input
+      const { committee_template_name, id, ...rest } = input
       const committee = rest as Prisma.CommitteeUpdateInput
 
       if (!committee_template_name) {
@@ -190,7 +190,7 @@ export const committeeRouter = createTRPCRouter({
           : { create: { name: committee_template_name } }
       }
 
-      return ctx.prisma.committee.update({ where: { id: input.id }, data: committee })
+      return ctx.prisma.committee.update({ where: { id }, data: committee })
     }),
 
   deactivate: protectedProcedure
