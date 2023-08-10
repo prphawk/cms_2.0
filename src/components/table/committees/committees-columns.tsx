@@ -94,11 +94,11 @@ export const getCommitteesColumns = (
   {
     accessorKey: 'end_date',
     id: CommitteeHeaders.END_DATE,
-    accessorFn: (row) => _toLocaleString(row.end_date),
+    accessorFn: (row) => row.end_date, //TODO e tirar os toString dos outros date tbm!! E ARRUMAR O SORT!!!
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const value = row.getValue(column.id) as string
-      return <div>{value}</div>
+      const value = row.getValue(column.id) as Date
+      return <EndDate value={value} isActive={row.original?.is_active} /> //TODO add nos outros tbm!!
     }
   },
   {
