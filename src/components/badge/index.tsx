@@ -12,15 +12,25 @@ export const IconBadge = ({ children, className }: { children: ReactNode; classN
   )
 }
 
-export const EndDate = ({ value, isActive }: { value: Date; isActive: boolean }) => {
+export const EndDate = ({ value, isActive }: { value: string; isActive: boolean }) => {
+  let dateValue: Date
+
+  try {
+    dateValue = new Date(value)
+  } catch (error) {
+    return <div>{value}</div>
+  }
+
   return isActive ? (
     <div className="flex flex-row ">
-      {_toLocaleString(value)}
+      {value}
       <span className="self-center ">
-        {_isDateComing(value) && <AlertTriangleIcon className=" ml-2 h-4 w-4 text-yellow-500" />}
+        {_isDateComing(dateValue) && (
+          <AlertTriangleIcon className=" ml-2 h-4 w-4 text-yellow-500" />
+        )}
       </span>
     </div>
   ) : (
-    <div>{_toLocaleString(value)}</div>
+    <div>{value}</div>
   )
 }

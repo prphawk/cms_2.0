@@ -1,5 +1,16 @@
 import { CountDataType, RawCountDataType } from '~/types'
 
+export const _sortStringDate = (
+  row1: { getValue: (arg0: any) => string },
+  row2: { getValue: (arg0: any) => string },
+  columnId: string
+) => _toDate(row1.getValue(columnId)).getTime() - _toDate(row2.getValue(columnId)).getTime()
+
+export const _toDate = (str: string) => {
+  const arr = str.split('/')
+  return new Date(`${arr[2]}-${arr[1]}-${arr[0]}`)
+}
+
 export const _toLocaleString = (date?: Date | null) => {
   if (date) {
     const arr = _toString(date)?.split('-')

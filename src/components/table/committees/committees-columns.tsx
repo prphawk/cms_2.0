@@ -1,7 +1,7 @@
 import { Committee } from '@prisma/client'
-import { ColumnDef } from '@tanstack/react-table'
+import { ColumnDef, filterFns, sortingFns } from '@tanstack/react-table'
 import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
-import { _isDateComing, _toLocaleString } from '~/utils/string'
+import { _isDateComing, _sortStringDate, _toDate, _toLocaleString } from '~/utils/string'
 import { CircleOffIcon, HourglassIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -94,10 +94,11 @@ export const getCommitteesColumns = (
   {
     accessorKey: 'end_date',
     id: CommitteeHeaders.END_DATE,
-    accessorFn: (row) => row.end_date, //TODO e tirar os toString dos outros date tbm!! E ARRUMAR O SORT!!!
+    sortingFn: _sortStringDate,
+    accessorFn: (row) => _toLocaleString(row.end_date), //TODO e tirar os toString dos outros date tbm!! E ARRUMAR O SORT!!!
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const value = row.getValue(column.id) as Date
+      const value = row.getValue(column.id) as string
       return <EndDate value={value} isActive={row.original?.is_active} /> //TODO add nos outros tbm!!
     }
   },
