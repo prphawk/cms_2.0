@@ -43,11 +43,11 @@ export default function Home() {
           <LoadingElement />
         ) : (
           <div className="flex flex-col items-center border-2 border-solid border-[#ffffff4f] py-8">
-            <div className="mt-4">
-              <CMS />
-              {/* <hr className="mx-3 mt-1 border-[#ffffff4f]" /> */}
+            <div className="my-8">
+              <CMS className="text-[48px]" />
+              <hr className="mx-3 mt-1 border-[#ffffff4f]" />
             </div>
-            <TextLayout className="mb-2 mt-16 text-[5rem] font-extrabold">Home</TextLayout>
+            {/* <TextLayout className="mb-2 mt-16 text-[24px] font-extrabold">Home</TextLayout> */}
             <div className="mb-6 mt-5 grid grid-cols-2 p-4">
               {components.map((component) => (
                 <ListItem

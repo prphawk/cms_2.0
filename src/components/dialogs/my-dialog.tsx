@@ -6,7 +6,7 @@ export const MyDialog = (props: PropsWithChildren & { open: boolean }) => {
   return (
     <Dialog open={props.open} modal={false}>
       {props.open && (
-        <div className="fixed inset-0 z-50  backdrop-blur data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <div className="fixed inset-0 z-50 backdrop-blur data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
       )}
       {props.children}
     </Dialog>

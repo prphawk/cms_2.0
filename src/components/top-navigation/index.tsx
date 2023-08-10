@@ -9,11 +9,11 @@ export const TopNavigation = () => {
   const router = useRouter()
   return (
     <div className="m-auto mb-16 flex justify-center">
-      <div className="container absolute top-0 m-auto flex h-[4rem] w-full flex-row items-center rounded-b-xl bg-gray-900/30 p-6 tracking-wide text-white drop-shadow-lg">
+      <div className="container absolute top-0 m-auto flex h-[4rem] w-full flex-row items-center rounded-b-xl bg-[--top-navigation-background] p-6 tracking-wide text-white shadow-lg">
         <button onClick={() => router.back()}>
           <ArrowLeftIcon className="mr-2 h-6 w-6" />
         </button>
-        <CMS />
+        <CMS className="text-[24px]" />
         <div className="ml-4 flex flex-row items-center space-x-2 pt-[4px]">
           <a
             className="text-sm font-semibold tracking-wider hover:underline "
@@ -50,8 +50,12 @@ export const TopNavigation = () => {
   )
 }
 
-export const CMS = () => {
-  return <h1 className="mx-4 text-[1.5rem] font-extrabold">CMS 2.0</h1>
+export const CMS = ({ className }: { className?: string }) => {
+  return (
+    <h1 className={cn('mx-4 font-extrabold', className)}>
+      CMS 2<span className="text-[#fa7b7f]">.</span>0
+    </h1>
+  )
 }
 
 export const SignOutButton = ({ className }: { className?: string }) => {

@@ -3,12 +3,18 @@
 @tailwind utilities;
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: #e2e2e2;
     --foreground: 222.2 84% 4.9%;
+
+    --gradient-1: #567be0;
+    --gradient-2: #b15c5c;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
     --muted-foreground-page: 0 0% 80%;
+
+    --top-navigation-background: #2f34339f;
+    --table-background: #2f343396;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
@@ -31,7 +37,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --ring: 215 20.2% 65.1%;
+    --ring: hsl(215 20.2% 65.1%);
 
     --radius: 0.5rem;
   }

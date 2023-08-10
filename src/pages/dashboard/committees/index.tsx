@@ -57,13 +57,10 @@ export default function Committees() {
 
   const utils = api.useContext()
 
-  const { data, isLoading, isError } = api.committee.getAll.useQuery(
-    {
-      is_active: filterA?.value,
-      is_temporary: filterT?.value
-    },
-    { enabled: filterA != undefined && filterT != undefined }
-  )
+  const { data, isLoading, isError } = api.committee.getAll.useQuery({
+    is_active: filterA?.value,
+    is_temporary: filterT?.value
+  })
 
   if (isError) {
     return <ErrorPage />
