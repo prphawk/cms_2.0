@@ -1,14 +1,14 @@
 import { CountDataType, RawCountDataType } from '~/types'
 
 export const _sortStringDate = (
-  row1: { getValue: (arg0: any) => string },
-  row2: { getValue: (arg0: any) => string },
+  row1: { getValue: (columnId: string) => string },
+  row2: { getValue: (columnId: string) => string },
   columnId: string
 ) => _toDate(row1.getValue(columnId)).getTime() - _toDate(row2.getValue(columnId)).getTime()
 
 export const _toDate = (str: string) => {
   const arr = str.split('/')
-  return new Date(`${arr[2]}-${arr[1]}-${arr[0]}`)
+  return new Date(`${arr[2]}/${arr[1]}/${arr[0]}`)
 }
 
 export const _toLocaleString = (date?: Date | null) => {
@@ -18,19 +18,18 @@ export const _toLocaleString = (date?: Date | null) => {
   }
   return ''
 }
+export const _toLocaleExtendedString = (date: Date) =>
+  date.toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
 
 export const _toString = (date?: Date | null) => {
   if (!date) return undefined
   return date.toISOString().substring(0, 10)
 }
-
-// export const _toString = (original?: Date | null) => {
-//   if (!original) return undefined
-//   const offset = original.getTimezoneOffset()
-//   const date = new Date(original.getTime() - offset * 60 * 1000)
-//   console.log('toString', original, date.toISOString().split('T')[0])
-//   return date.toISOString().split('T')[0]
-// }
 
 export const _isNumeric = (str?: string | string[]) => {
   if (typeof str != 'string') return false // we only process strings!
@@ -74,6 +73,6 @@ export const _formatCount = (
 }
 
 export const _isDateComing = (date: Date) => {
-  const limitDate = _addMonths(new Date(), 2)
+  const limitDate = _addMonths(new Date(), 3)
   return date.getTime() <= limitDate.getTime()
 }
