@@ -1,22 +1,22 @@
-import { Theme } from 'next-auth/core/types';
-import { EmailUserConfig, EmailConfig, SendVerificationRequestParams } from 'next-auth/providers';
-import { createTransport } from 'nodemailer';
+import { Theme } from 'next-auth/core/types'
+import { SendVerificationRequestParams } from 'next-auth/providers'
+import { createTransport } from 'nodemailer'
 
 export async function sendVerificationRequest(params: SendVerificationRequestParams) {
-  const { identifier, url, provider, theme } = params;
-  const { host } = new URL(url);
+  const { identifier, url, provider, theme } = params
+  const { host } = new URL(url)
   // NOTE: You are not required to use `nodemailer`, use whatever you want.
-  const transport = createTransport(provider.server);
+  const transport = createTransport({ service: 'gmail', auth: provider.server.auth })
   const result = await transport.sendMail({
     to: identifier,
     from: provider.from,
     subject: `Sign in to ${host}`,
     text: text({ url, host }),
-    html: html({ url, host, theme }),
-  });
-  const failed = result.rejected.concat(result.pending).filter(Boolean);
+    html: html({ url, host, theme })
+  })
+  const failed = result.rejected.concat(result.pending).filter(Boolean)
   if (failed.length) {
-    throw new Error(`Email(s) (${failed.join(', ')}) could not be sent`);
+    throw new Error(`Email(s) (${failed.join(', ')}) could not be sent`)
   }
 }
 
@@ -29,14 +29,12 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
  * @note We don't add the email address to avoid needing to escape it, if you do, remember to sanitize it!
  */
 function html(params: { url: string; host: string; theme: Theme }) {
-  const { url, host, theme } = params;
+  const { url, host, theme } = params
 
-  const escapedHost = host.replace(/\./g, '&#8203;.');
+  const escapedHost = host.replace(/\./g, '&#8203;.')
 
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const brandColor = theme.brandColor || '#346df1';
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const buttonText = theme.buttonText || '#fff';
+  const brandColor = theme.brandColor || '#346df1'
+  const buttonText = theme.buttonText || '#fff'
 
   const color = {
     background: '#f9f9f9',
@@ -44,8 +42,8 @@ function html(params: { url: string; host: string; theme: Theme }) {
     mainBackground: '#fff',
     buttonBackground: brandColor,
     buttonBorder: brandColor,
-    buttonText,
-  };
+    buttonText
+  }
 
   return `
 <body style="background: ${color.background};">
@@ -77,10 +75,10 @@ function html(params: { url: string; host: string; theme: Theme }) {
     </tr>
   </table>
 </body>
-`;
+`
 }
 
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
 function text({ url, host }: { url: string; host: string }) {
-  return `Sign in to ${host}\n${url}\n\n`;
+  return `Sign in to ${host}\n${url}\n\n`
 }
