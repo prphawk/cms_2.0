@@ -22,8 +22,6 @@ export default function TemplatePage() {
 
   const { data, isLoading } = api.template.getAll.useQuery()
 
-  api.template.sendNotifications.useQuery()
-
   const handleViewCommittee = (committee_id: number) => {
     router.push(`${Routes.COMMITTEES}/${committee_id}`)
   }

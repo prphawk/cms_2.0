@@ -1,6 +1,12 @@
+import { Template, Committee } from '@prisma/client'
 import { Theme } from 'next-auth/core/types'
 import { SendVerificationRequestParams } from 'next-auth/providers'
 import { createTransport } from 'nodemailer'
+import { _toLocaleString } from '~/utils/string'
+
+export type TemplateElection = Template & {
+  committee: Committee
+}
 
 export async function sendVerificationRequest(params: SendVerificationRequestParams) {
   const { identifier, url, provider, theme } = params
@@ -10,7 +16,7 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
   const result = await transport.sendMail({
     to: identifier,
     from: provider.from,
-    subject: `Sign in to ${host}`,
+    subject: `CMS 2.0: Acesse ${host}`,
     text: text({ url, host }),
     html: html({ url, host, theme })
   })
@@ -20,7 +26,7 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
   }
 }
 
-export async function sendEminentElectionNotification(to: string, templateName: string) {
+export async function sendEminentElectionNotification(to: string, templates: TemplateElection[]) {
   const transport = createTransport({
     service: 'gmail',
     auth: {
@@ -31,8 +37,8 @@ export async function sendEminentElectionNotification(to: string, templateName: 
   const result = await transport.sendMail({
     to,
     from: process.env.EMAIL_FROM,
-    subject: `Eleição Eminente de ${templateName}!`,
-    text: electionText(templateName)
+    subject: `CMS 2.0: Eleições Eminentes! (${templates.length})`,
+    text: electionText(templates)
     //html: html({ url, host, theme })
   })
   const failed = result.rejected.concat(result.pending).filter(Boolean)
@@ -105,6 +111,9 @@ function text({ url, host }: { url: string; host: string }) {
 }
 
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
-function electionText(templateName: string) {
-  return `Eleição Eminente de ${templateName}\n\n`
+function electionText(templates: TemplateElection[]) {
+  const strArr = templates.map(
+    (t) => `- ${t.name} | Data de fim: ${_toLocaleString(t.committee.end_date)}\n`
+  )
+  return `Eleição Eminente de órgãos:\n ${strArr.toString()}\n\n`
 }

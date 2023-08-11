@@ -1,24 +1,41 @@
+import { Committee, Template } from '@prisma/client'
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
-import { sendEminentElectionNotification } from '~/server/auth/email'
 import { prisma } from '~/server/db'
+import { _addMonths } from '~/utils/string'
 
 export const _getTemplateByName = async (name: string) => {
   return await prisma.template.findFirst({ where: { name } })
 }
 
-export const templateRouter = createTRPCRouter({
-  sendNotifications: publicProcedure.query(async ({ ctx }) => {
-    //const userEmail = ctx.session?.user.email
-    //if (userEmail) {
-    // try {
-    //   await sendEminentElectionNotification('mayra.cademartori@gmail.com', 'Committee X')
-    // } catch (error) {
-    //   console.error(error)
-    // }
-    //}
-  }),
+export const getNotifications = async () => {
+  const XMonthsFromNow = _addMonths(new Date(), 3)
+  const data = await prisma.template.findMany({
+    where: {
+      committees: {
+        every: {
+          is_active: true,
+          end_date: {
+            lte: XMonthsFromNow
+          }
+        }
+      }
+    },
+    include: {
+      committees: {
+        where: { is_active: true }
+      }
+    }
+  })
 
+  return data.map((t) => {
+    const committee = t.committees.length ? t.committees[0] : undefined // last active committee
+    const { committees, ...rest } = t
+    return { committee, ...rest }
+  })
+}
+
+export const templateRouter = createTRPCRouter({
   getOne: protectedProcedure
     .input(
       z.object({
