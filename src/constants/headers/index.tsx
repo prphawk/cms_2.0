@@ -7,6 +7,7 @@ export class MyHeaders {
   public static MEMBERSHIP = 'Participação'
   public static CATEGORY_F = 'Categoria'
   public static STATUS_F = 'Status'
+  public static ABOUT = 'Sobre'
 }
 export class EmployeeHeaders {
   public static MEMBERSHIP_COUNT = 'Participações' //don't change without changing its VisibilityState key on DataTable

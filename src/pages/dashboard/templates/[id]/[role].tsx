@@ -1,10 +1,9 @@
 import { useRouter } from 'next/router'
 import AuthenticatedPage from '~/components/authenticated-page'
-import PageLayout, { ContentLayout, TitleLayout } from '~/layout'
+import { ContentLayout } from '~/layouts/page-layout'
 import { api } from '~/utils/api'
 import { _isNumeric, _toLocaleString } from '~/utils/string'
 import { DataTable } from '~/components/table/data-table'
-import { CommitteeHeaders, MembershipHeaders } from '~/constants/headers'
 import { getTemplateRoleHistoryColumns } from '~/components/table/role-history/role-history-columns'
 import {
   Accordion,
@@ -14,6 +13,7 @@ import {
 } from '@/components/ui/accordion'
 import { PropsWithChildren } from 'react'
 import { Routes } from '~/constants/routes'
+import { TitleLayout } from '~/layouts/text-layout'
 
 export default function TemplateRoleHistory() {
   const router = useRouter()
@@ -35,7 +35,7 @@ export default function TemplateRoleHistory() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="role">
+      <ContentLayout className="role my-6 mb-auto min-h-[90vh]">
         {data && (
           <>
             <TemplateHistoryTableTitle {...{ template_id, role }} />
@@ -61,15 +61,15 @@ const TemplateHistoryTableTitle = (props: { template_id: number; role: string })
     ></HistoryDetails>
   )
 }
-//todo arrumar essa historia aqui
+//TODO arrumar essa historia aqui
 export const HistoryDetails = (
   props: { title: string; isLoading?: boolean } & PropsWithChildren
 ) => {
   return (
-    <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
+    <Accordion className="mb-6" type="single" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <TitleLayout>{props.isLoading ? 'Loading' : props.title}</TitleLayout>
+          <TitleLayout>{props.isLoading ? 'Loading...' : props.title}</TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">{props.children}</AccordionContent>
       </AccordionItem>

@@ -10,7 +10,7 @@ import AuthenticatedPage from '~/components/authenticated-page'
 import { getMembershipColumns } from '~/components/table/membership/membership-columns'
 import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar'
 import { DataTable } from '~/components/table/data-table'
-import { ContentLayout, TitleLayout } from '~/layout'
+import { ContentLayout } from '~/layouts/page-layout'
 import { api } from '~/utils/api'
 import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string'
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions'
@@ -35,6 +35,7 @@ import { IconBadge } from '~/components/badge'
 import { CommitteeWithOptionalTemplateDataType, MembershipWithEmployeeDataType } from '~/types'
 import ErrorPage from '~/pages/500'
 import { LS } from '~/constants/local_storage'
+import { TitleLayout } from '~/layouts/text-layout'
 
 export default function CommitteeMembership() {
   const router = useRouter()
@@ -185,7 +186,7 @@ export default function CommitteeMembership() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="committee">
+      <ContentLayout className="committee my-6 mb-auto min-h-[90vh]">
         {committeeData && (
           <>
             <CommitteesTableTitle data={committeeData} />

@@ -3,6 +3,7 @@ import { Column } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 
 import {
+  AlertTriangleIcon,
   ArrowDown01Icon,
   ArrowDownIcon,
   ArrowUpIcon,
@@ -21,8 +22,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { useEffect } from 'react'
 import { ArrowUp01Icon } from 'lucide-react'
+import { _isDateComing, _toDate, _toLocaleExtendedString } from '~/utils/string'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { PropsWithChildren } from 'react'
 
 interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>
@@ -98,5 +101,35 @@ export default function DataTableColumnHeader<TData, TValue>({
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  )
+}
+
+export const DateColumn = ({ value, children }: { value: string } & PropsWithChildren) => {
+  const dateValue = _toDate(value)
+
+  return (
+    <div className="flex flex-row" aria-labelledby={value}>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>{value}</div>
+          </TooltipTrigger>
+          {children}
+          <TooltipContent>{_toLocaleExtendedString(dateValue)}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  )
+}
+
+export const EndDateBadge = ({ value, isActive }: { value: string; isActive: boolean }) => {
+  const dateValue = _toDate(value)
+
+  return isActive ? (
+    <span className="self-center ">
+      {_isDateComing(dateValue) && <AlertTriangleIcon className=" ml-2 h-4 w-4 text-yellow-500" />}
+    </span>
+  ) : (
+    <></>
   )
 }

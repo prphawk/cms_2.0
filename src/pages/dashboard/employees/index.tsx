@@ -21,7 +21,8 @@ import { DialogsEnum } from '~/constants/enums'
 import { MyHeaders } from '~/constants/headers'
 import { LS } from '~/constants/local_storage'
 import { Routes } from '~/constants/routes'
-import { ContentLayout, TitleLayout } from '~/layout'
+import { ContentLayout } from '~/layouts/page-layout'
+import { TitleLayout } from '~/layouts/text-layout'
 import ErrorPage from '~/pages/500'
 import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
 import { api } from '~/utils/api'
@@ -135,7 +136,7 @@ export default function Employees() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="employees">
+      <ContentLayout className="employees my-6 mb-auto min-h-[90vh]">
         {data && (
           <>
             <EmployeesTableTitle data={data} />
@@ -183,20 +184,13 @@ const EmployeesTableTitle = ({
 }: {
   data: MembershipWithEmployeeCommitteeAndMembershipCountDataType[]
 }) => {
-  // const { data: countData, isLoading } = api.membership.groupByActivity.useQuery({
-  //   committee_id: data.id
-  // })
-
-  // const { active_count, total_count } = _formatCount(isLoading, countData)
   return (
     <Accordion className="mb-6" type="single" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
           <TitleLayout>{MyHeaders.EMPLOYEES}</TitleLayout>
         </AccordionTrigger>
-        <AccordionContent className="tracking-wide">
-          {/* <strong>Membros ativos: </strong> {active_count} de {total_count} */}
-        </AccordionContent>
+        <AccordionContent className="tracking-wide"></AccordionContent>
       </AccordionItem>
     </Accordion>
   )

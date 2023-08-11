@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { MyHeaders, MembershipHeaders } from '~/constants/headers'
-import { _toLocaleString } from '~/utils/string'
+import { _sortStringDate, _toLocaleString } from '~/utils/string'
 import { CircleOffIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,7 +11,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import DataTableColumnHeader from '~/components/table/data-table-column-header'
+import DataTableColumnHeader, {
+  DateColumn,
+  EndDateBadge
+} from '~/components/table/data-table-column-header'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge } from '~/components/badge'
 import { MembershipWithEmployeeAndCommitteeDataType } from '~/types'
@@ -73,21 +76,27 @@ export const getTemplateRoleHistoryColumns = (
   {
     accessorKey: 'begin_date',
     id: MembershipHeaders.BEGIN_DATE,
+    sortingFn: _sortStringDate,
     accessorFn: (row) => _toLocaleString(row.begin_date),
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return <div>{value}</div>
+      return <DateColumn value={value} />
     }
   },
   {
     accessorKey: 'end_date',
     id: MembershipHeaders.END_DATE,
+    sortingFn: _sortStringDate,
     accessorFn: (row) => _toLocaleString(row.end_date),
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return <div>{value}</div>
+      return (
+        <DateColumn value={value}>
+          <EndDateBadge value={value} isActive={row.original?.is_active} />
+        </DateColumn>
+      )
     }
   },
   {
