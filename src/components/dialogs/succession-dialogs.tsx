@@ -26,7 +26,7 @@ export default function SuccessionDialogs(props: {
   )
 
   const [successionData, setSuccessionData] = useState<any>()
-  //// Committee & { template: CommitteeTemplate} & { members: (Membership & { employee: Employee })[] }
+  //// Committee & { template: Template} & { members: (Membership & { employee: Employee })[] }
 
   useEffect(() => {
     if (committeeData) {

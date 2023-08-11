@@ -6,7 +6,7 @@ import DataTableColumnHeader, {
   EndDateBadge
 } from '~/components/table/data-table-column-header'
 
-import { Committee, CommitteeTemplate } from '@prisma/client'
+import { Committee, Template } from '@prisma/client'
 import { BellIcon, BellRingIcon, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -14,7 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 export const getTemplateColumns = (
   handleViewCommittee: (committee_id: number) => void
-): ColumnDef<CommitteeTemplate & { _count: { committees: number }; committee?: Committee }>[] => [
+): ColumnDef<Template & { _count: { committees: number }; committee?: Committee }>[] => [
   {
     accessorKey: 'name',
     id: MyHeaders.TEMPLATE,
