@@ -39,7 +39,7 @@ export default function DataTableColumnHeader<TData, TValue>({
   columnSecondary
 }: DataTableColumnHeaderProps<TData, TValue> & { columnSecondary?: Column<TData, TValue> }) {
   if (!column.getCanSort()) {
-    return <div className={cn(className)}>{title}</div>
+    return <div className={cn('font-bold', className)}>{title}</div>
   }
 
   return (

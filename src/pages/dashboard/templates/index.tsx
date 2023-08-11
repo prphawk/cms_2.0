@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
 import AuthenticatedPage from '~/components/authenticated-page'
-import { ContentLayout } from '~/layouts/page-layout'
 import { api } from '~/utils/api'
 import { _isNumeric, _toLocaleString } from '~/utils/string'
 import { DataTable } from '~/components/table/data-table'
@@ -14,21 +13,14 @@ import {
 } from '@/components/ui/accordion'
 import { PropsWithChildren } from 'react'
 import { Routes } from '~/constants/routes'
+import { getTemplateColumns } from '~/components/table/templates/template-columns'
+import { ContentLayout } from '~/layouts/page-layout'
 import { TitleLayout } from '~/layouts/text-layout'
 
-export default function TemplateRoleHistory() {
+export default function TemplatePage() {
   const router = useRouter()
 
-  const template_id = Number(router.query.id)
-  const role = router.query.role as string
-
-  const { data } = api.membership.getRoleHistory.useQuery(
-    {
-      template_id,
-      role
-    },
-    { enabled: !isNaN(template_id) && role != undefined }
-  )
+  const { data, isLoading } = api.template.getAll.useQuery()
 
   const handleViewCommittee = (committee_id: number) => {
     router.push(`${Routes.COMMITTEES}/${committee_id}`)
@@ -36,14 +28,11 @@ export default function TemplateRoleHistory() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="role my-6 mb-auto min-h-[90vh]">
+      <ContentLayout className="templates my-6 mb-auto min-h-[90vh]">
         {data && (
           <>
-            <TemplateHistoryTableTitle {...{ template_id, role }} />
-            <DataTable
-              data={data || []}
-              columns={getTemplateRoleHistoryColumns(handleViewCommittee)}
-            />
+            <TemplateDetails {...{ isLoading }} />
+            <DataTable data={data} columns={getTemplateColumns(handleViewCommittee)} />
           </>
         )}
       </ContentLayout>
@@ -51,26 +40,13 @@ export default function TemplateRoleHistory() {
   )
 }
 
-const TemplateHistoryTableTitle = (props: { template_id: number; role: string }) => {
-  const { data, isLoading } = api.template.getOne.useQuery({
-    template_id: props.template_id
-  })
-  return (
-    <HistoryDetails
-      isLoading={isLoading}
-      title={`Histórico de "${props.role}" - ${MyHeaders.TEMPLATE} ${data?.name}`}
-    ></HistoryDetails>
-  )
-}
 //TODO arrumar essa historia aqui
-export const HistoryDetails = (
-  props: { title: string; isLoading?: boolean } & PropsWithChildren
-) => {
+export const TemplateDetails = (props: { isLoading?: boolean } & PropsWithChildren) => {
   return (
     <Accordion className="mb-6" type="single" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <TitleLayout>{props.isLoading ? 'Loading...' : props.title}</TitleLayout>
+          <TitleLayout>{props.isLoading ? 'Loading' : MyHeaders.TEMPLATES}</TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">{props.children}</AccordionContent>
       </AccordionItem>

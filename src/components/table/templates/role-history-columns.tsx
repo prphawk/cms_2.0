@@ -29,7 +29,7 @@ export const getTemplateRoleHistoryColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row }) => {
       const value = row.original.employee?.name as string
-      const is_inactive = !row.original.is_active
+      const is_inactive = !row.original.employee.is_active
 
       return (
         <div className="flex w-[240px] flex-row">
@@ -46,11 +46,11 @@ export const getTemplateRoleHistoryColumns = (
   {
     accessorKey: 'committee.name',
     accessorFn: (row) => row.committee.name,
-    id: MyHeaders.COMMITTEE,
+    id: MyHeaders.MEMBERSHIP,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      const is_inactive = !row.original.committee.is_active
+      const is_inactive = !row.original.is_active
 
       return (
         <div className="flex max-w-[280px] flex-row">
@@ -61,12 +61,14 @@ export const getTemplateRoleHistoryColumns = (
                   <strong className="truncate">{value}</strong>
                 </div>
               </TooltipTrigger>
-              <TooltipContent>{value}</TooltipContent>
+              <TooltipContent>
+                {is_inactive ? 'Participação encerrada em ' + value : value}
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
           {is_inactive && (
             <IconBadge>
-              <CircleOffIcon className="h-3 w-3 text-white" />
+              <CircleOffIcon className="h-3 w-3" />
             </IconBadge>
           )}
         </div>
