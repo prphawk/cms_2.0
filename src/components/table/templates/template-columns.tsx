@@ -47,17 +47,13 @@ export const getTemplateColumns = (
   },
   {
     accessorKey: 'committee',
-    // accessorFn: (row) => _toLocaleString(row.committee?.begin_date),
+    accessorFn: (row) =>
+      row.committee ? _diffMonths(row.committee.begin_date, row.committee.end_date) : undefined,
     id: 'Duração de Mandato',
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
-      const committee = row.original.committee
-
-      return (
-        <div>
-          {committee ? `${_diffMonths(committee.begin_date, committee.end_date)} meses` : ''}
-        </div>
-      )
+      const value = row.getValue(column.id) as number
+      return <div>{value ? `${value} meses` : ''}</div>
     }
   },
   {
