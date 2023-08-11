@@ -6,7 +6,7 @@ import PageLayout from '~/layouts/page-layout'
 import { TopNavigation } from '../top-navigation'
 import LoadingLayout from '~/layouts/loading-layout'
 
-export default function AuthenticatedPage(props: PropsWithChildren) {
+export default function AuthenticatedPage(props: PropsWithChildren & { hideTopNav?: boolean }) {
   const { status } = useSession()
   const router = useRouter()
 
@@ -17,7 +17,7 @@ export default function AuthenticatedPage(props: PropsWithChildren) {
 
   return (
     <PageLayout>
-      <TopNavigation />
+      {!props.hideTopNav && <TopNavigation />}
       <LoadingLayout isLoading={status === 'loading'}>{props.children}</LoadingLayout>
     </PageLayout>
   )

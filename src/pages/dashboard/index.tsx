@@ -1,11 +1,12 @@
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
 import { PropsWithChildren } from 'react'
+import AuthenticatedPage from '~/components/authenticated-page'
 import { CMS, SignOutButton } from '~/components/top-navigation'
 import { MyHeaders } from '~/constants/headers'
 import { Routes } from '~/constants/routes'
 import { LoadingElement } from '~/layouts/loading-layout'
-import PageLayout, { ContentLayout } from '~/layouts/page-layout'
+import { ContentLayout } from '~/layouts/page-layout'
 
 export default function Home() {
   const { status } = useSession()
@@ -32,7 +33,7 @@ export default function Home() {
     }
   ]
   return (
-    <PageLayout>
+    <AuthenticatedPage hideTopNav>
       <ContentLayout className="flex h-full w-[550px] flex-col justify-center p-10">
         {status == 'loading' ? (
           <LoadingElement />
@@ -56,7 +57,7 @@ export default function Home() {
           </div>
         )}
       </ContentLayout>
-    </PageLayout>
+    </AuthenticatedPage>
   )
 }
 
