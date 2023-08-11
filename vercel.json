@@ -1,4 +1,11 @@
 {
+  "crons": [
+    {
+      "path": "/api/notifications",
+
+      "schedule": "0 23 * * *"
+    }
+  ],
   "functions": {
     "pages/api/index.ts": {
       "memory": 3008,
