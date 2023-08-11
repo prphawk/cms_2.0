@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Routes } from '~/constants/routes'
-import PageLayout, { ContentLayout } from '~/layout'
+import PageLayout, { ContentLayout } from '~/layouts/page-layout'
 
 export default function ErrorPage() {
   const [counter, setCounter] = useState(5)
@@ -14,7 +14,7 @@ export default function ErrorPage() {
 
   return (
     <PageLayout>
-      <ContentLayout className="flex w-[70vh] flex-col items-center justify-center text-center text-2xl font-bold">
+      <ContentLayout className="flex h-[80vh] w-[50vw] flex-col items-center justify-center text-center text-2xl font-bold">
         <div>
           Opa! Aconteceu um erro inesperado.
           <hr className="my-4 border-[1px] border-[#ffffff4f]" />

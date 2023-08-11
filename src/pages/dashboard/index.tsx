@@ -1,12 +1,11 @@
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
-import { Head } from 'next/document'
 import { PropsWithChildren } from 'react'
-import { LoadingElement } from '~/components/loading-layout'
 import { CMS, SignOutButton } from '~/components/top-navigation'
 import { MyHeaders } from '~/constants/headers'
 import { Routes } from '~/constants/routes'
-import PageLayout, { ContentLayout, TextLayout } from '~/layout'
+import { LoadingElement } from '~/layouts/loading-layout'
+import PageLayout, { ContentLayout } from '~/layouts/page-layout'
 
 export default function Home() {
   const { status } = useSession()
@@ -14,53 +13,46 @@ export default function Home() {
     {
       title: MyHeaders.COMMITTEES,
       href: Routes.COMMITTEES,
-      description: 'Coisas muito legais relacionadas as órgãos colegiados e comissões do INF.',
       className: 'border-b-[1px] border-r-[1px] rounded-br-lg'
     },
     {
       title: MyHeaders.EMPLOYEES,
       href: Routes.EMPLOYEES,
-      description: 'Under construction.',
       className: 'border-b-[1px] border-l-[1px] rounded-bl-lg'
     },
     {
       title: MyHeaders.TEMPLATES,
       href: Routes.TEMPLATES,
-      description: 'Under construction.',
       className: 'border-t-[1px] border-r-[1px] rounded-tr-lg'
     },
     {
       title: 'Configurações',
       href: Routes.SETTINGS,
-      description: 'Under construction.',
       className: 'border-l-[1px] border-t-[1px] rounded-tl-lg'
     }
   ]
   return (
     <PageLayout>
-      <ContentLayout className="flex h-full w-[550px] flex-col justify-center">
+      <ContentLayout className="flex h-full w-[550px] flex-col justify-center p-10">
         {status == 'loading' ? (
           <LoadingElement />
         ) : (
-          <div className="flex flex-col items-center border-2 border-solid border-[#ffffff4f] py-8">
-            <div className="my-8">
+          <div className=" flex h-[80vh] flex-col items-center gap-y-4 border-2 border-solid border-[#ffffff4f] py-[8vh]">
+            <div className="my-[6vh]">
               <CMS className="text-[48px]" />
               <hr className="mx-3 mt-1 border-[#ffffff4f]" />
             </div>
-            {/* <TextLayout className="mb-2 mt-16 text-[24px] font-extrabold">Home</TextLayout> */}
-            <div className="mb-6 mt-5 grid grid-cols-2 p-4">
+            <div className="mb-4 mt-auto grid grid-cols-2 p-4 pt-4">
               {components.map((component) => (
                 <ListItem
                   key={component.title}
                   title={component.title}
                   href={component.href}
                   className={component.className}
-                >
-                  {component.description}
-                </ListItem>
+                />
               ))}
             </div>
-            <SignOutButton className="mx-auto mt-8" />
+            <SignOutButton className="mx-auto mt-auto pt-8" />
           </div>
         )}
       </ContentLayout>

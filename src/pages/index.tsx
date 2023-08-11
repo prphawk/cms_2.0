@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
-import PageLayout from '~/layout'
+import PageLayout from '~/layouts/page-layout'
 import { Routes } from '~/constants/routes'
 import React from 'react'
 import { useRouter } from 'next/router'
