@@ -21,8 +21,21 @@ export const templateRouter = createTRPCRouter({
       })
     }),
 
-  getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.committeeTemplate.findMany()
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const data = await ctx.prisma.committeeTemplate.findMany({
+      include: {
+        _count: true,
+        committees: {
+          where: { is_active: true }
+        }
+      }
+    })
+
+    return data.map((t) => {
+      const committee = t.committees.length ? t.committees[0] : undefined // last active committee
+      const { committees, ...rest } = t
+      return { committee, ...rest }
+    })
   }),
 
   create: protectedProcedure

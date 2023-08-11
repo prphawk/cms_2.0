@@ -70,7 +70,7 @@ export const getEmployeesColumns = (
   {
     accessorKey: 'committee.name',
     accessorFn: (row) => row.committee.name,
-    id: MyHeaders.COMMITTEE,
+    id: MyHeaders.MEMBERSHIP,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string

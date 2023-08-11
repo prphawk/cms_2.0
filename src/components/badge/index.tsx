@@ -5,7 +5,7 @@ import { _toLocaleString, _isDateComing } from '~/utils/string'
 
 export const IconBadge = ({ children, className }: { children: ReactNode; className?: string }) => {
   return (
-    <Badge className={cn('ml-2 p-[0.20rem] text-inherit', className)} variant="outline">
+    <Badge className={cn('ml-2 p-[3px] text-inherit', className)} variant="outline">
       {children}
     </Badge>
   )

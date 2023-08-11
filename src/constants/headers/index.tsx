@@ -3,6 +3,7 @@ export class MyHeaders {
   public static COMMITTEES = 'Órgãos'
   public static EMPLOYEE = 'Servidor(a)'
   public static EMPLOYEES = 'Servidores'
+  public static TEMPLATE = 'Tipo'
   public static TEMPLATES = 'Tipos'
   public static MEMBERSHIP = 'Participação'
   public static CATEGORY_F = 'Categoria'
