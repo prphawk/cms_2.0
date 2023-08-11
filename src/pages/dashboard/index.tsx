@@ -26,8 +26,8 @@ export default function Home() {
       className: 'border-t-[1px] border-r-[1px] rounded-tr-lg'
     },
     {
-      title: 'Configurações',
-      href: Routes.SETTINGS,
+      title: MyHeaders.ABOUT,
+      href: Routes.ABOUT,
       className: 'border-l-[1px] border-t-[1px] rounded-tl-lg'
     }
   ]

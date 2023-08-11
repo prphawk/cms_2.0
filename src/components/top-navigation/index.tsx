@@ -31,8 +31,8 @@ export const TopNavigation = () => {
               {MyHeaders.TEMPLATES}
             </a>
             <Dot className="pt-1" />
-            <a className="font-semibold tracking-wider hover:underline" href={Routes.SETTINGS}>
-              Configurações
+            <a className="font-semibold tracking-wider hover:underline" href={Routes.ABOUT}>
+              {MyHeaders.ABOUT}
             </a>
           </div>
           <SignOutButton className="ml-auto">
