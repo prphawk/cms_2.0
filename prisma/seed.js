@@ -9,7 +9,7 @@ const load = async () => {
     console.log('Deleted records in Membership table')
 
     await prisma.template.deleteMany()
-    console.log('Deleted records in CommitteeTemplate table')
+    console.log('Deleted records in template table')
 
     await prisma.employee.deleteMany()
     console.log('Deleted records in Employee table')
@@ -26,8 +26,11 @@ const load = async () => {
     await prisma.$queryRaw`ALTER TABLE Membership AUTO_INCREMENT = 1`
     console.log('reset Membership auto increment to 1')
 
-    await prisma.$queryRaw`ALTER TABLE CommitteeTemplate AUTO_INCREMENT = 1`
-    console.log('reset CommitteeTemplate auto increment to 1')
+    await prisma.$queryRaw`ALTER TABLE Template AUTO_INCREMENT = 1`
+    console.log('reset Template auto increment to 1')
+
+    await prisma.$queryRaw`ALTER TABLE Notification AUTO_INCREMENT = 1`
+    console.log('reset Notification auto increment to 1')
 
     await prisma.employee.createMany({
       data: employees

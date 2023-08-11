@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
+import { sendEminentElectionNotification } from '~/server/auth/email'
 import { prisma } from '~/server/db'
 
 export const _getTemplateByName = async (name: string) => {
@@ -7,6 +8,17 @@ export const _getTemplateByName = async (name: string) => {
 }
 
 export const templateRouter = createTRPCRouter({
+  sendNotifications: publicProcedure.query(async ({ ctx }) => {
+    //const userEmail = ctx.session?.user.email
+    //if (userEmail) {
+    // try {
+    //   await sendEminentElectionNotification('mayra.cademartori@gmail.com', 'Committee X')
+    // } catch (error) {
+    //   console.error(error)
+    // }
+    //}
+  }),
+
   getOne: protectedProcedure
     .input(
       z.object({
@@ -53,7 +65,8 @@ export const templateRouter = createTRPCRouter({
             connect: input.committee_ids.map((c: number) => {
               return { id: c }
             })
-          }
+          },
+          notification: { create: {} }
         }
       })
     }),

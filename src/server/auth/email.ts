@@ -20,6 +20,27 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
   }
 }
 
+export async function sendEminentElectionNotification(to: string, templateName: string) {
+  const transport = createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_SERVER_USER,
+      pass: process.env.EMAIL_SERVER_PASSWORD
+    }
+  })
+  const result = await transport.sendMail({
+    to,
+    from: process.env.EMAIL_FROM,
+    subject: `Eleição Eminente de ${templateName}!`,
+    text: electionText(templateName)
+    //html: html({ url, host, theme })
+  })
+  const failed = result.rejected.concat(result.pending).filter(Boolean)
+  if (failed.length) {
+    throw new Error(`Email(s) (${failed.join(', ')}) could not be sent`)
+  }
+}
+
 /**
  * Email HTML body
  * Insert invisible space into domains from being turned into a hyperlink by email
@@ -81,4 +102,9 @@ function html(params: { url: string; host: string; theme: Theme }) {
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
 function text({ url, host }: { url: string; host: string }) {
   return `Sign in to ${host}\n${url}\n\n`
+}
+
+/** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
+function electionText(templateName: string) {
+  return `Eleição Eminente de ${templateName}\n\n`
 }
