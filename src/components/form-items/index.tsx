@@ -348,7 +348,7 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
   return (
     <FormField
       control={props.form.control}
-      name="committee_template_name"
+      name="template_name"
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel className="pb-1">{CommitteeHeaders.TEMPLATE}</FormLabel>
@@ -391,7 +391,7 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
                             if (createdIndex) templates.pop()
                             setCreatedIndex(templates.length)
                             setTemplates([...templates, commandSearch])
-                            props.form.setValue('committee_template_name', commandSearch)
+                            props.form.setValue('template_name', commandSearch)
                           }}
                         >
                           <div className="truncate">
@@ -407,13 +407,10 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
                       key={template}
                       onSelect={(value) => {
                         let found: string | undefined
-                        if (
-                          value ===
-                          props.form.getValues('committee_template_name')?.toLocaleLowerCase()
-                        ) {
+                        if (value === props.form.getValues('template_name')?.toLocaleLowerCase()) {
                           found = undefined
                         } else found = templates.find((t) => t.toLocaleLowerCase() === value)
-                        props.form.setValue('committee_template_name', found || '')
+                        props.form.setValue('template_name', found || '')
                       }}
                     >
                       {template}

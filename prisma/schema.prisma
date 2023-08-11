@@ -81,10 +81,10 @@ model Committee {
   observations 			    String?
   is_active 				    Boolean             @default(true)
   members 					    Membership[]
-  committee_template 	  CommitteeTemplate?  @relation(fields: [committee_template_id], references: [id])
-  committee_template_id Int?                // relation scalar field (used in the `@relation` attribute above) @map("committee_template_id")
+  template 	  Template?  @relation(fields: [template_id], references: [id])
+  template_id Int?                // relation scalar field (used in the `@relation` attribute above) @map("template_id")
   
-  @@index([committee_template_id])
+  @@index([template_id])
 }
 
 model Membership {
@@ -100,12 +100,21 @@ model Membership {
   is_active    Boolean   	@default(true)
   observations String?
 
-
   @@index([employee_id])
   @@index([committee_id])
 }
-model CommitteeTemplate {
-  id    			 Int      @id @default(autoincrement())
-  name         String              
-  committees 	 Committee[]
+
+model Notification {
+  id    			Int       @id @default(autoincrement())
+  isOn        Boolean   @default(false)
+  lastSentOn  DateTime?  
+  template 	  Template  @relation(fields: [template_id], references: [id], onDelete: Cascade)
+  template_id Int       @unique
 }
+model Template {
+  id    			    Int      @id @default(autoincrement())
+  name            String              
+  committees 	    Committee[]
+  notification    Notification?
+}
+

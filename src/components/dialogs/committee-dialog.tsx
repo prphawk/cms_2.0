@@ -42,7 +42,7 @@ export default function CommitteeDialog(props: {
       end_date: _toString(props.committee?.end_date || _addYears(new Date(), 1)),
       ordinance: props.committee?.ordinance || '',
       observations: props.committee?.observations || '',
-      committee_template_name: props.committee?.committee_template?.name || ''
+      template_name: props.committee?.template?.name || ''
     }
   }
 

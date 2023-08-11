@@ -32,7 +32,7 @@ export const getCommitteesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      const is_temporary = !row.original.committee_template_id
+      const is_temporary = !row.original.template_id
       const is_inactive = !row.original.is_active
 
       return (
@@ -200,7 +200,7 @@ export const CommitteeActionsMenuColumn = ({
         <DropdownMenuItem onClick={onViewCommittee}>Ver membros</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          disabled={!committee.is_active || !committee.committee_template_id}
+          disabled={!committee.is_active || !committee.template_id}
           onClick={() => onCommitteeSuccession(committee.id)}
         >
           Suceder {MyHeaders.COMMITTEE.toLowerCase()}

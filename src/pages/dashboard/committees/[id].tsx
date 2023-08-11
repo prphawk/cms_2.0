@@ -264,7 +264,7 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
           <TitleLayout>
             {data?.name}
             <span className="ml-1">
-              {!data.committee_template_id && (
+              {!data.template_id && (
                 <IconBadge>
                   <HourglassIcon className="h-4 w-4" />
                 </IconBadge>
@@ -297,12 +297,12 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
           )}
           <strong>{MyHeaders.CATEGORY_F}: </strong>
           {MyHeaders.COMMITTEE}
-          {data?.committee_template_id ? ' Permanente' : ' Temporário'}
+          {data?.template_id ? ' Permanente' : ' Temporário'}
           <Dot />
-          {data?.committee_template_id ? (
+          {data?.template_id ? (
             <>
               <strong>{CommitteeHeaders.TEMPLATE}: </strong>
-              {data?.committee_template?.name}
+              {data?.template?.name}
               <Dot />
             </>
           ) : (

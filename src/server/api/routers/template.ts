@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
 
 export const _getTemplateByName = async (name: string) => {
-  return await prisma.committeeTemplate.findFirst({ where: { name } })
+  return await prisma.template.findFirst({ where: { name } })
 }
 
 export const templateRouter = createTRPCRouter({
@@ -14,7 +14,7 @@ export const templateRouter = createTRPCRouter({
       })
     )
     .query(({ ctx, input }) => {
-      return ctx.prisma.committeeTemplate.findFirst({
+      return ctx.prisma.template.findFirst({
         where: {
           id: input.template_id
         }
@@ -22,7 +22,7 @@ export const templateRouter = createTRPCRouter({
     }),
 
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const data = await ctx.prisma.committeeTemplate.findMany({
+    const data = await ctx.prisma.template.findMany({
       include: {
         _count: true,
         committees: {
@@ -46,7 +46,7 @@ export const templateRouter = createTRPCRouter({
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.committeeTemplate.create({
+      return ctx.prisma.template.create({
         data: {
           name: input.name,
           committees: {
@@ -68,7 +68,7 @@ export const templateRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       const { role, template_id } = input
 
-      return ctx.prisma.committeeTemplate.findUnique({
+      return ctx.prisma.template.findUnique({
         where: {
           id: template_id
         },

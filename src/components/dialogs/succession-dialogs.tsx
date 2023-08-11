@@ -26,7 +26,7 @@ export default function SuccessionDialogs(props: {
   )
 
   const [successionData, setSuccessionData] = useState<any>()
-  //// Committee & { committee_template: CommitteeTemplate} & { members: (Membership & { employee: Employee })[] }
+  //// Committee & { template: CommitteeTemplate} & { members: (Membership & { employee: Employee })[] }
 
   useEffect(() => {
     if (committeeData) {
@@ -80,7 +80,7 @@ export default function SuccessionDialogs(props: {
           description={
             <>
               Esta ação irá criar um <strong>novo mandato</strong> de "
-              {committeeData.committee_template?.name}", <strong>encerrando</strong> o{' '}
+              {committeeData.template?.name}", <strong>encerrando</strong> o{' '}
               {MyHeaders.COMMITTEE.toLowerCase()} atual "{committeeData.name}" e todas as suas
               participações. Deseja continuar?
             </>
