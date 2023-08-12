@@ -21,3 +21,7 @@ export const CommitteeSchema = z
     message: `${CommitteeHeaders.END_DATE} não pode ser igual/antes de ${CommitteeHeaders.BEGIN_DATE}.`,
     path: ['end_date']
   })
+
+export const TemplateSchema = z.object({
+  name: z.string({ required_error: `${CommitteeHeaders.TEMPLATE_NAME} é obrigatório` })
+})

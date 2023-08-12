@@ -72,7 +72,8 @@ export const templateRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const data = await ctx.prisma.template.findMany({
       include: {
-        _count: true,
+        _count: { select: { committees: true } },
+        notification: true,
         committees: {
           where: { is_active: true }
         }
@@ -103,6 +104,32 @@ export const templateRouter = createTRPCRouter({
             })
           },
           notification: { create: {} }
+        }
+      })
+    }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z.string().optional(),
+        notification: z
+          .object({
+            isOn: z.boolean()
+          })
+          .optional()
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.template.update({
+        where: { id: input.id },
+        data: {
+          name: input.name,
+          notification: {
+            update: {
+              isOn: input.notification?.isOn
+            }
+          }
         }
       })
     }),
