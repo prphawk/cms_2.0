@@ -8,10 +8,29 @@ export const _getTemplateByName = async (name: string) => {
   return await prisma.template.findFirst({ where: { name } })
 }
 
+export const getEmails = () => {
+  return prisma.user.findMany({
+    where: {
+      emailVerified: {
+        not: null
+      },
+      email: {
+        not: null
+      }
+    },
+    select: {
+      email: true
+    }
+  })
+}
+
 export const getNotifications = async () => {
   const XMonthsFromNow = _addMonths(new Date(), 3)
   const data = await prisma.template.findMany({
     where: {
+      // notification: {
+      //   isOn: true
+      // },//TODO descomentar
       committees: {
         every: {
           is_active: true,
