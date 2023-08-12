@@ -2,14 +2,7 @@
   "crons": [
     {
       "path": "/api/notifications",
-
-      "schedule": "0 23 * * *"
+      "schedule": "0 6 * * *"
     }
-  ],
-  "functions": {
-    "pages/api/index.ts": {
-      "memory": 3008,
-      "maxDuration": 60
-    }
-  }
+  ]
 }
