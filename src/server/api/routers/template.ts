@@ -44,7 +44,7 @@ export const getEmails = () => {
 export const getNotifications = async () => {
   const now = new Date()
   const XMonthsFromNow = _addMonths(now, 3)
-  const XMonthsBeforeNow = _subMonths(now, 3) //TODO cjeck if this logic holds...
+  const XMonthsBeforeNow = _subMonths(now, 3) //TODO check if this logic holds...
   const data = await prisma.template.findMany({
     where: {
       notification: {
