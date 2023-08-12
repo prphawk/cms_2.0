@@ -1,5 +1,5 @@
 // @ts-nocheck
-const { faker } = require('@faker-js/faker');
+const { faker } = require('@faker-js/faker')
 
 class DataFactory {
   constructor() {}
@@ -7,8 +7,8 @@ class DataFactory {
   newMockEmployee(name) {
     return {
       name: name || faker.person.fullName(),
-      is_active: true,
-    };
+      is_active: true
+    }
   }
 
   newMockCommittee(bond, name) {
@@ -19,26 +19,27 @@ class DataFactory {
       end_date: faker.date.future(),
       ordinance: 'Portaria ' + faker.string.alphanumeric(5),
       observations: faker.lorem.sentence(),
-      is_active: faker.datatype.boolean({ probability: 0.75 }),
-    };
+      is_active: faker.datatype.boolean({ probability: 0.75 })
+    }
   }
 
-  newTemplateCommittee(name, mockCommitteeIds) {
+  newTemplate(name, mockCommitteeIds) {
     return {
       data: {
         name,
         committees: {
           connect: mockCommitteeIds.map((c) => {
-            return { id: c };
-          }),
+            return { id: c }
+          })
         },
-      },
-    };
+        notification: { create: {} }
+      }
+    }
   }
 
   newMockMembershipJSON(mockEmployeeId, mockCommitteeId, mockRole) {
-    const date = new Date();
-    date.setFullYear(new Date().getFullYear() + 1);
+    const date = new Date()
+    date.setFullYear(new Date().getFullYear() + 1)
     return {
       employee_id: mockEmployeeId,
       committee_id: mockCommitteeId,
@@ -47,9 +48,9 @@ class DataFactory {
       end_date: date,
       role: mockRole,
       observations: faker.lorem.sentence(),
-      is_active: faker.datatype.boolean({ probability: 0.75 }),
-    };
+      is_active: faker.datatype.boolean({ probability: 0.75 })
+    }
   }
 }
 
-module.exports = new DataFactory();
+module.exports = new DataFactory()

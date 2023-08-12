@@ -1,9 +1,57 @@
+import { Committee, Template } from '@prisma/client'
 import { z } from 'zod'
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
+import { _addMonths } from '~/utils/string'
 
 export const _getTemplateByName = async (name: string) => {
-  return await prisma.committeeTemplate.findFirst({ where: { name } })
+  return await prisma.template.findFirst({ where: { name } })
+}
+
+export const getEmails = () => {
+  return prisma.user.findMany({
+    where: {
+      emailVerified: {
+        not: null
+      },
+      email: {
+        not: null
+      }
+    },
+    select: {
+      email: true
+    }
+  })
+}
+
+export const getNotifications = async () => {
+  const XMonthsFromNow = _addMonths(new Date(), 3)
+  const data = await prisma.template.findMany({
+    where: {
+      // notification: {
+      //   isOn: true
+      // },//TODO descomentar
+      committees: {
+        every: {
+          is_active: true,
+          end_date: {
+            lte: XMonthsFromNow
+          }
+        }
+      }
+    },
+    include: {
+      committees: {
+        where: { is_active: true }
+      }
+    }
+  })
+
+  return data.map((t) => {
+    const committee = t.committees.length ? t.committees[0] : undefined // last active committee
+    const { committees, ...rest } = t
+    return { committee, ...rest }
+  })
 }
 
 export const templateRouter = createTRPCRouter({
@@ -14,7 +62,7 @@ export const templateRouter = createTRPCRouter({
       })
     )
     .query(({ ctx, input }) => {
-      return ctx.prisma.committeeTemplate.findFirst({
+      return ctx.prisma.template.findFirst({
         where: {
           id: input.template_id
         }
@@ -22,9 +70,10 @@ export const templateRouter = createTRPCRouter({
     }),
 
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const data = await ctx.prisma.committeeTemplate.findMany({
+    const data = await ctx.prisma.template.findMany({
       include: {
-        _count: true,
+        _count: { select: { committees: true } },
+        notification: true,
         committees: {
           where: { is_active: true }
         }
@@ -46,13 +95,40 @@ export const templateRouter = createTRPCRouter({
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.committeeTemplate.create({
+      return ctx.prisma.template.create({
         data: {
           name: input.name,
           committees: {
             connect: input.committee_ids.map((c: number) => {
               return { id: c }
             })
+          },
+          notification: { create: {} }
+        }
+      })
+    }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z.string().optional(),
+        notification: z
+          .object({
+            isOn: z.boolean()
+          })
+          .optional()
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.template.update({
+        where: { id: input.id },
+        data: {
+          name: input.name,
+          notification: {
+            update: {
+              isOn: input.notification?.isOn
+            }
           }
         }
       })
@@ -68,7 +144,7 @@ export const templateRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       const { role, template_id } = input
 
-      return ctx.prisma.committeeTemplate.findUnique({
+      return ctx.prisma.template.findUnique({
         where: {
           id: template_id
         },

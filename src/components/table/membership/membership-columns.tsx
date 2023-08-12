@@ -54,10 +54,10 @@ export const getMembershipColumns = (
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
       const role = row.original.role
-      return committee.committee_template_id ? (
+      return committee.template_id ? (
         <Link
           className="flex max-w-[280px] flex-row underline"
-          href={`${Routes.TEMPLATES}/${committee.committee_template_id}/${role}`}
+          href={`${Routes.TEMPLATES}/${committee.template_id}/${role}`}
         >
           <span className="truncate">{value}</span>
         </Link>
@@ -138,9 +138,9 @@ export const getMembershipColumns = (
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              {committee.committee_template_id ? (
+              {committee.template_id ? (
                 <DropdownMenuItem>
-                  <Link href={`${Routes.TEMPLATES}/${committee.committee_template_id}/${role}`}>
+                  <Link href={`${Routes.TEMPLATES}/${committee.template_id}/${role}`}>
                     Ver histórico do cargo
                   </Link>
                 </DropdownMenuItem>

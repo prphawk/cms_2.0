@@ -9,6 +9,7 @@ export class MyHeaders {
   public static CATEGORY_F = 'Categoria'
   public static STATUS_F = 'Status'
   public static ABOUT = 'Sobre'
+  public static NOTIFICATIONS = 'Notificações'
 }
 export class EmployeeHeaders {
   public static MEMBERSHIP_COUNT = 'Participações' //don't change without changing its VisibilityState key on DataTable
@@ -22,6 +23,7 @@ export class CommitteeHeaders {
   public static OBSERVATIONS = 'Observações'
   public static MEMBERS = 'Membros Ativos'
   public static TEMPLATE = 'Tipo'
+  public static TEMPLATE_NAME = 'Nome'
 }
 export class MembershipHeaders {
   public static NAME = 'Servidor(a)'

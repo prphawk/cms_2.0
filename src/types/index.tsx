@@ -2,7 +2,7 @@ import { Committee, Employee, Membership } from '@prisma/client'
 
 export type CommitteeWithMembersDataType = Committee & { members: Membership[] }
 export type CommitteeWithOptionalTemplateDataType = Committee & {
-  committee_template?: { name: string } | null
+  template?: { name: string } | null
 }
 export type CommitteeWithMembershipCountDataType = Committee & {
   members_count: CountDataType

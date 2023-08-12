@@ -65,7 +65,7 @@ const ActionsMenuButton = (props: {
         </DropdownMenuItem>
         {/*TODO botar uns icons aqui */}
         <DropdownMenuItem
-          disabled={!props.committee.is_active || !props.committee.committee_template_id}
+          disabled={!props.committee.is_active || !props.committee.template_id}
           onClick={() => props.handleOpenDialog(DialogsEnum.succession)}
         >
           Suceder {MyHeaders.COMMITTEE.toLowerCase()}

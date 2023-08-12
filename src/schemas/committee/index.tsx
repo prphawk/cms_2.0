@@ -15,9 +15,13 @@ export const CommitteeSchema = z
     end_date: z.coerce.date({ required_error: `${CommitteeHeaders.END_DATE} é obrigatória` }),
     ordinance: z.string().optional(),
     observations: z.string().optional(),
-    committee_template_name: z.string().optional()
+    template_name: z.string().optional()
   })
   .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
     message: `${CommitteeHeaders.END_DATE} não pode ser igual/antes de ${CommitteeHeaders.BEGIN_DATE}.`,
     path: ['end_date']
   })
+
+export const TemplateSchema = z.object({
+  name: z.string({ required_error: `${CommitteeHeaders.TEMPLATE_NAME} é obrigatório` })
+})

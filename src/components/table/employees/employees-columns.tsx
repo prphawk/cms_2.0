@@ -95,7 +95,7 @@ export const getEmployeesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      const template_id = row.original.committee.committee_template_id
+      const template_id = row.original.committee.template_id
       return template_id ? (
         <Link
           className="flex max-w-[280px] flex-row underline"
@@ -140,7 +140,7 @@ export const getEmployeesColumns = (
     enableHiding: false,
     cell: ({ row }) => {
       const role = row.original.role
-      const committee_template_id = row.original.committee.committee_template_id
+      const template_id = row.original.committee.template_id
       return (
         // <div className="min-w-[64px]">
         <DropdownMenu>
@@ -155,9 +155,9 @@ export const getEmployeesColumns = (
             <DropdownMenuItem onClick={() => handleViewCommittee(row.original)}>
               Ver {MyHeaders.COMMITTEE.toLowerCase()}
             </DropdownMenuItem>
-            {committee_template_id ? (
+            {template_id ? (
               <DropdownMenuItem>
-                <Link href={`${Routes.TEMPLATES}/${committee_template_id}/${role}`}>
+                <Link href={`${Routes.TEMPLATES}/${template_id}/${role}`}>
                   Ver histórico do cargo
                 </Link>
               </DropdownMenuItem>

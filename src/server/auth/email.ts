@@ -1,6 +1,12 @@
+import { Template, Committee } from '@prisma/client'
 import { Theme } from 'next-auth/core/types'
 import { SendVerificationRequestParams } from 'next-auth/providers'
 import { createTransport } from 'nodemailer'
+import { _toLocaleString } from '~/utils/string'
+
+export type TemplateElection = Template & {
+  committee: Committee
+}
 
 export async function sendVerificationRequest(params: SendVerificationRequestParams) {
   const { identifier, url, provider, theme } = params
@@ -10,9 +16,30 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
   const result = await transport.sendMail({
     to: identifier,
     from: provider.from,
-    subject: `Sign in to ${host}`,
+    subject: `CMS 2.0: Acesse ${host}`,
     text: text({ url, host }),
     html: html({ url, host, theme })
+  })
+  const failed = result.rejected.concat(result.pending).filter(Boolean)
+  if (failed.length) {
+    throw new Error(`Email(s) (${failed.join(', ')}) could not be sent`)
+  }
+}
+
+export async function sendEminentElectionNotification(to: string, templates: TemplateElection[]) {
+  const transport = createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_SERVER_USER,
+      pass: process.env.EMAIL_SERVER_PASSWORD
+    }
+  })
+  const result = await transport.sendMail({
+    to,
+    from: process.env.EMAIL_FROM,
+    subject: `CMS 2.0: Eleições Eminentes! (${templates.length})`,
+    text: electionText(templates)
+    //html: html({ url, host, theme })
   })
   const failed = result.rejected.concat(result.pending).filter(Boolean)
   if (failed.length) {
@@ -81,4 +108,12 @@ function html(params: { url: string; host: string; theme: Theme }) {
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
 function text({ url, host }: { url: string; host: string }) {
   return `Sign in to ${host}\n${url}\n\n`
+}
+
+/** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
+function electionText(templates: TemplateElection[]) {
+  const strArr = templates.map(
+    (t) => `- ${t.name} | Data de fim: ${_toLocaleString(t.committee.end_date)}\n`
+  )
+  return `Eleição Eminente de órgãos:\n ${strArr.toString()}\n\n`
 }

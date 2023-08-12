@@ -1,4 +1,4 @@
-const factory = require('./data.factory.js');
+const factory = require('./data.factory.js')
 
 const employees = [
   factory.newMockEmployee(), //1
@@ -22,8 +22,8 @@ const employees = [
   factory.newMockEmployee('Manuel Menezes de Oliveira Neto'),
   factory.newMockEmployee('Mariana Kolberg Fernandes'),
   factory.newMockEmployee('Marcelo Walter'),
-  factory.newMockEmployee('Isis Pericolo'), //21
-];
+  factory.newMockEmployee('Isis Pericolo') //21
+]
 
 const committees = [
   factory.newMockCommittee('INF', 'DIREÇÃO'), //1
@@ -44,14 +44,14 @@ const committees = [
   factory.newMockCommittee('INF', 'Comissão E'), //16
   factory.newMockCommittee('INF', 'Comissão F'), //17
   factory.newMockCommittee('INF', 'Comissão G'), //18
-  factory.newMockCommittee('INF', 'Comissão H'), //19
-];
+  factory.newMockCommittee('INF', 'Comissão H') //19
+]
 
-const committeesFromTemplates = [
-  factory.newTemplateCommittee('Direção', [1]),
-  factory.newTemplateCommittee('Comissão A', [10, 11]),
-  factory.newTemplateCommittee('Comissão B', [12, 13]),
-];
+const templates = [
+  factory.newTemplate('Direção', [1]),
+  factory.newTemplate('Comissão A', [10, 11]),
+  factory.newTemplate('Comissão B', [12, 13])
+]
 
 const memberships = [
   factory.newMockMembershipJSON(7, 1, 'Diretor(a)'),
@@ -99,12 +99,12 @@ const memberships = [
   factory.newMockMembershipJSON(7, 11),
   factory.newMockMembershipJSON(8, 11),
   factory.newMockMembershipJSON(9, 11),
-  factory.newMockMembershipJSON(10, 11),
-];
+  factory.newMockMembershipJSON(10, 11)
+]
 
 module.exports = {
   employees,
   committees,
   memberships,
-  committeesFromTemplates,
-};
+  templates
+}
