@@ -1,6 +1,6 @@
 import { Template, Committee } from '@prisma/client'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getEmails, getNotifications } from '~/server/api/routers/template'
+import { getEmails, getNotifications, updateLastSent } from '~/server/api/routers/template'
 import { sendEminentElectionNotification } from '~/server/auth/email'
 import { api } from '~/utils/api'
 
@@ -20,7 +20,8 @@ export default async function handler(request: NextApiRequest, res: NextApiRespo
       const promises = emails.map((e) =>
         sendEminentElectionNotification(e.email!, templates as any)
       )
-      Promise.all(promises)
+      await Promise.all(promises)
+      await updateLastSent(templates)
       return res.status(200).json({
         body: 'Success!',
         cookies: request.cookies
@@ -33,8 +34,5 @@ export default async function handler(request: NextApiRequest, res: NextApiRespo
       cookies: request.cookies
     })
   }
-  return res.status(304).json({
-    body: 'ok!',
-    cookies: request.cookies
-  })
+  res.status(204).end()
 }

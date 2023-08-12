@@ -57,6 +57,13 @@ export const _addMonths = (original: Date, months: number) => {
   date.setMonth(date.getMonth() + months)
   return date
 }
+
+export const _subMonths = (original: Date, months: number) => {
+  const date = new Date(original)
+  date.setMonth(date.getMonth() - months)
+  return date
+}
+
 export const _addDays = (original: Date, days: number) => {
   const date = new Date(original)
   date.setHours(date.getHours() + 24 * days)
