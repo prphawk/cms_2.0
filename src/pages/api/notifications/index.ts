@@ -13,7 +13,7 @@ export default async function handler(request: NextApiRequest, res: NextApiRespo
         sendEminentElectionNotification(e.email!, templates as any)
       )
       await Promise.all(promises)
-      updateLastSent(templates)
+      await updateLastSent(templates)
       return res.status(200).json({
         body: 'Success!',
         cookies: request.cookies
