@@ -2,10 +2,27 @@ import { Committee, Template } from '@prisma/client'
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
-import { _addMonths } from '~/utils/string'
+import { _addMonths, _subMonths } from '~/utils/string'
 
 export const _getTemplateByName = async (name: string) => {
   return await prisma.template.findFirst({ where: { name } })
+}
+
+export const updateLastSent = (templates: { id: number }[]) => {
+  const now = new Date()
+  const ids = templates.map((t) => t.id)
+  return prisma.notification.updateMany({
+    where: {
+      template: {
+        id: {
+          in: ids
+        }
+      }
+    },
+    data: {
+      lastSentOn: now
+    }
+  })
 }
 
 export const getEmails = () => {
@@ -25,12 +42,27 @@ export const getEmails = () => {
 }
 
 export const getNotifications = async () => {
-  const XMonthsFromNow = _addMonths(new Date(), 3)
+  const now = new Date()
+  const XMonthsFromNow = _addMonths(now, 3)
+  const XMonthsBeforeNow = _subMonths(now, 3) //TODO cjeck if this logic holds...
   const data = await prisma.template.findMany({
     where: {
-      // notification: {
-      //   isOn: true
-      // },//TODO descomentar
+      notification: {
+        OR: [
+          {
+            isOn: true,
+            lastSentOn: {
+              lt: XMonthsBeforeNow
+            }
+          },
+          {
+            isOn: true,
+            lastSentOn: {
+              equals: null
+            }
+          }
+        ]
+      },
       committees: {
         every: {
           is_active: true,
