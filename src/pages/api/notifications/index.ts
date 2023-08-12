@@ -1,4 +1,3 @@
-import { Template, Committee } from '@prisma/client'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getEmails, getNotifications, updateLastSent } from '~/server/api/routers/template'
 import { sendEminentElectionNotification } from '~/server/auth/email'

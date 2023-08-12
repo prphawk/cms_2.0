@@ -2,7 +2,7 @@ import { Committee, Template } from '@prisma/client'
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
-import { _addMonths, _subMonths } from '~/utils/string'
+import { _addMonths as _addDays, _subDays } from '~/utils/string'
 
 export const _getTemplateByName = async (name: string) => {
   return await prisma.template.findFirst({ where: { name } })
@@ -43,8 +43,8 @@ export const getEmails = () => {
 
 export const getNotifications = async () => {
   const now = new Date()
-  const XMonthsFromNow = _addMonths(now, 3)
-  const XMonthsBeforeNow = _subMonths(now, 3) //TODO check if this logic holds...
+  const XDaysFromNow = _addDays(now, Number(process.env.DAYS) || 30)
+  const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30) //TODO check if this logic holds...
   const data = await prisma.template.findMany({
     where: {
       notification: {
@@ -52,7 +52,7 @@ export const getNotifications = async () => {
           {
             isOn: true,
             lastSentOn: {
-              lt: XMonthsBeforeNow
+              lt: XDaysBeforeNow
             }
           },
           {
@@ -67,7 +67,7 @@ export const getNotifications = async () => {
         every: {
           is_active: true,
           end_date: {
-            lte: XMonthsFromNow
+            lt: XDaysFromNow
           }
         }
       }
@@ -80,7 +80,7 @@ export const getNotifications = async () => {
   })
 
   return data.map((t) => {
-    const committee = t.committees.length ? t.committees[0] : undefined // last active committee
+    const committee = t.committees.length ? t.committees[0] : undefined // last active committee //TODO reinforce only one active committee
     const { committees, ...rest } = t
     return { committee, ...rest }
   })
