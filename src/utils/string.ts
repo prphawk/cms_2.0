@@ -58,9 +58,9 @@ export const _addMonths = (original: Date, months: number) => {
   return date
 }
 
-export const _subMonths = (original: Date, months: number) => {
+export const _subDays = (original: Date, days: number) => {
   const date = new Date(original)
-  date.setMonth(date.getMonth() - months)
+  date.setHours(date.getHours() - 24 * days)
   return date
 }
 
