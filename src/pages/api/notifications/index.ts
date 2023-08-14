@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getEmails, getNotifications, updateLastSent } from '~/server/api/routers/template'
-import { sendEminentElectionNotification } from '~/server/auth/email'
+import { sendImminentElectionNotification } from '~/server/auth/email'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const emails = await getEmails()
     if (templates.length && emails.length) {
       const promises = emails.map((e) =>
-        sendEminentElectionNotification(e.email!, templates as any)
+        sendImminentElectionNotification(e.email!, templates as any)
       )
       await Promise.all(promises)
       await updateLastSent(templates)
