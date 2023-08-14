@@ -65,15 +65,15 @@ export const committeeRouter = createTRPCRouter({
   }),
 
   getAll: protectedProcedure.input(FilterSchema).query(async ({ ctx, input }) => {
+    const template =
+      input.is_temporary === false ? { isNot: null } : input.is_temporary && { is: null }
     const result = await ctx.prisma.committee.findMany({
       where: {
         is_active: input.is_active,
-        template:
-          input.is_temporary === false ? { isNot: null } : input.is_temporary && { is: null }
+        template
       },
       orderBy: { name: 'asc' },
       include: {
-        //template: true,
         members: {
           select: { is_active: true } //for filtering the counting above
         }

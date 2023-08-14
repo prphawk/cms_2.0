@@ -74,7 +74,7 @@ export default function MembershipDialog(props: {
     <MyDialog open={props.open}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{props.member ? 'Editar' : 'Criar'} Membro(s)</DialogTitle>
+          <DialogTitle>{props.member ? 'Editar' : 'Adicionar'} Membro(s)</DialogTitle>
           <DialogDescription>
             {props.member && (
               <>

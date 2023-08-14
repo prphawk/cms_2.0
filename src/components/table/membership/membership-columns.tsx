@@ -153,12 +153,12 @@ export const getMembershipColumns = (
               >
                 Editar participação
               </DropdownMenuItem>
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 disabled
                 //disabled={!row.original.is_active}
               >
                 Suceder cargo
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 danger

@@ -44,7 +44,7 @@ export const getEmails = () => {
 export const getNotifications = async () => {
   const now = new Date()
   const XDaysFromNow = _addDays(now, Number(process.env.DAYS) || 30)
-  const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30) //TODO check if this logic holds...
+  const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30)
   const data = await prisma.template.findMany({
     where: {
       notification: {

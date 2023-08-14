@@ -52,13 +52,13 @@ export const membershipRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(
       z.object({
-        is_employee_active: z.optional(z.boolean()),
-        is_membership_active: z.optional(z.boolean()),
-        roles: z.optional(z.string().array())
+        is_employee_active: z.boolean().optional(),
+        is_membership_active: z.boolean().optional(),
+        roles: z.string().array().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.membership.findMany({
+      return ctx.prisma.membership.findMany({
         where: {
           is_active: input.is_membership_active,
           employee: {

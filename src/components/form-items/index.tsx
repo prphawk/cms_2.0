@@ -92,7 +92,7 @@ export const RoleSelectFormItem = (props: {
                       }}
                     >
                       <div className="truncate">
-                        Criar {MembershipHeaders.ROLE} "{commandSearch}"?
+                        Criar {MembershipHeaders.ROLE.toLowerCase()} "{commandSearch}"?
                       </div>
                     </Button>
                   )}
@@ -206,7 +206,7 @@ export const EmployeeSelectFormItem = (props: {
                       }}
                     >
                       <div className="truncate">
-                        Criar {MembershipHeaders.NAME} "{commandSearch}"?
+                        Criar {MembershipHeaders.NAME.toLowerCase()} "{commandSearch}"?
                       </div>
                     </Button>
                   )}
@@ -395,7 +395,7 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
                           }}
                         >
                           <div className="truncate">
-                            Criar {CommitteeHeaders.TEMPLATE} "{commandSearch}"?
+                            Criar {CommitteeHeaders.TEMPLATE.toLowerCase()} "{commandSearch}"?
                           </div>
                         </Button>
                       )}

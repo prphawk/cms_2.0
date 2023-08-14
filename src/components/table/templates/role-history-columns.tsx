@@ -148,12 +148,12 @@ export const getTemplateRoleHistoryColumns = (
                 Ver membros
               </DropdownMenuItem>
               {/* <DropdownMenuItem disabled>Editar participação</DropdownMenuItem> //TODO perguntar se precisa ter */}
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 disabled
                 //disabled={!row.original.is_active}
               >
                 Suceder cargo
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               {/* <DropdownMenuSeparator /> */}
               {/* <DropdownMenuItem danger disabled={!row.original.is_active}>Encerrar participação</DropdownMenuItem> */}
             </DropdownMenuContent>

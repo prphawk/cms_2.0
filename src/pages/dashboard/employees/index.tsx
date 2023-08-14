@@ -142,7 +142,7 @@ export default function Employees() {
             <EmployeesTableTitle data={data} />
             <DataTable
               isLoading={isLoading}
-              data={data || []}
+              data={data}
               columns={getEmployeesColumns(
                 handleViewCommittee,
                 onDeactivateMembership,
