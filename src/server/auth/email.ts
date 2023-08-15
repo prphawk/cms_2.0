@@ -26,7 +26,7 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
   }
 }
 
-export async function sendEminentElectionNotification(to: string, templates: TemplateElection[]) {
+export async function sendImminentElectionNotification(to: string, templates: TemplateElection[]) {
   const transport = createTransport({
     service: 'gmail',
     auth: {
@@ -37,7 +37,7 @@ export async function sendEminentElectionNotification(to: string, templates: Tem
   const result = await transport.sendMail({
     to,
     from: process.env.EMAIL_FROM,
-    subject: `CMS 2.0: Eleições Eminentes! (${templates.length})`,
+    subject: `CMS 2.0: Eleições Iminentes! (${templates.length})`,
     text: electionText(templates)
     //html: html({ url, host, theme })
   })
@@ -115,5 +115,5 @@ function electionText(templates: TemplateElection[]) {
   const strArr = templates.map(
     (t) => `- ${t.name} | Data de fim: ${_toLocaleString(t.committee.end_date)}\n`
   )
-  return `Eleição Eminente de órgãos:\n ${strArr.toString()}\n\n`
+  return `Eleição Iminente de órgãos:\n ${strArr.toString()}\n\n`
 }
