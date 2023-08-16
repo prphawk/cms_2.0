@@ -22,8 +22,8 @@ import { Separator } from '@/components/ui/separator'
 
 export type TemplateType = Template & {
   _count: { committees: number }
-  committee?: Committee | null
-  notification: Notification | null
+} & { committee?: Committee | null } & {
+  notification?: Notification | null
 }
 
 export const getTemplateColumns = (

@@ -62,7 +62,7 @@ export default function TemplatePage() {
           <>
             <TemplateDetails {...{ isLoading }} />
             <DataTable
-              data={data}
+              data={data as any}
               columns={getTemplateColumns(
                 handleChangeNotifValue,
                 handleViewCommittee,

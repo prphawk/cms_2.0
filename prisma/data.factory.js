@@ -33,8 +33,8 @@ class DataFactory {
           connect: mockCommitteeIds.map((c) => {
             return { id: c }
           })
-        },
-        notification: { create: {} }
+        }
+        //notification: { create: {} }
       }
     }
   }
