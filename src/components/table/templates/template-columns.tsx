@@ -47,12 +47,14 @@ export const getTemplateColumns = (
   {
     accessorKey: 'committee',
     accessorFn: (row) =>
-      row.committee ? _diffMonths(row.committee.begin_date, row.committee.end_date) : undefined,
+      row.committee?.begin_date && row.committee.end_date
+        ? _diffMonths(row.committee.begin_date, row.committee.end_date)
+        : undefined,
     id: 'Duração de Mandato',
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as number
-      return <div>{value ? `${value} meses` : ''}</div>
+      return <div>{value ? `${value} meses` : 'Permanente'}</div>
     }
   },
   {

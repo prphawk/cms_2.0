@@ -23,8 +23,8 @@ export const membershipRouter = createTRPCRouter({
         committee_id: z.number(),
         employee: z.object({ id: z.number().optional(), name: z.string() }),
         role: z.string(),
-        begin_date: z.date(),
-        end_date: z.date(),
+        begin_date: z.date().optional(),
+        end_date: z.date().optional(),
         ordinance: z.string().optional(),
         observations: z.optional(z.string())
       })
@@ -99,8 +99,8 @@ export const membershipRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.number(),
-        begin_date: z.date(),
-        end_date: z.date(),
+        begin_date: z.date().optional(),
+        end_date: z.date().optional(),
         role: z.string(),
         ordinance: z.string().optional(),
         observations: z.string().optional()

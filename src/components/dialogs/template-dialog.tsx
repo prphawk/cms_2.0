@@ -26,7 +26,7 @@ import {
   RoleSelectFormItem
 } from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
-import { MembershipSchema } from '~/schemas/membership'
+import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { TemplateType } from '../table/templates/template-columns'
 import { TemplateSchema } from '~/schemas/committee'

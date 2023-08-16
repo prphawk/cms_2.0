@@ -11,8 +11,8 @@ export const CommitteeSchema = z
       .string({ required_error: `${CommitteeHeaders.BOND} é obrigatório` })
       .trim()
       .min(1, { message: `${CommitteeHeaders.BOND} é obrigatório` }),
-    begin_date: z.coerce.date({ required_error: `${CommitteeHeaders.BEGIN_DATE} é obrigatória` }),
-    end_date: z.coerce.date({ required_error: `${CommitteeHeaders.END_DATE} é obrigatória` }),
+    begin_date: z.coerce.date().optional(),
+    end_date: z.coerce.date().optional(),
     ordinance: z.string().optional(),
     observations: z.string().optional(),
     template_name: z.string().optional()

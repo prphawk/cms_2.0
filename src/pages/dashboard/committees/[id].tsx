@@ -27,7 +27,7 @@ import CommitteeDialog from '~/components/dialogs/committee-dialog'
 import MembershipDialog from '~/components/dialogs/membership-dialog'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 import { CommitteeSchema } from '~/schemas/committee'
-import { MembershipSchema } from '~/schemas/membership'
+import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { HourglassIcon, CircleOffIcon } from 'lucide-react'
@@ -144,7 +144,7 @@ export default function CommitteeMembership() {
     }
   }
 
-  const handleSaveMembership = (membershipSchema: z.infer<typeof MembershipSchema>) => {
+  const handleSaveMembership = (membershipSchema: z.infer<typeof MembershipFormSchema>) => {
     if (!committeeData?.id) return
     if (selectedMembership) {
       updateMembership.mutate({ id: selectedMembership.id, ...membershipSchema })

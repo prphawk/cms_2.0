@@ -68,15 +68,15 @@ model Employee {
   id    			Int     			@default(autoincrement()) @id
   name  			String
   is_active 	Boolean 			@default(true)
-  committees 	Membership[]
+  committees 	Membership[] 
 }
 
 model Committee {
   id    						    Int                 @default(autoincrement()) @id
   bond  						    String              //Vínculo 
   name  						    String              //Órgão
-  begin_date 				    DateTime
-  end_date 					    DateTime
+  begin_date 				    DateTime?
+  end_date 					    DateTime?
   ordinance 				    String?             //Portaria 
   observations 			    String?
   is_active 				    Boolean             @default(true)
@@ -95,8 +95,8 @@ model Membership {
   committee_id Int 			  // relation scalar field (used in the `@relation` attribute above)
   role         String   	@default("Membro(a)") //Cargo
   ordinance    String?             //Portaria 
-  begin_date   DateTime 	// default: begin_date da comissão
-  end_date     DateTime
+  begin_date   DateTime? 	// default: begin_date da comissão
+  end_date     DateTime?
   is_active    Boolean   	@default(true)
   observations String?
 
