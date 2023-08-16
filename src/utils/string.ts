@@ -1,3 +1,4 @@
+import { CommitteeHeaders } from '~/constants/headers'
 import { CountDataType, RawCountDataType } from '~/types'
 
 export const _diffMonths = (d1: Date, d2: Date) => {
@@ -20,7 +21,7 @@ export const _sortStringDate = (
 }
 
 export const _toDate = (str: string) => {
-  if (str === 'PERMANENTE') return null
+  if (str === CommitteeHeaders.PERMANENT) return null
   const arr = str.split('/')
   return new Date(`${arr[2]}/${arr[1]}/${arr[0]}`)
 }
@@ -30,7 +31,7 @@ export const _toLocaleString = (date?: Date | null) => {
     const arr = _toString(date)?.split('-')
     if (arr?.length) return `${arr[2]}/${arr[1]}/${arr[0]}`
   }
-  return 'PERMANENTE'
+  return CommitteeHeaders.PERMANENT
 }
 
 export const _toLocaleExtendedString = (date: Date) =>

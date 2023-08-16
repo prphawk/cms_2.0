@@ -54,7 +54,7 @@ export const getTemplateColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as number
-      return <div>{value ? `${value} meses` : 'Permanente'}</div>
+      return <div>{value ? `${value} meses` : CommitteeHeaders.PERMANENT}</div>
     }
   },
   {
