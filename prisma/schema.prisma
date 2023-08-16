@@ -106,7 +106,7 @@ model Membership {
 
 model Notification {
   id    			Int       @id @default(autoincrement())
-  isOn        Boolean   @default(false)
+  isOn        Boolean   @default(true)
   lastSentOn  DateTime?  
   template 	  Template  @relation(fields: [template_id], references: [id], onDelete: Cascade)
   template_id Int       @unique

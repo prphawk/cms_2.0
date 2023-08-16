@@ -84,7 +84,7 @@ export const getTemplateColumns = (
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
 
-      return row.original?.committee ? <DateColumn value={value}></DateColumn> : <></>
+      return row.original?.committee ? <DateColumn value={value} secondaryStr></DateColumn> : <></>
     }
   },
   {
@@ -97,7 +97,7 @@ export const getTemplateColumns = (
       const value = row.getValue(column.id) as string
 
       return row.original?.committee ? (
-        <DateColumn value={value}>
+        <DateColumn secondaryStr value={value}>
           <EndDateBadge value={value} isActive={row.original?.committee?.is_active} />
         </DateColumn>
       ) : (

@@ -104,10 +104,14 @@ export default function DataTableColumnHeader<TData, TValue>({
   )
 }
 
-export const DateColumn = ({ value, children }: { value: string } & PropsWithChildren) => {
+export const DateColumn = ({
+  value,
+  children,
+  secondaryStr
+}: { value: string; secondaryStr?: boolean } & PropsWithChildren) => {
   const dateValue = _toDate(value)
 
-  return (
+  return dateValue ? (
     <div className="flex flex-row" aria-labelledby={value}>
       <TooltipProvider>
         <Tooltip>
@@ -119,6 +123,8 @@ export const DateColumn = ({ value, children }: { value: string } & PropsWithChi
         </Tooltip>
       </TooltipProvider>
     </div>
+  ) : (
+    <div>{secondaryStr ? '-' : value}</div>
   )
 }
 
