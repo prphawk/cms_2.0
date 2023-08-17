@@ -1,4 +1,4 @@
-import { Committee, Employee, Membership } from '@prisma/client'
+import { Committee, Employee, Membership, Notification, Template } from '@prisma/client'
 
 export type CommitteeWithMembersDataType = Committee & { members: Membership[] }
 export type CommitteeWithOptionalTemplateDataType = Committee & {
@@ -26,4 +26,10 @@ export type MembershipWithEmployeeCommitteeAndMembershipCountDataType = Membersh
   committee: Committee
 } & {
   employee: EmployeeWithMergedMembershipCountDataType
+}
+
+export type TemplateWithCommitteeCountAndNotifDataType = Id<
+  Template & { _count: { committees: number } }
+> & { committee?: Committee | null } & {
+  notification?: Notification | null
 }

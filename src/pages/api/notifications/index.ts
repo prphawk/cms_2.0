@@ -1,10 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import {
-  getCommitteesForNotifications,
-  getUsersForNotifications,
-  isEligibleToSend,
-  updateLastSent
-} from '~/server/api/routers/template'
+import { getUsersForNotifications, updateLastSent } from '~/server/api/routers/template'
 import { sendImminentElectionNotification } from '~/server/auth/email'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -15,7 +10,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('Running notifications job...')
   try {
     const usersWithNotifs = await getUsersForNotifications()
-    //const committeesAboutToEnd = await getCommitteesForNotifications()
     if (usersWithNotifs.length) {
       const promises = usersWithNotifs.map((u) => {
         const committees = u.notifications.map((n) => n.committee)

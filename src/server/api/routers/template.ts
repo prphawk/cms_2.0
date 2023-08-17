@@ -1,8 +1,9 @@
-import { Committee, Notification, Template, User } from '@prisma/client'
+import { Committee, Notification, Prisma, Template, User } from '@prisma/client'
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
 import { _addMonths as _addDays, _subDays } from '~/utils/string'
+import { _createNotification } from './notification'
 
 export const _getTemplateByName = async (name: string) => {
   return await prisma.template.findFirst({ where: { name } })
@@ -72,48 +73,6 @@ export const getUsersForNotifications = () => {
   })
 }
 
-export const getCommitteesForNotifications = async (user: User) => {
-  const now = new Date()
-  const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30)
-  const XDaysFromNow = _addDays(now, Number(process.env.DAYS) || 30)
-  return await prisma.committee.findMany({
-    where: {
-      is_active: true,
-      end_date: {
-        lt: XDaysFromNow
-      },
-      notifications: {
-        some: {
-          isOn: true
-        }
-      }
-    }
-  })
-}
-
-export const isEligibleToSend = async (user: User) => {
-  const now = new Date()
-  const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30)
-  return await prisma.notification.findMany({
-    where: {
-      OR: [
-        {
-          isOn: true,
-          lastSentOn: {
-            lt: XDaysBeforeNow
-          }
-        },
-        {
-          isOn: true,
-          lastSentOn: {
-            equals: null
-          }
-        }
-      ]
-    }
-  })
-}
-
 export const templateRouter = createTRPCRouter({
   getOne: protectedProcedure
     .input(
@@ -137,7 +96,7 @@ export const templateRouter = createTRPCRouter({
     })
   }),
 
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+  getAllWithNotifs: protectedProcedure.query(async ({ ctx }) => {
     const user = ctx.session.user
 
     const data = await ctx.prisma.template.findMany({
@@ -146,7 +105,7 @@ export const templateRouter = createTRPCRouter({
       }
     })
 
-    return data.map(async (t) => {
+    const promises = data.map(async (t) => {
       const committee = await ctx.prisma.committee.findFirst({
         where: {
           template_id: t.id,
@@ -154,35 +113,31 @@ export const templateRouter = createTRPCRouter({
         }
       })
 
-      let notification
+      let notification: Notification | null
 
-      if (committee) {
-        notification = await ctx.prisma.notification.findFirst({
-          where: {
-            committee_id: committee.id,
-            user_id: user.id
-          }
-        })
-
-        if (!notification) {
-          //TODO create notification
-          console.log('a')
-        } else {
-          return {
-            ...t,
-            committee,
-            notification
-          }
+      if (!committee)
+        return {
+          ...t
         }
+
+      notification = await ctx.prisma.notification.findUnique({
+        where: {
+          committee_id_user_id: { committee_id: committee.id, user_id: user.id }
+        }
+      })
+
+      if (!notification) {
+        notification = await _createNotification(committee.id, user.id)
+      }
+
+      return {
+        ...t,
+        committee,
+        notification
       }
     })
 
-    //const committee = t.committees.length ? t.committees[0] : undefined // last active committee
-    //   const notification = committee?.notifications.length ? committee.notifications[0] : undefined // unique notification
-    //   const { committees, ...rest } = t
-    //   const { notifications, ...restCommittee } = committee
-    //   return { committee: { ...committee, notification }, ...rest }
-    // })
+    return Promise.all(promises)
   }),
 
   create: protectedProcedure
@@ -201,7 +156,6 @@ export const templateRouter = createTRPCRouter({
               return { id: c }
             })
           }
-          //notification: { create: {} }
         }
       })
     }),
@@ -223,11 +177,6 @@ export const templateRouter = createTRPCRouter({
         where: { id: input.id },
         data: {
           name: input.name
-          // notification: {
-          //   update: {
-          //     isOn: input.notification?.isOn
-          //   }
-          // }
         }
       })
     }),

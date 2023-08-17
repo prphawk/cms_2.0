@@ -12,40 +12,55 @@ import {
 } from '@/components/ui/accordion'
 import { PropsWithChildren, useState } from 'react'
 import { Routes } from '~/constants/routes'
-import { TemplateType, getTemplateColumns } from '~/components/table/templates/template-columns'
+import { getTemplateColumns } from '~/components/table/templates/template-columns'
 import { ContentLayout } from '~/layouts/page-layout'
 import { TitleLayout } from '~/layouts/text-layout'
 import TemplateDialog from '~/components/dialogs/template-dialog'
 import { DialogsEnum } from '~/constants/enums'
 import { TemplateSchema } from '~/schemas/committee'
 import { z } from 'zod'
+import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
 
 export default function TemplatePage() {
   const router = useRouter()
   const utils = api.useContext()
 
   const [openDialog, setOpenDialog] = useState(DialogsEnum.none)
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>()
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<TemplateWithCommitteeCountAndNotifDataType>()
 
   const handleOpenDialog = (dialogEnum: DialogsEnum) => setOpenDialog(dialogEnum)
 
-  const { data, isLoading } = api.template.getAll.useQuery()
+  const { data, isLoading } = api.template.getAllWithNotifs.useQuery()
 
   const updateTemplate = api.template.update.useMutation({
     onSuccess() {
-      utils.template.getAll.invalidate()
+      utils.template.getAllWithNotifs.invalidate()
     }
   })
+  const updateNotification = api.notification.update.useMutation({})
+  const createNotification = api.notification.create.useMutation({})
 
   const handleViewCommittee = (committee_id: number) => {
     router.push(`${Routes.COMMITTEES}/${committee_id}`)
   }
-  const handleChangeNotifValue = (template: TemplateType, value: boolean) => {
-    updateTemplate.mutate({ id: template.id, notification: { isOn: value } })
-    if (template.notification) template.notification.isOn = value
+  const handleChangeNotifValue = async (
+    template: TemplateWithCommitteeCountAndNotifDataType,
+    value: boolean
+  ) => {
+    if (!!template.notification) {
+      updateNotification.mutate({ id: template.notification.id, isOn: value })
+      template.notification.isOn = value
+    } else if (template.committee) {
+      const notif = await createNotification.mutate({
+        committee_id: template.committee.id,
+        isOn: value
+      })
+      console.log(notif)
+    }
   }
 
-  const onEditTemplate = (template: TemplateType) => {
+  const onEditTemplate = (template: TemplateWithCommitteeCountAndNotifDataType) => {
     setSelectedTemplate(template)
     handleOpenDialog(DialogsEnum.template)
   }
@@ -82,7 +97,6 @@ export default function TemplatePage() {
   )
 }
 
-//TODO arrumar essa historia aqui
 export const TemplateDetails = (props: { isLoading?: boolean } & PropsWithChildren) => {
   return (
     <Accordion className="mb-6" type="single" collapsible>

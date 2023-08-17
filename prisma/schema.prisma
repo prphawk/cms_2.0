@@ -111,10 +111,12 @@ model Notification {
   isOn        Boolean   @default(true)
   lastSentOn  DateTime?  
   committee 	Committee @relation(fields: [committee_id], references: [id], onDelete: Cascade)
-  committee_id Int      @unique
+  committee_id Int      
   user 	      User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id 	  String    @unique   
+  user_id 	  String       
 
+  @@index([committee_id])
+  @@index([user_id])
   @@unique([committee_id, user_id]) 
 }
 model Template {
