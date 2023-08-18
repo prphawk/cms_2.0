@@ -57,7 +57,7 @@ export default function TemplatePage() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="templates my-6 mb-auto min-h-[90vh]">
+      <ContentLayout className="templates my-6 mb-auto min-h-[89vh]">
         {data && (
           <>
             <TemplateDetails {...{ isLoading }} />

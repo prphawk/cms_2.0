@@ -124,7 +124,7 @@ export const DateColumn = ({
       </TooltipProvider>
     </div>
   ) : (
-    <div>{secondaryStr ? '-' : value}</div>
+    <div>{secondaryStr ? 'Permanente' : value}</div>
   )
 }
 

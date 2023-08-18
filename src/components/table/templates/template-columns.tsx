@@ -54,7 +54,7 @@ export const getTemplateColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as number
-      return <div>{value ? `${value} meses` : CommitteeHeaders.PERMANENT}</div>
+      return <div>{value ? `${value} meses` : 'Permanente'}</div>
     }
   },
   {
@@ -84,7 +84,7 @@ export const getTemplateColumns = (
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
 
-      return row.original?.committee ? <DateColumn value={value} secondaryStr></DateColumn> : <></>
+      return row.original?.committee ? <DateColumn value={value}></DateColumn> : <></>
     }
   },
   {
@@ -97,7 +97,7 @@ export const getTemplateColumns = (
       const value = row.getValue(column.id) as string
 
       return row.original?.committee ? (
-        <DateColumn secondaryStr value={value}>
+        <DateColumn value={value}>
           <EndDateBadge value={value} isActive={row.original?.committee?.is_active} />
         </DateColumn>
       ) : (
@@ -105,24 +105,6 @@ export const getTemplateColumns = (
       )
     }
   },
-  // {
-  //   accessorKey: 'observations',
-  //   id: CommitteeHeaders.OBSERVATIONS,
-  //   header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
-  //   cell: ({ row, column }) => {
-  //     const value = row.getValue(column.id) as string
-  //     return (
-  //       <TooltipProvider>
-  //         <Tooltip>
-  //           <TooltipTrigger asChild>
-  //             <div className="w-48 truncate">{value}</div>
-  //           </TooltipTrigger>
-  //           <TooltipContent>{value}</TooltipContent>
-  //         </Tooltip>
-  //       </TooltipProvider>
-  //     )
-  //   }
-  // },
   {
     accessorKey: 'Notificar-me',
     id: MyHeaders.NOTIFICATIONS,
@@ -162,9 +144,10 @@ export const getTemplateColumns = (
     cell: ({ row }) => {
       const committee = row.original.committee
       return (
-        <div className="min-w-[64px]">
+        <div className="flex min-w-[64px]">
           {committee && (
-            <>
+            // TODO replicate this changes
+            <div className="ml-auto px-2">
               <Button
                 onClick={() => handleViewCommittee(committee.id)}
                 variant="ghost"
@@ -191,7 +174,7 @@ export const getTemplateColumns = (
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </>
+            </div>
           )}
         </div>
       )

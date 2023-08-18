@@ -12,7 +12,7 @@ export function TextLayout(props: PropsWithChildren & { className?: string }) {
 export function TitleLayout(props: PropsWithChildren) {
   return (
     <>
-      <main className="mb-[-6px] font-extrabold tracking-tight text-white sm:text-[1.6rem]">
+      <main className="mb-[-6px] font-extrabold tracking-normal text-white sm:text-[1.6rem]">
         {props.children}
       </main>
     </>

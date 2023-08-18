@@ -186,7 +186,7 @@ export default function CommitteeMembership() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="committee my-6 mb-auto min-h-[90vh]">
+      <ContentLayout className="committee my-6 mb-auto min-h-[89vh]">
         {committeeData && (
           <>
             <CommitteesTableTitle data={committeeData} />
@@ -281,7 +281,7 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
           <strong>{CommitteeHeaders.BOND}: </strong> {data?.bond}
           <Dot />
           <strong>{CommitteeHeaders.ORDINANCE}: </strong>
-          {data?.ordinance || '-'}
+          {data?.ordinance || 'Não informado'}
           <Dot />
           <strong>{CommitteeHeaders.BEGIN_DATE}: </strong>
           {_toLocaleString(data?.begin_date)}
@@ -308,7 +308,7 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
           ) : (
             <></>
           )}
-          <strong>{MyHeaders.STATUS_F}: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
+          <strong>{MyHeaders.STATUS_F}: </strong> {data?.is_active ? 'Ativo' : 'Inativo'}
           <Dot />
           <strong>{CommitteeHeaders.MEMBERS}: </strong> {active_count} de {total_count}
         </AccordionContent>

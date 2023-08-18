@@ -36,7 +36,7 @@ export default function TemplateRoleHistory() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="role my-6 mb-auto min-h-[90vh]">
+      <ContentLayout className="role my-6 mb-auto min-h-[89vh]">
         {data && (
           <>
             <TemplateHistoryTableTitle {...{ template_id, role }} />
@@ -58,7 +58,7 @@ const TemplateHistoryTableTitle = (props: { template_id: number; role: string })
   return (
     <HistoryDetails
       isLoading={isLoading}
-      title={`Histórico de "${props.role}" - ${MyHeaders.TEMPLATE} ${data?.name}`}
+      title={`${MyHeaders.TEMPLATE} ${data?.name}: Histórico de "${props.role}"`}
     ></HistoryDetails>
   )
 }

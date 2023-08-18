@@ -136,7 +136,7 @@ export default function Employees() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="employees my-6 mb-auto min-h-[90vh]">
+      <ContentLayout className="employees my-6 mb-auto min-h-[89vh]">
         {data && (
           <>
             <EmployeesTableTitle data={data} />

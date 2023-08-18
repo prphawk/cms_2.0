@@ -127,7 +127,7 @@ export default function Committees() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="committees my-6 mb-auto min-h-[90vh]">
+      <ContentLayout className="committees my-6 mb-auto min-h-[89vh]">
         <CommitteeTableTitle />
         <DataTable
           data={data || []}
@@ -157,7 +157,7 @@ export default function Committees() {
           description={
             <>
               Esta ação irá <strong>encerrar</strong> o {MyHeaders.COMMITTEE.toLowerCase()} atual e
-              <strong>todas</strong> as suas participações. Deseja continuar?
+              <strong> todas</strong> as suas participações. Deseja continuar?
             </>
           }
           handleOpenDialog={handleOpenDialog}
