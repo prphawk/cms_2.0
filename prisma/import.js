@@ -1,5 +1,5 @@
 const { resetDB } = require('./reset.js')
-const data = require('./permanentes.json')
+const data = require('./committees.json')
 const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
@@ -22,20 +22,15 @@ const formatData = () => {
     const dates = curr.PERIODO.split(' a ')
     const begin_date_mem = _toDate(dates[0])
     const end_date_mem = _toDate(dates[1])
-    const bond = curr.PORTARIA.split('-')[1] || ''
 
     if (!comMap.has(curr.ORGAO)) {
       comMap.set(curr.ORGAO, {
         name: curr.ORGAO,
-        bond: bond.trim(),
+        bond: curr.VINCULO || '',
         begin_date: begin_date_mem,
         end_date: end_date_mem,
         members: []
       })
-    }
-
-    const employee = {
-      name: curr.MEMBRO
     }
 
     const currValueCom = comMap.get(curr.ORGAO)
@@ -52,17 +47,13 @@ const formatData = () => {
           ordinance: curr.PORTARIA,
           role: curr.CARGO,
           observations: curr.OBSERVACOES,
-          employee
+          employee: {
+            name: curr.MEMBRO
+          }
         }
       ]
     })
   })
-}
-
-const importDB = async () => {
-  await resetDB()
-  formatData()
-  await createEntities()
 }
 
 const createEntities = async () => {
@@ -121,6 +112,12 @@ const createCommittee = async (template_id, committee) => {
       }
     }
   })
+}
+
+const importDB = async () => {
+  await resetDB()
+  formatData()
+  await createEntities()
 }
 
 importDB()

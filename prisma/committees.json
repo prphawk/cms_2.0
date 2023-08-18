@@ -1,22 +1,25 @@
 [
   {
     "ORGAO": "Direção",
+    "VINCULO": "INF",
     "CARGO": "Diretor(a)",
     "MEMBRO": "Carla Maria Dal Sasso Freitas",
     "PORTARIA": "5968/2020-UFRGS",
     "PERIODO": "20/12/2020 a 19/12/2024",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
     "ORGAO": "Direção",
+    "VINCULO": "INF",
     "CARGO": "Vice-Diretor(a)",
     "MEMBRO": "Luciano Paschoal Granville",
     "PORTARIA": "5967/2020-UFRGS",
     "PERIODO": "20/12/2020 a 19/12/2024",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Coordenador(a) PPGC",
     "MEMBRO": "Alberto Egon Schaeffer Filho",
     "PORTARIA": "8157/2022-UFRGS",
@@ -25,6 +28,7 @@
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Chefe Biblioteca",
     "MEMBRO": "Alexsander Borges Ribeiro",
     "PORTARIA": "",
@@ -33,22 +37,25 @@
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Representante Discente",
     "MEMBRO": "Cauã Roca Antunes",
-    "PORTARIA": "4904/2022 - PRAE",
+    "PORTARIA": "4904/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Representante TAs",
     "MEMBRO": "Claudia de Quadro Rocha",
     "PORTARIA": "002/2023-INF",
     "PERIODO": "01/01/2023 a 31/12/2024",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Representante TAs",
     "MEMBRO": "Elizabeth Brauna do Nascimento",
     "PORTARIA": "002/2023-INF",
@@ -57,14 +64,16 @@
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Chefe do INA",
     "MEMBRO": "Jeferson Campos Nobre",
-    "PORTARIA": "358/2023 -UFRGS",
+    "PORTARIA": "358/2023-UFRGS",
     "PERIODO": "06/02/2023 a 05/02/2025",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Coordenador(a) COMGRAD/ECP",
     "MEMBRO": "Claudio Diniz",
     "PORTARIA": "1583/2023-UFRGS",
@@ -73,6 +82,7 @@
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Representante Docente",
     "MEMBRO": "Lisandro Zambenedetti Granville",
     "PORTARIA": "001/2023-INF",
@@ -81,22 +91,25 @@
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Diretor(a) do CEI",
     "MEMBRO": "Luciana Porcher Nedel",
     "PORTARIA": "3955/2023-UFRGS",
-    "PERIODO": "27/06/2023  a 26/06/2025",
+    "PERIODO": "27/06/2023 a 26/06/2025",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Representante Docente",
     "MEMBRO": "Luigi Carro",
     "PORTARIA": "001/2023-INF",
     "PERIODO": "01/01/2023 a 31/12/2024",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Chefe do INT",
     "MEMBRO": "Mariana Luderitz Kolberg Fernandes",
     "PORTARIA": "201/2023-UFRGS",
@@ -105,6 +118,7 @@
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Coordenador(a) da COMPESQ",
     "MEMBRO": "Eduarrdo Simões Lopes Gastal",
     "PORTARIA": "010/2023-INF",
@@ -113,6 +127,7 @@
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Coordenador(a) da COMGRAD/CIC",
     "MEMBRO": "Marcelo Walter",
     "PORTARIA": "1546/2023-UFRGS",
@@ -121,6 +136,7 @@
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Coordenador(a) da COMEX",
     "MEMBRO": "Marcelo de Oliveira Johann",
     "PORTARIA": "013/2023-INF",
@@ -129,14 +145,16 @@
   },
   {
     "ORGAO": "CONINF",
+    "VINCULO": "INF",
     "CARGO": "Representante Discente",
     "MEMBRO": "Isis Pericolo",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "DEP.INA",
+    "VINCULO": "INA",
     "CARGO": "Chefe",
     "MEMBRO": "Jeferson Campos Nobre",
     "PORTARIA": "358/2023-UFRGS",
@@ -145,6 +163,7 @@
   },
   {
     "ORGAO": "DEP.INA",
+    "VINCULO": "INA",
     "CARGO": "Chefe Substituto",
     "MEMBRO": "Fernanda Lima Kastensmidt",
     "PORTARIA": "359/2023-UFRGS",
@@ -152,7 +171,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "André Inacio Reis",
     "PORTARIA": "",
@@ -160,23 +180,26 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "Lisandro Zambenedetti Granville",
     "PORTARIA": "",
     "PERIODO": "06/02/2023 a 05/02/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "Luciana Porcher Nedel",
     "PORTARIA": "",
     "PERIODO": "06/02/2023 a 05/02/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "Luciano Paschoal Gaspary",
     "PORTARIA": "",
@@ -184,15 +207,17 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "Luigi Carro",
     "PORTARIA": "",
     "PERIODO": "06/02/2023 a 05/02/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "Mariana Recamonde Mendoza",
     "PORTARIA": "",
@@ -200,7 +225,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "Renata de Matos Galante",
     "PORTARIA": "",
@@ -208,7 +234,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "Sergio Bampi",
     "PORTARIA": "",
@@ -216,15 +243,17 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "Sérgio Luis Cechin",
     "PORTARIA": "",
     "PERIODO": "06/02/2023 a 05/02/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Membro(a)",
     "MEMBRO": "Viviane Pereira Moreira",
     "PORTARIA": "",
@@ -232,23 +261,26 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Representante Discente",
     "MEMBRO": "Jean Smaniotto Argoud",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COLEGIADO INA",
+    "ORGAO": "Colegiado INA",
+    "VINCULO": "INA",
     "CARGO": "Representante Discente",
     "MEMBRO": "Maria Flávia Borrajo Tondo",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "DEP. INT",
+    "VINCULO": "INT",
     "CARGO": "Chefe",
     "MEMBRO": "Mariana Luderitz Kolberg Fernandes",
     "PORTARIA": "201/2023-UFRGS",
@@ -257,6 +289,7 @@
   },
   {
     "ORGAO": "DEP. INT",
+    "VINCULO": "INT",
     "CARGO": "Chefe Substituto",
     "MEMBRO": "Leila Ribeiro",
     "PORTARIA": "202/2023-UFRGS",
@@ -264,7 +297,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Álvaro Freitas Moreira",
     "PORTARIA": "",
@@ -272,15 +306,17 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
-    "MEMBRO": "Ana LÚcia Cetertich Bazzan",
+    "MEMBRO": "Ana Lúcia Cetertich Bazzan",
     "PORTARIA": "",
     "PERIODO": "PERMANENTE",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "André Grahl Pereira",
     "PORTARIA": "",
@@ -288,7 +324,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Edson Prestes e Silva Junior",
     "PORTARIA": "",
@@ -296,7 +333,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Leila Ribeiro",
     "PORTARIA": "",
@@ -304,7 +342,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Lucio Mauro Duarte",
     "PORTARIA": "",
@@ -312,7 +351,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Luis da Cunha Lamb",
     "PORTARIA": "",
@@ -320,7 +360,8 @@
     "OBSERVACOES": "Afastado"
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Márcio Dorn",
     "PORTARIA": "",
@@ -328,7 +369,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Marcus Rolf Peter Ritt",
     "PORTARIA": "",
@@ -336,7 +378,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Mariana Luderitz Kolberg Fernandes",
     "PORTARIA": "",
@@ -344,7 +387,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Rodrigo Machado",
     "PORTARIA": "",
@@ -352,7 +396,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Membro(a)",
     "MEMBRO": "Rosa Maria Vicari",
     "PORTARIA": "",
@@ -360,47 +405,53 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Representante Discente",
     "MEMBRO": "Andrea Leonice Pereira dos Santos",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Representante Discente",
     "MEMBRO": "Camila Maffi",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "PLENÁRIO INT",
+    "ORGAO": "Plenário INT",
+    "VINCULO": "INT",
     "CARGO": "Representante Discente",
     "MEMBRO": "Jordi Pujol Ricarte",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD CIC",
-    "CARGO": "Coordenador",
+    "ORGAO": "COMGRAD/CIC",
+    "VINCULO": "CIC",
+    "CARGO": "Coordenador(a)",
     "MEMBRO": "Marcelo Walter",
     "PORTARIA": "1546/2023-UFRGS",
     "PERIODO": "12/03/2023 a 11/03/2025",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD CIC",
-    "CARGO": "Coordenador Substituto",
+    "ORGAO": "COMGRAD/CIC",
+    "VINCULO": "CIC",
+    "CARGO": "Coordenador(a) Substituto(a)",
     "MEMBRO": "Juliano Araújo Wickboldt",
     "PORTARIA": "1545/2023-UFRGS",
     "PERIODO": "12/03/2023 a 11/03/2025",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD CIC",
+    "ORGAO": "COMGRAD/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Anderson Rocha Tavares",
     "PORTARIA": "008/2023-INF",
@@ -408,7 +459,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD CIC",
+    "ORGAO": "COMGRAD/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Álvaro Freitas Moreira",
     "PORTARIA": "008/2023-INF",
@@ -416,7 +468,8 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD CIC",
+    "ORGAO": "COMGRAD/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Juliano Araújo Wickboldt",
     "PORTARIA": "008/2023-INF",
@@ -424,80 +477,90 @@
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD CIC",
+    "ORGAO": "COMGRAD/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Marcelo Walter",
     "PORTARIA": "008/2023-INF",
     "PERIODO": "03/2023 a 03/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
-    "ORGAO": "COMGRAD CIC",
+    "ORGAO": "COMGRAD/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
-    "MEMBRO": "Rudnei Dias da Cunha - MAT",
+    "MEMBRO": "Rudnei Dias da Cunha-MAT",
     "PORTARIA": "008/2023-INF",
     "PERIODO": "03/2023 a 03/2025",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD CIC",
+    "ORGAO": "COMGRAD/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Representante Discente",
     "MEMBRO": "Isis Burmeister Pericolo",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD ECP",
-    "CARGO": "Coordenador",
+    "ORGAO": "COMGRAD/ECP",
+    "VINCULO": "ECP",
+    "CARGO": "Coordenador(a)",
     "MEMBRO": "Claudio Machado Diniz",
     "PORTARIA": "1583/2023-UFRGS",
     "PERIODO": "12/03/2023 a 12/03/2025",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD ECP",
-    "CARGO": "Coordenador Substituto",
-    "MEMBRO": "Walter Fetter Lages - ENG",
+    "ORGAO": "COMGRAD/ECP",
+    "VINCULO": "ECP",
+    "CARGO": "Coordenador(a) Substituto(a)",
+    "MEMBRO": "Walter Fetter Lages-ENG",
     "PORTARIA": "1584/2023-UFRGS",
     "PERIODO": "12/03/2023 a 12/03/2025",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD ECP",
+    "ORGAO": "COMGRAD/ECP",
+    "VINCULO": "ECP",
     "CARGO": "Membro(a)",
-    "MEMBRO": "Renato Ventura Bayan Henriques - ENG",
-    "PORTARIA": "009/2023 -INF/ENG",
+    "MEMBRO": "Renato Ventura Bayan Henriques-ENG",
+    "PORTARIA": "009/2023-INF/ENG",
     "PERIODO": "03/2023 a 03/2025",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD ECP",
+    "ORGAO": "COMGRAD/ECP",
+    "VINCULO": "ECP",
     "CARGO": "Membro(a)",
     "MEMBRO": "João Cesar Netto",
-    "PORTARIA": "009/2023 -INF/ENG",
+    "PORTARIA": "009/2023-INF/ENG",
     "PERIODO": "03/2023 a 03/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
-    "ORGAO": "COMGRAD ECP",
+    "ORGAO": "COMGRAD/ECP",
+    "VINCULO": "ECP",
     "CARGO": "Membro(a)",
-    "MEMBRO": "Wagner de Oliveira Cortes - MAT",
-    "PORTARIA": "009/2023 -INF/ENG",
+    "MEMBRO": "Wagner de Oliveira Cortes-MAT",
+    "PORTARIA": "009/2023-INF/ENG",
     "PERIODO": "03/2023 a 03/2025",
     "OBSERVACOES": ""
   },
   {
-    "ORGAO": "COMGRAD ECP",
+    "ORGAO": "COMGRAD/ECP",
+    "VINCULO": "ECP",
     "CARGO": "Representante Discente",
     "MEMBRO": "Pedro Emílio Diello Kuhn",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "PPGC",
-    "CARGO": "Coordenador",
+    "VINCULO": "PPGC ",
+    "CARGO": "Coordenador(a)",
     "MEMBRO": "Alberto Egon Schaeffer Filho",
     "PORTARIA": "8157/2022-UFRGS",
     "PERIODO": "23/01/2023 a 22/01/2025",
@@ -505,7 +568,8 @@
   },
   {
     "ORGAO": "PPGC",
-    "CARGO": "Coordenador Substituto",
+    "VINCULO": "PPGC ",
+    "CARGO": "Coordenador(a) Substituto(a)",
     "MEMBRO": "Gabriel Luca Nazar",
     "PORTARIA": "8156/2022-UFRGS",
     "PERIODO": "23/01/2023 a 22/01/2025",
@@ -513,14 +577,16 @@
   },
   {
     "ORGAO": "PPGC",
+    "VINCULO": "PPGC ",
     "CARGO": "Membro(a)",
     "MEMBRO": "André Grahl Pereira",
     "PORTARIA": "005/2023-INF",
     "PERIODO": "03/2023 a 03/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
     "ORGAO": "PPGC",
+    "VINCULO": "PPGC ",
     "CARGO": "Membro(a)",
     "MEMBRO": "João Luiz Dihl Comba",
     "PORTARIA": "005/2023-INF",
@@ -529,6 +595,7 @@
   },
   {
     "ORGAO": "PPGC",
+    "VINCULO": "PPGC ",
     "CARGO": "Membro(a)",
     "MEMBRO": "Lucas Mello Schnorr",
     "PORTARIA": "005/2023-INF",
@@ -537,6 +604,7 @@
   },
   {
     "ORGAO": "PPGC",
+    "VINCULO": "PPGC ",
     "CARGO": "Membro(a)",
     "MEMBRO": "Weverton Luis da Costa Cordeiro",
     "PORTARIA": "005/2023-INF",
@@ -545,7 +613,8 @@
   },
   {
     "ORGAO": "PGMICRO",
-    "CARGO": "Coordenador",
+    "VINCULO": "PGMICRO",
+    "CARGO": "Coordenador(a)",
     "MEMBRO": "Claudio Radtke",
     "PORTARIA": "2148/2023-UFRGS",
     "PERIODO": "18/04/2023 a 17/04/2025",
@@ -553,7 +622,8 @@
   },
   {
     "ORGAO": "PGMICRO",
-    "CARGO": "Coordenador Substituto",
+    "VINCULO": "PGMICRO",
+    "CARGO": "Coordenador(a) Substituto(a)",
     "MEMBRO": "José Rodrigo Furlanetto de Azambuja",
     "PORTARIA": "2149/2023-UFRGS",
     "PERIODO": "18/04/2023 a 17/04/2025",
@@ -561,6 +631,7 @@
   },
   {
     "ORGAO": "PGMICRO",
+    "VINCULO": "PGMICRO",
     "CARGO": "Membro(a)",
     "MEMBRO": "Claudio Machado Diniz",
     "PORTARIA": "",
@@ -569,6 +640,7 @@
   },
   {
     "ORGAO": "PGMICRO",
+    "VINCULO": "PGMICRO",
     "CARGO": "Membro(a)",
     "MEMBRO": "Milton Andre Tumelero",
     "PORTARIA": "",
@@ -577,6 +649,7 @@
   },
   {
     "ORGAO": "PGMICRO",
+    "VINCULO": "PGMICRO",
     "CARGO": "Membro(a)",
     "MEMBRO": "Tiago Roberto Balen",
     "PORTARIA": "",
@@ -585,7 +658,8 @@
   },
   {
     "ORGAO": "COMPESQ",
-    "CARGO": "Coordenador",
+    "VINCULO": "INF",
+    "CARGO": "Coordenador(a)",
     "MEMBRO": "Eduardo Simões Lopes Gastal",
     "PORTARIA": "010/2023-INF",
     "PERIODO": "12/03/2023 a 11/03/2025",
@@ -593,7 +667,8 @@
   },
   {
     "ORGAO": "COMPESQ",
-    "CARGO": "Coordenador Substituto",
+    "VINCULO": "INF",
+    "CARGO": "Coordenador(a) Substituto(a)",
     "MEMBRO": "Karin Becker",
     "PORTARIA": "010/2023-INF",
     "PERIODO": "12/03/2023 a 11/03/2025",
@@ -601,6 +676,7 @@
   },
   {
     "ORGAO": "COMPESQ",
+    "VINCULO": "INF",
     "CARGO": "Membro(a)",
     "MEMBRO": "Joel Luis Carbonera",
     "PORTARIA": "010/2023-INF",
@@ -609,6 +685,7 @@
   },
   {
     "ORGAO": "COMPESQ",
+    "VINCULO": "INF",
     "CARGO": "Membro(a)",
     "MEMBRO": "Lucas Mello Schnorr",
     "PORTARIA": "010/2023-INF",
@@ -617,6 +694,7 @@
   },
   {
     "ORGAO": "COMPESQ",
+    "VINCULO": "INF",
     "CARGO": "Membro(a)",
     "MEMBRO": "Thiago Lopes Trugillo da Silveira",
     "PORTARIA": "010/2023-INF",
@@ -625,15 +703,17 @@
   },
   {
     "ORGAO": "COMPESQ",
+    "VINCULO": "INF",
     "CARGO": "Representante Discente",
     "MEMBRO": "Maria Flávia Borrajo Tondo",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "COMEX",
-    "CARGO": "Coordenador",
+    "VINCULO": "INF",
+    "CARGO": "Coordenador(a)",
     "MEMBRO": "Marcelo de Oliveira Johann",
     "PORTARIA": "013/2023-INF",
     "PERIODO": "12/03/2023 a 11/03/2025",
@@ -641,7 +721,8 @@
   },
   {
     "ORGAO": "COMEX",
-    "CARGO": "Coordenador Substituto",
+    "VINCULO": "INF",
+    "CARGO": "Coordenador(a) Substituto(a)",
     "MEMBRO": "André Inacio Reis",
     "PORTARIA": "013/2023-INF",
     "PERIODO": "12/03/2023 a 11/03/2025",
@@ -649,6 +730,7 @@
   },
   {
     "ORGAO": "COMEX",
+    "VINCULO": "INF",
     "CARGO": "Membro(a)",
     "MEMBRO": "Daniel Bruno de Castro Reis",
     "PORTARIA": "013/2023-INF",
@@ -657,54 +739,61 @@
   },
   {
     "ORGAO": "COMEX",
+    "VINCULO": "INF",
     "CARGO": "Membro(a)",
     "MEMBRO": "Edson Prestes e Silva Junior",
     "PORTARIA": "013/2023-INF",
     "PERIODO": "03/2023 a 3/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
     "ORGAO": "COMEX",
+    "VINCULO": "INF",
     "CARGO": "Membro(a)",
     "MEMBRO": "Renato Perez Ribas",
     "PORTARIA": "013/2023-INF",
     "PERIODO": "03/2023 a 3/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
     "ORGAO": "COMEX",
+    "VINCULO": "INF",
     "CARGO": "Membro(a)",
     "MEMBRO": "Sérgio Luis Cechin",
     "PORTARIA": "013/2023-INF",
     "PERIODO": "03/2023 a 3/2025",
-    "OBSERVACOES": "2o. Mandato"
+    "OBSERVACOES": "2º Mandato"
   },
   {
     "ORGAO": "COMEX",
+    "VINCULO": "INF",
     "CARGO": "Representante Discente",
     "MEMBRO": "Leonardo Luis Carlos",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "CEI",
-    "CARGO": "Diretor",
+    "VINCULO": "INF",
+    "CARGO": "Diretor(a)",
     "MEMBRO": "Luciana Porcher Nedel",
     "PORTARIA": "3955/2023-UFRGS",
-    "PERIODO": "27/06/2023  a 26/06/2025",
+    "PERIODO": "27/06/2023 a 26/06/2025",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "CEI",
-    "CARGO": "Diretor Substituto",
+    "VINCULO": "INF",
+    "CARGO": "Diretor(a) Substituto(a)",
     "MEMBRO": "Erika Fernandes Cota",
     "PORTARIA": "3956/2023-UFRGS",
-    "PERIODO": "27/06/2023  a 26/06/2025",
+    "PERIODO": "27/06/2023 a 26/06/2025",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "CEI",
+    "VINCULO": "INF",
     "CARGO": "Representante Docente",
     "MEMBRO": "Andre Inacio Reis",
     "PORTARIA": "003/2023-INF",
@@ -713,6 +802,7 @@
   },
   {
     "ORGAO": "CEI",
+    "VINCULO": "INF",
     "CARGO": "Representante Docente",
     "MEMBRO": "Luigi Carro",
     "PORTARIA": "003/2023-INF",
@@ -721,6 +811,7 @@
   },
   {
     "ORGAO": "CEI",
+    "VINCULO": "INF",
     "CARGO": "Representante TAs",
     "MEMBRO": "Renata Isoí Morais dos Santos",
     "PORTARIA": "004/2023-INF",
@@ -729,15 +820,17 @@
   },
   {
     "ORGAO": "CEI",
+    "VINCULO": "INF",
     "CARGO": "Representante Discente",
     "MEMBRO": "Maria Flávia Borrajo Tondo",
-    "PORTARIA": "4951/2022- PRAE",
+    "PORTARIA": "4951/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "NAU/INF",
-    "CARGO": "Coordenador",
+    "VINCULO": "INF",
+    "CARGO": "Coordenador(a)",
     "MEMBRO": "Nicolas Bruno Mailard",
     "PORTARIA": "003/2020-UFRGS",
     "PERIODO": "27/10/2020 a 26/10/2023",
@@ -745,7 +838,8 @@
   },
   {
     "ORGAO": "NAU/INF",
-    "CARGO": "Coordenador  Substituto",
+    "VINCULO": "INF",
+    "CARGO": "Coordenador(a) Substituto(a)",
     "MEMBRO": "Alexandre da Silva Carissimi",
     "PORTARIA": "003/2020-UFRGS",
     "PERIODO": "27/10/2020 a 26/10/2023",
@@ -753,6 +847,7 @@
   },
   {
     "ORGAO": "NAU/INF",
+    "VINCULO": "INF",
     "CARGO": "Representante Docente",
     "MEMBRO": "Renan de Queiroz  Maffei",
     "PORTARIA": "003/2020-UFRGS",
@@ -761,6 +856,7 @@
   },
   {
     "ORGAO": "NAU/INF",
+    "VINCULO": "INF",
     "CARGO": "Representante TAs",
     "MEMBRO": "Rodrigo Machado",
     "PORTARIA": "003/2020-UFRGS",
@@ -769,6 +865,7 @@
   },
   {
     "ORGAO": "NAU/INF",
+    "VINCULO": "INF",
     "CARGO": "Representante TAs",
     "MEMBRO": "Danielle Lira da Rosa",
     "PORTARIA": "003/2020-UFRGS",
@@ -777,6 +874,7 @@
   },
   {
     "ORGAO": "NAU/INF",
+    "VINCULO": "INF",
     "CARGO": "Representante TAs",
     "MEMBRO": "Giesa Carla da Silva",
     "PORTARIA": "003/2020-UFRGS",
@@ -785,6 +883,7 @@
   },
   {
     "ORGAO": "NAU/INF",
+    "VINCULO": "INF",
     "CARGO": "Representante Discente",
     "MEMBRO": "Cauã Roca Antunes",
     "PORTARIA": "003/2020-UFRGS",
@@ -793,7 +892,8 @@
   },
   {
     "ORGAO": "NDE/CIC",
-    "CARGO": "Coordenador",
+    "VINCULO": "CIC",
+    "CARGO": "Coordenador(a)",
     "MEMBRO": "Lucas  Mellho Schnorr",
     "PORTARIA": "006/2021-INF",
     "PERIODO": "13/03/2021 a 12/03/2025",
@@ -801,6 +901,7 @@
   },
   {
     "ORGAO": "NDE/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Juliano Araújo Wickboldt",
     "PORTARIA": "1545/2023-UFRGS",
@@ -809,6 +910,7 @@
   },
   {
     "ORGAO": "NDE/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Andre Inacio Reis",
     "PORTARIA": "019/2022-INF",
@@ -817,6 +919,7 @@
   },
   {
     "ORGAO": "NDE/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Leila Ribeiro",
     "PORTARIA": "019/2022-INF",
@@ -825,6 +928,7 @@
   },
   {
     "ORGAO": "NDE/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Lúcio Mauro Duarte",
     "PORTARIA": "019/2022-INF",
@@ -833,6 +937,7 @@
   },
   {
     "ORGAO": "NDE/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Marcelo Walter",
     "PORTARIA": "1546/2023-UFRGS",
@@ -841,6 +946,7 @@
   },
   {
     "ORGAO": "NDE/CIC",
+    "VINCULO": "CIC",
     "CARGO": "Membro(a)",
     "MEMBRO": "Mariana Recamonde Mendoza Guerreiro",
     "PORTARIA": "006/2021-INF",
@@ -849,7 +955,8 @@
   },
   {
     "ORGAO": "NDE/ECP",
-    "CARGO": "Coordenador",
+    "VINCULO": "ECP",
+    "CARGO": "Coordenador(a)",
     "MEMBRO": "Gabriel Luca Nazar",
     "PORTARIA": "001/2023-INF/ENG",
     "PERIODO": "13/03/2023 a 12/03/2025",
@@ -857,6 +964,7 @@
   },
   {
     "ORGAO": "NDE/ECP",
+    "VINCULO": "ECP",
     "CARGO": "Membro(a)",
     "MEMBRO": "Alceu Heinke Friger",
     "PORTARIA": "001/2023-INF/ENG",
@@ -865,6 +973,7 @@
   },
   {
     "ORGAO": "NDE/ECP",
+    "VINCULO": "ECP",
     "CARGO": "Membro(a)",
     "MEMBRO": "Alexandre da Silva Carissimi",
     "PORTARIA": "001/2023-INF/ENG",
@@ -873,6 +982,7 @@
   },
   {
     "ORGAO": "NDE/ECP",
+    "VINCULO": "ECP",
     "CARGO": "Membro(a)",
     "MEMBRO": "Cláudio Machado Diniz",
     "PORTARIA": "1583/2023-UFRGS",
@@ -881,6 +991,7 @@
   },
   {
     "ORGAO": "NDE/ECP",
+    "VINCULO": "ECP",
     "CARGO": "Membro(a)",
     "MEMBRO": "Renato Henrique Bayar Ventura",
     "PORTARIA": "001/2023-INF/ENG",
@@ -889,6 +1000,7 @@
   },
   {
     "ORGAO": "NDE/ECP",
+    "VINCULO": "ECP",
     "CARGO": "Membro(a)",
     "MEMBRO": "Walter Fetter Lages",
     "PORTARIA": "1584/2023-UFRGS",
@@ -897,17 +1009,19 @@
   },
   {
     "ORGAO": "DACOMP",
+    "VINCULO": "UFRGS",
     "CARGO": "Presidente",
     "MEMBRO": "Isis Burmeister Pericolo",
-    "PORTARIA": "4856/2022- PRAE",
+    "PORTARIA": "4856/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   },
   {
     "ORGAO": "DACOMP",
-    "CARGO": "Vice -Presidente",
+    "VINCULO": "UFRGS",
+    "CARGO": "Vice-Presidente",
     "MEMBRO": "Cauã Roca Antunes",
-    "PORTARIA": "4856/2022- PRAE",
+    "PORTARIA": "4856/2022-PRAE",
     "PERIODO": "08/08/2023 a 31/10/2023",
     "OBSERVACOES": ""
   }
