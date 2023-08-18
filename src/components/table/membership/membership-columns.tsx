@@ -94,7 +94,6 @@ export const getMembershipColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      console.log(value, row.original?.is_active)
       return (
         <DateColumn value={value}>
           <EndDateBadge value={value} isActive={row.original?.is_active} />

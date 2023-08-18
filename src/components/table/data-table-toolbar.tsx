@@ -11,6 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { DataTableDateFacetedFilter } from './data-table-date-faceted-filter'
 
 interface TableToolbarProps<TData> {
   table: Table<TData>
@@ -49,31 +50,46 @@ export interface IFilterOptions {
 }
 
 export interface IFilter {
+  dates?: any
   title: string
-  options: IFilterOptions[]
+  options?: IFilterOptions[]
   activeFilters?: string[]
-  handleChangeActiveFilters: (value: string[] | undefined) => void
+  handleChangeActiveFilters: (value: any) => void
 }
 
 export const TableToolbarFilter = (props: { filters: IFilter[] }) => {
   const handleResetFilters = () => {
     props.filters.forEach((f) => {
-      f.handleChangeActiveFilters(undefined)
+      f.handleChangeActiveFilters(
+        f.dates ? { begin_date: undefined, end_date: undefined } : undefined
+      )
     })
   }
 
   return (
     <>
-      {props.filters.map((f, index) => (
-        <DataTableFacetedFilter
-          key={index}
-          disabled={!f.options.length}
-          title={f.title}
-          options={f.options}
-          filters={f.activeFilters}
-          setFiltersValue={f.handleChangeActiveFilters}
-        />
-      ))}
+      {props.filters.map((f, index) =>
+        f.dates ? (
+          <DataTableDateFacetedFilter
+            key={index}
+            title={f.title}
+            dates={f.dates}
+            filters={f.activeFilters}
+            setDatesValue={f.handleChangeActiveFilters}
+          />
+        ) : (
+          f.options && (
+            <DataTableFacetedFilter
+              key={index}
+              disabled={!f.options?.length}
+              title={f.title}
+              options={f.options}
+              filters={f.activeFilters}
+              setFiltersValue={f.handleChangeActiveFilters}
+            />
+          )
+        )
+      )}
       {props.filters.some((f) => f.activeFilters?.length) ? (
         <Button variant="ghost" onClick={handleResetFilters} className="h-8 px-2 lg:px-3">
           Limpar

@@ -11,6 +11,7 @@ import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import {
   FilterStateType,
   filterAProps,
+  filterDProps,
   getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'
@@ -41,15 +42,31 @@ export default function Employees() {
   const [filterAM, setFilterAM] = useState<FilterStateType>()
   const [filterAE, setFilterAE] = useState<FilterStateType>()
   const [filterC, setFilterC] = useState<string[]>()
+  const [filterD, setFilterD] = useState<{ begin_date?: string; end_date?: string }>({
+    begin_date: undefined,
+    end_date: undefined
+  })
 
   const { data: roleOptions } = api.membership.getRoleOptions.useQuery({ filterFormat: true })
 
   const handleChangeActiveFiltersC = (values?: string[]) => {
     setFilterC(!values?.length ? undefined : values)
-    // if (values?.length) {
-    //   localStorage.setItem(LS.EMPLOYEE_C, values.toString())
-    //   setFilterC(values)
-    // } else setFilterC(undefined)
+  }
+
+  const handleChangeActiveFiltersD = (values: { begin_date?: string; end_date?: string }) => {
+    console.log(values)
+    setFilterD({ ...values })
+  }
+
+  const getActiveDateFilterLabels = () => {
+    const arr = new Array<string>()
+    if (filterD.begin_date) {
+      arr.push(`De: ${filterD.begin_date}`)
+    }
+    if (filterD.end_date) {
+      arr.push(`Até: ${filterD.end_date}`)
+    }
+    return arr
   }
 
   const propsFilters: IFilter[] = [
@@ -70,6 +87,12 @@ export default function Employees() {
       options: roleOptions?.length ? (roleOptions as IFilterOptions[]) : [],
       activeFilters: filterC,
       handleChangeActiveFilters: handleChangeActiveFiltersC
+    },
+    {
+      ...filterDProps,
+      dates: filterD,
+      activeFilters: getActiveDateFilterLabels(),
+      handleChangeActiveFilters: handleChangeActiveFiltersD
     }
   ]
 

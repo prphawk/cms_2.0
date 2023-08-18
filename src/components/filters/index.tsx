@@ -2,7 +2,7 @@
 
 import { HourglassIcon } from 'lucide-react'
 import { CircleOffIcon } from 'lucide-react'
-import { MyHeaders } from '~/constants/headers'
+import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 
 export type FilterStateType =
   | {
@@ -27,6 +27,11 @@ export const filterTProps = {
     { label: 'Permanente', value: 'is_permanent' },
     { label: 'Temporário(a)', value: 'is_temporary', icon: HourglassIcon }
   ]
+}
+export const filterDProps = {
+  title: MyHeaders.CATEGORY_D,
+  dates: { begin_date: undefined, end_date: undefined },
+  date: true
 }
 
 export const handleChangeComplementaryFilters = (

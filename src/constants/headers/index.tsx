@@ -7,6 +7,7 @@ export class MyHeaders {
   public static TEMPLATES = 'Tipos Regimentais'
   public static MEMBERSHIP = 'Participação'
   public static CATEGORY_F = 'Categoria'
+  public static CATEGORY_D = 'Intervalo de Atividade'
   public static STATUS_F = 'Status'
   public static ABOUT = 'Sobre'
   public static NOTIFICATIONS = 'Notificações'
