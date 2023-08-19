@@ -2,6 +2,8 @@ import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
 import { _findUniqueCommittee } from './committee'
+import { DateSchema } from '~/schemas'
+import { _toDateFromForm } from '~/utils/string'
 
 export const _deactivateMembershipsByCommittee = async (committee_id: number) => {
   return await prisma.membership.updateMany({
@@ -54,7 +56,8 @@ export const membershipRouter = createTRPCRouter({
       z.object({
         is_employee_active: z.boolean().optional(),
         is_membership_active: z.boolean().optional(),
-        roles: z.string().array().optional()
+        roles: z.string().array().optional(),
+        dates: DateSchema
       })
     )
     .query(async ({ ctx, input }) => {
@@ -64,7 +67,21 @@ export const membershipRouter = createTRPCRouter({
           employee: {
             is_active: input.is_employee_active
           },
-          role: { in: input.roles }
+          role: { in: input.roles },
+          NOT: {
+            OR: [
+              {
+                begin_date: {
+                  gt: _toDateFromForm(input.dates?.begin_date)
+                }
+              },
+              {
+                end_date: {
+                  lt: _toDateFromForm(input.dates?.end_date)
+                }
+              }
+            ]
+          }
         },
         orderBy: {
           employee: { name: 'asc' }
@@ -137,7 +154,8 @@ export const membershipRouter = createTRPCRouter({
     .input(
       z.object({
         role: z.string(),
-        template_id: z.number()
+        template_id: z.number(),
+        dates: DateSchema
       })
     )
     .query(({ ctx, input }) => {
@@ -146,7 +164,21 @@ export const membershipRouter = createTRPCRouter({
       return ctx.prisma.membership.findMany({
         where: {
           committee: { template_id: template_id },
-          role
+          role,
+          NOT: {
+            OR: [
+              {
+                begin_date: {
+                  gt: _toDateFromForm(input.dates?.begin_date)
+                }
+              },
+              {
+                end_date: {
+                  lt: _toDateFromForm(input.dates?.end_date)
+                }
+              }
+            ]
+          }
         },
         include: {
           committee: true,

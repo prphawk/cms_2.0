@@ -18,6 +18,7 @@ import DataTableColumnHeader, {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge } from '~/components/badge'
 import { MembershipWithEmployeeAndCommitteeDataType } from '~/types'
+import { Observations, Ordinance } from '../colums'
 
 export const getTemplateRoleHistoryColumns = (
   handleViewCommittee: (committee_id: number) => void
@@ -53,13 +54,11 @@ export const getTemplateRoleHistoryColumns = (
       const is_inactive = !row.original.is_active
 
       return (
-        <div className="flex max-w-[280px] flex-row">
+        <div className="flex max-w-[250px] flex-row">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="truncate">
-                  <strong className="truncate">{value}</strong>
-                </div>
+                <div className="truncate">{value}</div>
               </TooltipTrigger>
               <TooltipContent>
                 {is_inactive ? 'Participação encerrada em ' + value : value}
@@ -73,6 +72,15 @@ export const getTemplateRoleHistoryColumns = (
           )}
         </div>
       )
+    }
+  },
+  {
+    accessorKey: 'ordinance',
+    id: MembershipHeaders.ORDINANCE,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string
+      return Ordinance(value)
     }
   },
   {
@@ -107,16 +115,7 @@ export const getTemplateRoleHistoryColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="w-60 truncate">{value}</div>
-            </TooltipTrigger>
-            <TooltipContent>{value}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )
+      return Observations(value)
     }
   },
   {
@@ -125,39 +124,17 @@ export const getTemplateRoleHistoryColumns = (
     cell: ({ row }) => {
       const committee_id = row.original.committee_id
       return (
-        <div className="min-w-[64px]">
-          <Button
-            onClick={() => handleViewCommittee(committee_id)}
-            variant="ghost"
-            className="h-8 w-8 p-0"
-          >
-            <span className="sr-only">Ver detalhes</span>
-            <Users2Icon className="h-4 w-4" />
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Ações</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleViewCommittee(committee_id)}>
-                Ver membros
-              </DropdownMenuItem>
-              {/* <DropdownMenuItem disabled>Editar participação</DropdownMenuItem> //TODO perguntar se precisa ter */}
-              {/* <DropdownMenuItem
-                disabled
-                //disabled={!row.original.is_active}
-              >
-                Suceder cargo
-              </DropdownMenuItem> */}
-              {/* <DropdownMenuSeparator /> */}
-              {/* <DropdownMenuItem danger disabled={!row.original.is_active}>Encerrar participação</DropdownMenuItem> */}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex min-w-[64px]">
+          <div className="ml-auto px-4">
+            <Button
+              onClick={() => handleViewCommittee(committee_id)}
+              variant="ghost"
+              className="h-8 w-8 p-0"
+            >
+              <span className="sr-only">Ver detalhes</span>
+              <Users2Icon className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       )
     }

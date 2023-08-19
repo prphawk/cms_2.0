@@ -1,15 +1,24 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import { Check, ListFilterIcon } from 'lucide-react'
+import { CalendarSearchIcon, Check, ListFilterIcon, SearchIcon } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command'
-import { IconBadge } from '../badge'
 import { CommitteeHeaders } from '~/constants/headers'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useState } from 'react'
+import { _toDate, _toLocaleString, _toString } from '~/utils/string'
+import { FilterStateDatesType } from '~/types'
+import { MyButton } from '../button'
+import { DateFormItem } from '../form-items'
+import { useForm } from 'react-hook-form'
+import { DateSchema } from '~/schemas'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Form } from '@/components/ui/form'
 
 export function DataTableDateFacetedFilter<TData, TValue>({
   title,
@@ -19,9 +28,9 @@ export function DataTableDateFacetedFilter<TData, TValue>({
   dates
 }: {
   title: string
-  dates: { begin_date?: string; end_date?: string }
+  dates: FilterStateDatesType
   filters?: string[]
-  setDatesValue: (values: { begin_date?: string; end_date?: string }) => void
+  setDatesValue: (values: FilterStateDatesType) => void
   disabled?: boolean
   date?: boolean
 }) {
@@ -69,31 +78,43 @@ function FilterDate({
   selectedDates,
   setDatesValue
 }: {
-  dates: { begin_date?: string; end_date?: string }
+  dates: FilterStateDatesType
   selectedDates?: string[]
-  setDatesValue: (values: { begin_date?: string; end_date?: string }) => void
+  setDatesValue: (values: FilterStateDatesType) => void
 }) {
+  function onSubmit(data: FilterStateDatesType) {
+    setDatesValue({ ...data })
+  }
+
+  const form = useForm<FilterStateDatesType>({
+    resolver: zodResolver(DateSchema),
+    defaultValues: dates
+  })
+
   return (
     <PopoverContent className="w-[200px] p-2" align="start">
       <Command>
         <CommandGroup>
-          <div className="grid gap-4">
-            <DateItem
-              value={dates.begin_date}
-              label={CommitteeHeaders.BEGIN_DATE}
-              handleOnChange={(value) => {
-                value
-                setDatesValue({ ...dates, begin_date: value })
-              }}
-            />
-            <DateItem
-              value={dates.end_date}
-              label={CommitteeHeaders.END_DATE}
-              handleOnChange={(value) => {
-                setDatesValue({ ...dates, end_date: value })
-              }}
-            />
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} id="formDates">
+              <div className="grid gap-2">
+                <DateFormItem
+                  form={form}
+                  fieldName="begin_date"
+                  label={CommitteeHeaders.BEGIN_DATE}
+                />
+                <DateFormItem form={form} fieldName="end_date" label={CommitteeHeaders.END_DATE} />
+              </div>
+              <Button
+                variant="outline"
+                type="submit"
+                form="formDates"
+                className="mt-3 w-full justify-center text-center"
+              >
+                <CalendarSearchIcon className="mr-1 h-4 w-4" /> Buscar
+              </Button>
+            </form>
+          </Form>
         </CommandGroup>
         {/* {selectedDates && selectedDates.length > 0 && (
           <>
@@ -107,25 +128,8 @@ function FilterDate({
             </CommandGroup>
           </>
         )} */}
+        <></>
       </Command>
     </PopoverContent>
-  )
-}
-
-const DateItem = (props: {
-  value?: string
-  label: string
-  className?: string
-  handleOnChange: (label: string) => void
-}) => {
-  return (
-    <div className={cn('flex w-full flex-col space-y-1', props.className)}>
-      <Label>{props.label}</Label>
-      <Input
-        type="date"
-        value={props.value}
-        onChange={(e) => props.handleOnChange(e.target.value)}
-      />
-    </div>
   )
 }

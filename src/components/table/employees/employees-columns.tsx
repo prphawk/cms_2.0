@@ -20,6 +20,7 @@ import { Routes } from '~/constants/routes'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge } from '~/components/badge'
 import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
+import { Observations, Ordinance } from '../colums'
 
 export const getEmployeesColumns = (
   handleViewCommittee: (
@@ -117,7 +118,7 @@ export const getEmployeesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return <div className="truncate">{value || '-'}</div>
+      return Ordinance(value)
     }
   },
   {
@@ -152,16 +153,7 @@ export const getEmployeesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="max-w-[100px] truncate">{value || '-'}</div>
-            </TooltipTrigger>
-            {value && <TooltipContent>{value}</TooltipContent>}
-          </Tooltip>
-        </TooltipProvider>
-      )
+      return Observations(value)
     }
   },
   {
@@ -171,46 +163,48 @@ export const getEmployeesColumns = (
       const role = row.original.role
       const template_id = row.original.committee.template_id
       return (
-        // <div className="min-w-[64px]">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => handleViewCommittee(row.original)}>
-              Ver {MyHeaders.COMMITTEE.toLowerCase()}
-            </DropdownMenuItem>
-            {template_id ? (
-              <DropdownMenuItem>
-                <Link href={`${Routes.TEMPLATES}/${template_id}/${role}`}>
-                  Ver histórico do cargo
-                </Link>
-              </DropdownMenuItem>
-            ) : (
-              <></>
-            )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              danger
-              disabled={!row.original.is_active}
-              onClick={() => onDeactivateMembership(row.original)}
-            >
-              Desativar {MyHeaders.MEMBERSHIP.toLowerCase()}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              danger
-              disabled={!row.original.employee.is_active}
-              onClick={() => onDeactivateEmployee(row.original)}
-            >
-              Desativar {MyHeaders.EMPLOYEE.toLowerCase()}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        // </div>
+        <div className="flex min-w-[64px]">
+          <div className="ml-auto px-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Abrir menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => handleViewCommittee(row.original)}>
+                  Ver {MyHeaders.COMMITTEE.toLowerCase()}
+                </DropdownMenuItem>
+                {template_id ? (
+                  <DropdownMenuItem>
+                    <Link href={`${Routes.TEMPLATES}/${template_id}/${role}`}>
+                      Ver histórico do cargo
+                    </Link>
+                  </DropdownMenuItem>
+                ) : (
+                  <></>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  danger
+                  disabled={!row.original.is_active}
+                  onClick={() => onDeactivateMembership(row.original)}
+                >
+                  Desativar {MyHeaders.MEMBERSHIP.toLowerCase()}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  danger
+                  disabled={!row.original.employee.is_active}
+                  onClick={() => onDeactivateEmployee(row.original)}
+                >
+                  Desativar {MyHeaders.EMPLOYEE.toLowerCase()}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
       )
     }
   }

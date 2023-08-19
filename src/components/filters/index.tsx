@@ -3,6 +3,8 @@
 import { HourglassIcon } from 'lucide-react'
 import { CircleOffIcon } from 'lucide-react'
 import { MyHeaders } from '~/constants/headers'
+import { FilterStateDatesType } from '~/types'
+import { _toLocaleStringFromForm } from '~/utils/string'
 
 export type FilterStateType =
   | {
@@ -65,11 +67,14 @@ export const getComplementaryFilterValue = (
   }
   return undefined
 }
-// export const getArrayFilterValue = (ls_key: string) => {
-//   const ls_value = localStorage.getItem(ls_key)
-//   if (ls_value) {
-//     const value = ls_value.split(',')
-//     return value
-//   }
-//   return undefined
-// }
+
+export const getActiveDateFilterLabels = (dates: FilterStateDatesType) => {
+  const arr = new Array<string>()
+  if (dates.begin_date) {
+    arr.push(`De: ${_toLocaleStringFromForm(dates.begin_date)}`)
+  }
+  if (dates.end_date) {
+    arr.push(`Até: ${_toLocaleStringFromForm(dates.end_date)}`)
+  }
+  return arr
+}

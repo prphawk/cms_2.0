@@ -20,6 +20,8 @@ import { CommitteeHeaders, MembershipHeaders, MyHeaders } from '~/constants/head
 import {
   FilterStateType,
   filterAProps,
+  filterDProps,
+  getActiveDateFilterLabels,
   getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'
@@ -32,7 +34,11 @@ import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { HourglassIcon, CircleOffIcon } from 'lucide-react'
 import { IconBadge } from '~/components/badge'
-import { CommitteeWithOptionalTemplateDataType, MembershipWithEmployeeDataType } from '~/types'
+import {
+  CommitteeWithOptionalTemplateDataType,
+  FilterStateDatesType,
+  MembershipWithEmployeeDataType
+} from '~/types'
 import ErrorPage from '~/pages/500'
 import { LS } from '~/constants/local_storage'
 import { TitleLayout } from '~/layouts/text-layout'
@@ -88,6 +94,10 @@ export default function CommitteeMembership() {
 
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterC, setFilterC] = useState<string[]>()
+  const [filterD, setFilterD] = useState<FilterStateDatesType>({
+    begin_date: undefined,
+    end_date: undefined
+  })
 
   useEffect(() => {
     setFilterA(getComplementaryFilterValue(LS.MEMBERSHIP_A, 'is_active', 'is_inactive'))
@@ -101,7 +111,8 @@ export default function CommitteeMembership() {
     {
       id: param_id,
       is_active: filterA?.value,
-      roles: filterC
+      roles: filterC,
+      dates: filterD
     },
     { enabled: !isNaN(param_id) }
   )
@@ -121,6 +132,10 @@ export default function CommitteeMembership() {
     setFilterC(!values?.length ? undefined : values)
   }
 
+  const handleChangeActiveFiltersD = (values: FilterStateDatesType) => {
+    setFilterD({ ...values })
+  }
+
   const propsFilters: IFilter[] = [
     {
       ...filterAProps(),
@@ -133,6 +148,12 @@ export default function CommitteeMembership() {
       options: roleOptions?.length ? (roleOptions as IFilterOptions[]) : [],
       activeFilters: filterC,
       handleChangeActiveFilters: handleChangeActiveFiltersC
+    },
+    {
+      ...filterDProps,
+      dates: filterD,
+      activeFilters: getActiveDateFilterLabels(filterD),
+      handleChangeActiveFilters: handleChangeActiveFiltersD
     }
   ]
 
