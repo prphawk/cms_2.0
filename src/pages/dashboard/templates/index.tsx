@@ -45,6 +45,7 @@ export default function TemplatePage() {
   const handleViewCommittee = (committee_id: number) => {
     router.push(`${Routes.COMMITTEES}/${committee_id}`)
   }
+
   const handleChangeNotifValue = async (
     template: TemplateWithCommitteeCountAndNotifDataType,
     value: boolean
@@ -53,12 +54,16 @@ export default function TemplatePage() {
       updateNotification.mutate({ id: template.notification.id, isOn: value })
       template.notification.isOn = value
     } else if (template.committee) {
-      const notif = await createNotification.mutate({
-        committee_id: template.committee.id,
+      createNotification.mutate({
+        committee: { id: template.committee.id, end_date: template.committee.end_date! },
         isOn: value
       })
-      console.log(notif)
     }
+  }
+
+  const handleCommitteeSuccession = (template: TemplateWithCommitteeCountAndNotifDataType) => {
+    setSelectedTemplate(template)
+    handleOpenDialog(DialogsEnum.succession)
   }
 
   const onEditTemplate = (template: TemplateWithCommitteeCountAndNotifDataType) => {

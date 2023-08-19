@@ -1,3 +1,4 @@
+import { Committee } from '@prisma/client'
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
@@ -58,13 +59,17 @@ export const notificationRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        committee_id: z.number(),
+        committee: z.object({
+          id: z.number(),
+          end_date: z.date().optional()
+        }),
         isOn: z.boolean().optional()
       })
     )
     .mutation(({ ctx, input }) => {
       const user = ctx.session.user
-      return _createNotification(input.committee_id, user.id, input.isOn)
+      if (!input.committee.end_date) return
+      return _createNotification(input.committee.id, user.id, input.isOn)
     }),
 
   update: protectedProcedure
