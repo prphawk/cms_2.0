@@ -6,6 +6,7 @@ import {
 } from '@/components/ui/accordion'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { z } from 'zod'
 import AuthenticatedPage from '~/components/authenticated-page'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import {
@@ -25,7 +26,10 @@ import { Routes } from '~/constants/routes'
 import { ContentLayout } from '~/layouts/page-layout'
 import { TitleLayout } from '~/layouts/text-layout'
 import ErrorPage from '~/pages/500'
-import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
+import {
+  FilterStateDatesType,
+  MembershipWithEmployeeCommitteeAndMembershipCountDataType
+} from '~/types'
 import { api } from '~/utils/api'
 import { _toLocaleString } from '~/utils/string'
 
@@ -42,7 +46,7 @@ export default function Employees() {
   const [filterAM, setFilterAM] = useState<FilterStateType>()
   const [filterAE, setFilterAE] = useState<FilterStateType>()
   const [filterC, setFilterC] = useState<string[]>()
-  const [filterD, setFilterD] = useState<{ begin_date?: string; end_date?: string }>({
+  const [filterD, setFilterD] = useState<FilterStateDatesType>({
     begin_date: undefined,
     end_date: undefined
   })
@@ -53,7 +57,7 @@ export default function Employees() {
     setFilterC(!values?.length ? undefined : values)
   }
 
-  const handleChangeActiveFiltersD = (values: { begin_date?: string; end_date?: string }) => {
+  const handleChangeActiveFiltersD = (values: FilterStateDatesType) => {
     console.log(values)
     setFilterD({ ...values })
   }

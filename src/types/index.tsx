@@ -27,3 +27,8 @@ export type MembershipWithEmployeeCommitteeAndMembershipCountDataType = Membersh
 } & {
   employee: EmployeeWithMergedMembershipCountDataType
 }
+
+export type FilterStateDatesType = {
+  begin_date?: string
+  end_date?: string
+}

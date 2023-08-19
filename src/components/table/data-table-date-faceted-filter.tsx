@@ -1,15 +1,18 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import { Check, ListFilterIcon } from 'lucide-react'
+import { CalendarSearchIcon, Check, ListFilterIcon, SearchIcon } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command'
-import { IconBadge } from '../badge'
 import { CommitteeHeaders } from '~/constants/headers'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useState } from 'react'
+import { _toDate, _toLocaleString, _toString } from '~/utils/string'
+import { FilterStateDatesType } from '~/types'
+import { MyButton } from '../button'
 
 export function DataTableDateFacetedFilter<TData, TValue>({
   title,
@@ -19,9 +22,9 @@ export function DataTableDateFacetedFilter<TData, TValue>({
   dates
 }: {
   title: string
-  dates: { begin_date?: string; end_date?: string }
+  dates: FilterStateDatesType
   filters?: string[]
-  setDatesValue: (values: { begin_date?: string; end_date?: string }) => void
+  setDatesValue: (values: FilterStateDatesType) => void
   disabled?: boolean
   date?: boolean
 }) {
@@ -69,28 +72,35 @@ function FilterDate({
   selectedDates,
   setDatesValue
 }: {
-  dates: { begin_date?: string; end_date?: string }
+  dates: FilterStateDatesType
   selectedDates?: string[]
-  setDatesValue: (values: { begin_date?: string; end_date?: string }) => void
+  setDatesValue: (values: FilterStateDatesType) => void
 }) {
+  const [formDates, setFormDates] = useState(dates)
+
+  const handleSearch = () => {
+    setDatesValue(formDates)
+  }
+
   return (
     <PopoverContent className="w-[200px] p-2" align="start">
       <Command>
         <CommandGroup>
           <div className="grid gap-4">
             <DateItem
-              value={dates.begin_date}
+              value={formDates.begin_date}
               label={CommitteeHeaders.BEGIN_DATE}
               handleOnChange={(value) => {
-                value
-                setDatesValue({ ...dates, begin_date: value })
+                const begin_date = value
+                setFormDates({ ...dates, begin_date })
               }}
             />
             <DateItem
-              value={dates.end_date}
+              value={formDates.end_date}
               label={CommitteeHeaders.END_DATE}
               handleOnChange={(value) => {
-                setDatesValue({ ...dates, end_date: value })
+                const end_date = value
+                setFormDates({ ...dates, end_date })
               }}
             />
           </div>
@@ -107,6 +117,15 @@ function FilterDate({
             </CommandGroup>
           </>
         )} */}
+        <>
+          <Button
+            variant="ghost"
+            onClick={(e) => handleSearch()}
+            className="mt-1 justify-center text-center"
+          >
+            <CalendarSearchIcon className="mr-1 h-4 w-4" /> Buscar
+          </Button>
+        </>
       </Command>
     </PopoverContent>
   )
@@ -123,7 +142,7 @@ const DateItem = (props: {
       <Label>{props.label}</Label>
       <Input
         type="date"
-        value={props.value}
+        defaultValue={props.value}
         onChange={(e) => props.handleOnChange(e.target.value)}
       />
     </div>
