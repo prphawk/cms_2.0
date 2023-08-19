@@ -13,6 +13,12 @@ import { useState } from 'react'
 import { _toDate, _toLocaleString, _toString } from '~/utils/string'
 import { FilterStateDatesType } from '~/types'
 import { MyButton } from '../button'
+import { DateFormItem } from '../form-items'
+import { useForm } from 'react-hook-form'
+import { DateSchema } from '~/schemas'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Form } from '@/components/ui/form'
 
 export function DataTableDateFacetedFilter<TData, TValue>({
   title,
@@ -76,34 +82,43 @@ function FilterDate({
   selectedDates?: string[]
   setDatesValue: (values: FilterStateDatesType) => void
 }) {
-  const [formDates, setFormDates] = useState(dates)
-
-  const handleSearch = () => {
-    setDatesValue(formDates)
+  function onSubmit(data: FilterStateDatesType) {
+    setDatesValue({ ...data })
   }
+
+  const form = useForm<z.infer<typeof DateSchema>>({
+    resolver: zodResolver(DateSchema),
+    defaultValues: dates
+  })
 
   return (
     <PopoverContent className="w-[200px] p-2" align="start">
       <Command>
         <CommandGroup>
-          <div className="grid gap-4">
-            <DateItem
-              value={formDates.begin_date}
-              label={CommitteeHeaders.BEGIN_DATE}
-              handleOnChange={(value) => {
-                const begin_date = value
-                setFormDates({ ...dates, begin_date })
-              }}
-            />
-            <DateItem
-              value={formDates.end_date}
-              label={CommitteeHeaders.END_DATE}
-              handleOnChange={(value) => {
-                const end_date = value
-                setFormDates({ ...dates, end_date })
-              }}
-            />
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} id="formDates">
+              <div className="grid gap-2">
+                <DateFormItem
+                  form={form}
+                  fieldName="begin_date"
+                  label={CommitteeHeaders.BEGIN_DATE}
+                />
+                <DateFormItem
+                  form={form}
+                  fieldName="end_date"
+                  label={CommitteeHeaders.BEGIN_DATE}
+                />
+              </div>
+              <Button
+                variant="outline"
+                type="submit"
+                form="formDates"
+                className="mt-3 w-full justify-center text-center"
+              >
+                <CalendarSearchIcon className="mr-1 h-4 w-4" /> Buscar
+              </Button>
+            </form>
+          </Form>
         </CommandGroup>
         {/* {selectedDates && selectedDates.length > 0 && (
           <>
@@ -117,34 +132,8 @@ function FilterDate({
             </CommandGroup>
           </>
         )} */}
-        <>
-          <Button
-            variant="ghost"
-            onClick={(e) => handleSearch()}
-            className="mt-1 justify-center text-center"
-          >
-            <CalendarSearchIcon className="mr-1 h-4 w-4" /> Buscar
-          </Button>
-        </>
+        <></>
       </Command>
     </PopoverContent>
-  )
-}
-
-const DateItem = (props: {
-  value?: string
-  label: string
-  className?: string
-  handleOnChange: (label: string) => void
-}) => {
-  return (
-    <div className={cn('flex w-full flex-col space-y-1', props.className)}>
-      <Label>{props.label}</Label>
-      <Input
-        type="date"
-        defaultValue={props.value}
-        onChange={(e) => props.handleOnChange(e.target.value)}
-      />
-    </div>
   )
 }

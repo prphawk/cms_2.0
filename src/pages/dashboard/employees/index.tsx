@@ -115,7 +115,8 @@ export default function Employees() {
   const { data, isLoading, isError } = api.membership.getAll.useQuery({
     is_membership_active: filterAM?.value,
     is_employee_active: filterAE?.value,
-    roles: filterC
+    roles: filterC,
+    dates: filterD
   })
 
   if (isError) {

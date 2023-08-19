@@ -26,6 +26,12 @@ export const _toDate = (str: string) => {
   return new Date(`${arr[2]}/${arr[1]}/${arr[0]}`)
 }
 
+export const _toDateFromForm = (str?: string) => {
+  if (!str) return undefined
+  const newStr = str.replace('-', '/')
+  return new Date(newStr)
+}
+
 export const _toLocaleString = (date?: Date | null) => {
   if (date) {
     const arr = _toString(date)?.split('-')
