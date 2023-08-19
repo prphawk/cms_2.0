@@ -1,3 +1,4 @@
+import { CommitteeHeaders } from '~/constants/headers'
 import { CountDataType, RawCountDataType } from '~/types'
 
 export const _diffMonths = (d1: Date, d2: Date) => {
@@ -12,11 +13,30 @@ export const _sortStringDate = (
   row1: { getValue: (columnId: string) => string },
   row2: { getValue: (columnId: string) => string },
   columnId: string
-) => _toDate(row1.getValue(columnId)).getTime() - _toDate(row2.getValue(columnId)).getTime()
+) => {
+  const max = new Date('2050/01/01') //TODO change this later
+  const value1 = _toDate(row1.getValue(columnId)) || max
+  const value2 = _toDate(row2.getValue(columnId)) || max
+  return value1.getTime() - value2.getTime()
+}
 
 export const _toDate = (str: string) => {
+  if (str === CommitteeHeaders.VALUE_NULL) return null
   const arr = str.split('/')
   return new Date(`${arr[2]}/${arr[1]}/${arr[0]}`)
+}
+
+export const _toDateFromForm = (str?: string) => {
+  if (!str) return undefined
+  const newStr = str.replace('-', '/')
+  return new Date(newStr)
+}
+
+export const _toLocaleStringFromForm = (str?: string) => {
+  if (!str) return undefined
+  const arr = str.split('-')
+  if (arr?.length < 3) return CommitteeHeaders.VALUE_NULL
+  return `${arr[2]}/${arr[1]}/${arr[0]}`
 }
 
 export const _toLocaleString = (date?: Date | null) => {
@@ -24,8 +44,9 @@ export const _toLocaleString = (date?: Date | null) => {
     const arr = _toString(date)?.split('-')
     if (arr?.length) return `${arr[2]}/${arr[1]}/${arr[0]}`
   }
-  return ''
+  return CommitteeHeaders.VALUE_NULL
 }
+
 export const _toLocaleExtendedString = (date: Date) =>
   date.toLocaleDateString('pt-BR', {
     weekday: 'long',

@@ -104,10 +104,14 @@ export default function DataTableColumnHeader<TData, TValue>({
   )
 }
 
-export const DateColumn = ({ value, children }: { value: string } & PropsWithChildren) => {
+export const DateColumn = ({
+  value,
+  children,
+  secondaryStr
+}: { value: string; secondaryStr?: boolean } & PropsWithChildren) => {
   const dateValue = _toDate(value)
 
-  return (
+  return dateValue ? (
     <div className="flex flex-row" aria-labelledby={value}>
       <TooltipProvider>
         <Tooltip>
@@ -115,17 +119,19 @@ export const DateColumn = ({ value, children }: { value: string } & PropsWithChi
             <div>{value}</div>
           </TooltipTrigger>
           {children}
-          <TooltipContent>{_toLocaleExtendedString(dateValue)}</TooltipContent>
+          <TooltipContent>{dateValue && _toLocaleExtendedString(dateValue)}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </div>
+  ) : (
+    <div>{secondaryStr ? 'Permanente' : value}</div>
   )
 }
 
 export const EndDateBadge = ({ value, isActive }: { value: string; isActive: boolean }) => {
   const dateValue = _toDate(value)
 
-  return isActive ? (
+  return isActive && dateValue ? (
     <span className="self-center ">
       {_isDateComing(dateValue) && <AlertTriangleIcon className=" ml-2 h-4 w-4 text-yellow-500" />}
     </span>

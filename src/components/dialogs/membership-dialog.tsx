@@ -26,14 +26,14 @@ import {
   RoleSelectFormItem
 } from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
-import { MembershipSchema } from '~/schemas/membership'
+import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 
 export default function MembershipDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
   member?: Membership & { employee: Employee }
-  handleSave: (membershipSchema: z.infer<typeof MembershipSchema>) => void
+  handleSave: (membershipSchema: z.infer<typeof MembershipFormSchema>) => void
   committee: { id: number; begin_date: Date | null; end_date: Date | null }
 }) {
   const myDefaultValues = () => {
@@ -52,15 +52,15 @@ export default function MembershipDialog(props: {
     }
   }
 
-  const form = useForm<z.infer<typeof MembershipSchema>>({
-    resolver: zodResolver(MembershipSchema)
+  const form = useForm<z.infer<typeof MembershipFormSchema>>({
+    resolver: zodResolver(MembershipFormSchema)
   })
 
   useEffect(() => {
     if (props.open) form.reset(myDefaultValues() as any)
   }, [props.open, props.member])
 
-  function onSubmit(membershipSchema: z.infer<typeof MembershipSchema>) {
+  function onSubmit(membershipSchema: z.infer<typeof MembershipFormSchema>) {
     props.handleSave(membershipSchema)
     onClose()
   }

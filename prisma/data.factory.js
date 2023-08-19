@@ -12,11 +12,13 @@ class DataFactory {
   }
 
   newMockCommittee(bond, name) {
+    const date = faker.date.past()
+    const isEven = date.getTime() % 2 === 0
     return {
       name: name || 'Órgão ' + faker.person.fullName(),
       bond: bond || 'Vínculo ' + faker.commerce.department(),
-      begin_date: faker.date.past(),
-      end_date: faker.date.future(),
+      begin_date: isEven ? faker.date.past() : null,
+      end_date: isEven ? faker.date.future() : null,
       ordinance: 'Portaria ' + faker.string.alphanumeric(5),
       observations: faker.lorem.sentence(),
       is_active: faker.datatype.boolean({ probability: 0.75 })
@@ -39,13 +41,14 @@ class DataFactory {
 
   newMockMembershipJSON(mockEmployeeId, mockCommitteeId, mockRole) {
     const date = new Date()
+    const isEven = date.getTime() % 2 === 0
     date.setFullYear(new Date().getFullYear() + 1)
     return {
       employee_id: mockEmployeeId,
       committee_id: mockCommitteeId,
       ordinance: 'Portaria ' + faker.string.alphanumeric(5),
-      begin_date: new Date(),
-      end_date: date,
+      begin_date: isEven ? new Date() : null,
+      end_date: isEven ? date : null,
       role: mockRole,
       observations: faker.lorem.sentence(),
       is_active: faker.datatype.boolean({ probability: 0.75 })

@@ -47,12 +47,14 @@ export const getTemplateColumns = (
   {
     accessorKey: 'committee',
     accessorFn: (row) =>
-      row.committee ? _diffMonths(row.committee.begin_date, row.committee.end_date) : undefined,
+      row.committee?.begin_date && row.committee.end_date
+        ? _diffMonths(row.committee.begin_date, row.committee.end_date)
+        : undefined,
     id: 'Duração de Mandato',
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as number
-      return <div>{value ? `${value} meses` : ''}</div>
+      return <div>{value ? `${value} meses` : 'Permanente'}</div>
     }
   },
   {
@@ -76,9 +78,7 @@ export const getTemplateColumns = (
     accessorFn: (row) => _toLocaleString(row.committee?.begin_date),
     sortingFn: _sortStringDate,
     id: CommitteeHeaders.BEGIN_DATE,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={`Início de Mandato Atual`} />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title={`Início de Mandato`} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
 
@@ -103,24 +103,6 @@ export const getTemplateColumns = (
       )
     }
   },
-  // {
-  //   accessorKey: 'observations',
-  //   id: CommitteeHeaders.OBSERVATIONS,
-  //   header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
-  //   cell: ({ row, column }) => {
-  //     const value = row.getValue(column.id) as string
-  //     return (
-  //       <TooltipProvider>
-  //         <Tooltip>
-  //           <TooltipTrigger asChild>
-  //             <div className="w-48 truncate">{value}</div>
-  //           </TooltipTrigger>
-  //           <TooltipContent>{value}</TooltipContent>
-  //         </Tooltip>
-  //       </TooltipProvider>
-  //     )
-  //   }
-  // },
   {
     accessorKey: 'Notificar-me',
     id: MyHeaders.NOTIFICATIONS,
@@ -160,9 +142,9 @@ export const getTemplateColumns = (
     cell: ({ row }) => {
       const committee = row.original.committee
       return (
-        <div className="min-w-[64px]">
+        <div className="flex min-w-[64px]">
           {committee && (
-            <>
+            <div className="ml-auto px-4">
               <Button
                 onClick={() => handleViewCommittee(committee.id)}
                 variant="ghost"
@@ -189,7 +171,7 @@ export const getTemplateColumns = (
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </>
+            </div>
           )}
         </div>
       )

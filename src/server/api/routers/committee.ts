@@ -6,7 +6,8 @@ import { _getTemplateByName } from './template'
 import { Prisma } from '@prisma/client'
 import { CommitteeSchema } from '~/schemas/committee'
 import { MembershipArraySchema } from '~/schemas/membership'
-import { FilterSchema } from '~/schemas'
+import { DateSchema, FilterSchema } from '~/schemas'
+import { _toDateFromForm } from '~/utils/string'
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({
@@ -31,7 +32,8 @@ export const committeeRouter = createTRPCRouter({
         id: z.number(),
         is_active: z.boolean().optional(),
         is_temporary: z.boolean().optional(),
-        roles: z.string().array().optional()
+        roles: z.string().array().optional(),
+        dates: DateSchema
       })
     )
     .query(({ ctx, input }) => {
@@ -44,7 +46,21 @@ export const committeeRouter = createTRPCRouter({
             include: { employee: true },
             where: {
               is_active: input.is_active,
-              role: { in: input.roles }
+              role: { in: input.roles },
+              NOT: {
+                OR: [
+                  {
+                    begin_date: {
+                      gt: _toDateFromForm(input.dates?.begin_date)
+                    }
+                  },
+                  {
+                    end_date: {
+                      lt: _toDateFromForm(input.dates?.end_date)
+                    }
+                  }
+                ]
+              }
             }
           },
           template: true
@@ -64,31 +80,47 @@ export const committeeRouter = createTRPCRouter({
     })
   }),
 
-  getAll: protectedProcedure.input(FilterSchema).query(async ({ ctx, input }) => {
-    const template =
-      input.is_temporary === false ? { isNot: null } : input.is_temporary && { is: null }
-    const result = await ctx.prisma.committee.findMany({
-      where: {
-        is_active: input.is_active,
-        template
-      },
-      orderBy: { name: 'asc' },
-      include: {
-        members: {
-          select: { is_active: true } //for filtering the counting above
+  getAll: protectedProcedure
+    .input(FilterSchema.merge(z.object({ dates: DateSchema })))
+    .query(async ({ ctx, input }) => {
+      const template =
+        input.is_temporary === false ? { isNot: null } : input.is_temporary && { is: null }
+      const result = await ctx.prisma.committee.findMany({
+        where: {
+          is_active: input.is_active,
+          template,
+          NOT: {
+            OR: [
+              {
+                begin_date: {
+                  gt: _toDateFromForm(input.dates?.begin_date)
+                }
+              },
+              {
+                end_date: {
+                  lt: _toDateFromForm(input.dates?.end_date)
+                }
+              }
+            ]
+          }
+        },
+        orderBy: { name: 'asc' },
+        include: {
+          members: {
+            select: { is_active: true } //for filtering the counting above
+          }
         }
-      }
-    })
+      })
 
-    return result.map((c) => {
-      const members_count = { active_count: 0, total_count: c.members.length }
-      members_count.active_count = c.members.reduce(
-        (acum, curr) => acum + Number(curr.is_active),
-        0
-      )
-      return { ...c, members: undefined, members_count }
-    })
-  }),
+      return result.map((c) => {
+        const members_count = { active_count: 0, total_count: c.members.length }
+        members_count.active_count = c.members.reduce(
+          (acum, curr) => acum + Number(curr.is_active),
+          0
+        )
+        return { ...c, members: undefined, members_count }
+      })
+    }),
 
   getOptions: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.committee.findMany({

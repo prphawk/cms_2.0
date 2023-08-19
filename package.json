@@ -10,7 +10,8 @@
     "dbpush": "npx prisma validate && npx prisma db push",
     "studio": "npx prisma studio",
     "start": "next start",
-    "seed": " npx prisma db seed"
+    "seed": " npx prisma db seed",
+    "import": " node prisma/import.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

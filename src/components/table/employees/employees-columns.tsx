@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { EmployeeHeaders, MembershipHeaders, MyHeaders } from '~/constants/headers'
-import { _toLocaleString } from '~/utils/string'
-import { CircleOffIcon, MoreHorizontal } from 'lucide-react'
+import { _sortStringDate, _toLocaleString } from '~/utils/string'
+import { XIcon, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -11,12 +11,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import DataTableColumnHeader from '~/components/table/data-table-column-header'
+import DataTableColumnHeader, {
+  DateColumn,
+  EndDateBadge
+} from '~/components/table/data-table-column-header'
 import Link from 'next/link'
 import { Routes } from '~/constants/routes'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge } from '~/components/badge'
 import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
+import { Observations, Ordinance } from '../colums'
 
 export const getEmployeesColumns = (
   handleViewCommittee: (
@@ -49,7 +53,7 @@ export const getEmployeesColumns = (
           <strong className="truncate">{value}</strong>
           {is_inactive && (
             <IconBadge>
-              <CircleOffIcon className="h-3 w-3 text-white" />
+              <XIcon className="h-3 w-3 text-white" />
             </IconBadge>
           )}
         </div>
@@ -74,16 +78,16 @@ export const getEmployeesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      //const is_inactive = !row.original.is_active
+      const is_inactive = !row.original.is_active
 
       return (
-        <div className="flex w-[240px] flex-row">
-          <strong className="truncate">{value}</strong>
-          {/* {is_inactive && (
+        <div className="flex max-w-[200px] flex-row truncate">
+          {value}
+          {is_inactive && (
             <IconBadge>
-              <CircleOffIcon className="h-3 w-3 text-white" />
+              <XIcon className="h-3 w-3 text-white" />
             </IconBadge>
-          )} */}
+          )}
         </div>
       )
     }
@@ -98,7 +102,7 @@ export const getEmployeesColumns = (
       const template_id = row.original.committee.template_id
       return template_id ? (
         <Link
-          className="flex max-w-[280px] flex-row underline"
+          className="flex max-w-[180px] flex-row underline"
           href={`${Routes.TEMPLATES}/${template_id}/${value}`}
         >
           <span className="truncate">{value}</span>
@@ -114,7 +118,33 @@ export const getEmployeesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return <div className="truncate">{value}</div>
+      return Ordinance(value)
+    }
+  },
+  {
+    accessorKey: 'begin_date',
+    id: MembershipHeaders.BEGIN_DATE,
+    sortingFn: _sortStringDate,
+    accessorFn: (row) => _toLocaleString(row.begin_date),
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string
+      return <DateColumn value={value} />
+    }
+  },
+  {
+    accessorKey: 'end_date',
+    id: MembershipHeaders.END_DATE,
+    sortingFn: _sortStringDate,
+    accessorFn: (row) => _toLocaleString(row.end_date),
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string
+      return (
+        <DateColumn value={value}>
+          <EndDateBadge value={value} isActive={row.original?.is_active} />
+        </DateColumn>
+      )
     }
   },
   {
@@ -123,16 +153,7 @@ export const getEmployeesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="w-60 truncate">{value}</div>
-            </TooltipTrigger>
-            <TooltipContent>{value}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )
+      return Observations(value)
     }
   },
   {
@@ -142,46 +163,48 @@ export const getEmployeesColumns = (
       const role = row.original.role
       const template_id = row.original.committee.template_id
       return (
-        // <div className="min-w-[64px]">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => handleViewCommittee(row.original)}>
-              Ver {MyHeaders.COMMITTEE.toLowerCase()}
-            </DropdownMenuItem>
-            {template_id ? (
-              <DropdownMenuItem>
-                <Link href={`${Routes.TEMPLATES}/${template_id}/${role}`}>
-                  Ver histórico do cargo
-                </Link>
-              </DropdownMenuItem>
-            ) : (
-              <></>
-            )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              danger
-              disabled={!row.original.is_active}
-              onClick={() => onDeactivateMembership(row.original)}
-            >
-              Desativar {MyHeaders.MEMBERSHIP.toLowerCase()}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              danger
-              disabled={!row.original.employee.is_active}
-              onClick={() => onDeactivateEmployee(row.original)}
-            >
-              Desativar {MyHeaders.EMPLOYEE.toLowerCase()}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        // </div>
+        <div className="flex min-w-[64px]">
+          <div className="ml-auto px-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Abrir menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => handleViewCommittee(row.original)}>
+                  Ver {MyHeaders.COMMITTEE.toLowerCase()}
+                </DropdownMenuItem>
+                {template_id ? (
+                  <DropdownMenuItem>
+                    <Link href={`${Routes.TEMPLATES}/${template_id}/${role}`}>
+                      Ver histórico do cargo
+                    </Link>
+                  </DropdownMenuItem>
+                ) : (
+                  <></>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  danger
+                  disabled={!row.original.is_active}
+                  onClick={() => onDeactivateMembership(row.original)}
+                >
+                  Desativar {MyHeaders.MEMBERSHIP.toLowerCase()}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  danger
+                  disabled={!row.original.employee.is_active}
+                  onClick={() => onDeactivateEmployee(row.original)}
+                >
+                  Desativar {MyHeaders.EMPLOYEE.toLowerCase()}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
       )
     }
   }

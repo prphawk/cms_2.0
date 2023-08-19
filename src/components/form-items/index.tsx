@@ -10,7 +10,7 @@ import {
 import { cn } from '@/lib/utils'
 import { ChevronsUpDownIcon, CheckIcon } from 'lucide-react'
 import { useState, useEffect, PropsWithChildren } from 'react'
-import { CommitteeHeaders, MembershipHeaders } from '~/constants/headers'
+import { CommitteeHeaders, MembershipHeaders, MyHeaders } from '~/constants/headers'
 import { api } from '~/utils/api'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/command'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
-import { IFilterOptions } from '../table/data-table-toolbar'
 
 export const RoleSelectFormItem = (props: {
   form: any
@@ -63,11 +62,14 @@ export const RoleSelectFormItem = (props: {
                     !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage'
                   )}
                 >
-                  {isLoading
-                    ? 'Loading...'
-                    : field.value
-                    ? roles.find((r) => r === field.value)
-                    : 'ex: Membro(a)'}
+                  <span className="max-w-[149px] truncate">
+                    {isLoading
+                      ? 'Loading...'
+                      : field.value
+                      ? roles.find((r) => r === field.value)
+                      : 'ex: Membro(a)'}
+                  </span>
+
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
@@ -172,15 +174,17 @@ export const EmployeeSelectFormItem = (props: {
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+                    'flex h-9 justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
                     !field.value.name && 'text-muted-foregroundPage'
                   )}
                 >
-                  {isLoading
-                    ? 'Loading...'
-                    : field.value.name
-                    ? employees?.find((e) => e.name === field.value.name)?.name
-                    : 'ex: Fulano(a)'}
+                  <span className="max-w-[149px] truncate">
+                    {isLoading
+                      ? 'Loading...'
+                      : field.value.name
+                      ? employees?.find((e) => e.name === field.value.name)?.name
+                      : 'ex: Fulano(a)'}
+                  </span>
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
@@ -351,7 +355,7 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
       name="template_name"
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel className="pb-1">{CommitteeHeaders.TEMPLATE}</FormLabel>
+          <FormLabel className="pb-1">{MyHeaders.TEMPLATE}</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
