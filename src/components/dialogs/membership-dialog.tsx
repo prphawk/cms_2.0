@@ -42,7 +42,7 @@ export default function MembershipDialog(props: {
         id: props.member?.employee.id,
         name: props.member?.employee.name || ''
       },
-      role: props.member?.role || '',
+      role: props.member?.role || 'Membro(a)',
       begin_date: _toString(props.member?.begin_date || props.committee.begin_date || new Date()),
       end_date: _toString(
         props.member?.end_date || props.committee.end_date || _addYears(new Date(), 1)
@@ -74,7 +74,7 @@ export default function MembershipDialog(props: {
     <MyDialog open={props.open}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{props.member ? 'Editar' : 'Adicionar'} Membro(s)</DialogTitle>
+          <DialogTitle>{props.member ? 'Editar' : 'Adicionar'} Membro(a)</DialogTitle>
           <DialogDescription>
             {props.member && (
               <>
