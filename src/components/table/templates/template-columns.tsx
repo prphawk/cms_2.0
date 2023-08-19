@@ -26,6 +26,7 @@ export const getTemplateColumns = (
     value: boolean
   ) => void,
   handleViewCommittee: (committee_id: number) => void,
+  handleCommitteeSuccession: (template: TemplateWithCommitteeCountAndNotifDataType) => void,
   onEditTemplate: (template: TemplateWithCommitteeCountAndNotifDataType) => void
 ): ColumnDef<TemplateWithCommitteeCountAndNotifDataType>[] => [
   {
@@ -122,10 +123,12 @@ export const getTemplateColumns = (
     ),
     cell: ({ row }) => {
       const template = row.original
+      const doesNotHaveAnEnd = !template.committee?.end_date
       return (
         <div className="flex flex-row items-center gap-x-2">
           <Switch
-            defaultChecked={template.notification?.isOn}
+            disabled={doesNotHaveAnEnd}
+            defaultChecked={doesNotHaveAnEnd ? false : template.notification?.isOn}
             onCheckedChange={(v) => handleChangeNotifValue(template, v)}
           />
           <BellRingIcon className="ml-1 h-4 w-4" />
@@ -162,6 +165,9 @@ export const getTemplateColumns = (
                   <Separator />
                   <DropdownMenuItem onClick={() => handleViewCommittee(committee.id)}>
                     Ver mandato atual
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleCommitteeSuccession(row.original)}>
+                    Suceder mandato atual
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onEditTemplate(row.original)}>
                     Editar {MyHeaders.TEMPLATE.toLowerCase()}

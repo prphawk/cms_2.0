@@ -20,6 +20,7 @@ import { DialogsEnum } from '~/constants/enums'
 import { TemplateSchema } from '~/schemas/committee'
 import { z } from 'zod'
 import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
+import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 
 export default function TemplatePage() {
   const router = useRouter()
@@ -81,6 +82,7 @@ export default function TemplatePage() {
               columns={getTemplateColumns(
                 handleChangeNotifValue,
                 handleViewCommittee,
+                handleCommitteeSuccession,
                 onEditTemplate
               )}
             />
@@ -90,6 +92,13 @@ export default function TemplatePage() {
               handleSave={handleSaveTemplate}
               template={selectedTemplate}
             />
+            {selectedTemplate?.committee && (
+              <SuccessionDialogs
+                open={openDialog}
+                handleOpenDialog={handleOpenDialog}
+                committeeId={selectedTemplate.committee.id}
+              />
+            )}
           </>
         )}
       </ContentLayout>

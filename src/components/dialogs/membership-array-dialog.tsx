@@ -40,9 +40,9 @@ export default function MembershipArrayDialog(props: {
       employee: {
         name: ''
       },
-      role: '',
-      begin_date: _toString(new Date()),
-      end_date: _toString(_addYears(new Date(), 1)),
+      role: 'Membro(a)',
+      begin_date: _toString(props.committee?.begin_date || new Date()),
+      end_date: _toString(props.committee?.end_date || _addYears(new Date(), 1)),
       ordinance: '',
       observations: ''
     }
@@ -92,19 +92,27 @@ export default function MembershipArrayDialog(props: {
 
   return (
     <MyDialog open={props.open}>
-      <DialogContent className="max-w-[68rem] overflow-x-auto">
+      <DialogContent className="max-w-[70rem] overflow-x-auto">
         <DialogHeader>
           <DialogTitle>Sucessão de Membros</DialogTitle>
           <DialogDescription>
-            Participações ativas são importadas do último mandato.
+            Apenas as participações ativas do último mandato são importadas para edição.
           </DialogDescription>
         </DialogHeader>
         <MyDialogClose onClose={onClose} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} id="formMembership">
-            <div className="grid max-h-[70vh] gap-y-2 overflow-y-auto">
+            <div className="grid max-h-[65vh] gap-y-2 overflow-y-auto">
               {fieldArray.fields.map((f, index) => (
                 <div key={f.id} className={'flex flex-row items-end justify-between gap-x-4'}>
+                  <Button
+                    className="mb-[7px] h-5 w-5"
+                    onClick={() => fieldArray.remove(index)}
+                    variant="ghost"
+                    size="icon"
+                  >
+                    <MinusIcon className="h-4 w-5" />
+                  </Button>
                   <EmployeeSelectFormItem
                     hideLabel={index > 0}
                     form={form}
@@ -141,20 +149,12 @@ export default function MembershipArrayDialog(props: {
                   />
                   <CommonFormItem
                     hideLabel={index > 0}
-                    className="min-w-[128px]"
+                    className="mr-3 min-w-[128px]"
                     form={form}
                     fieldName={`members.${index}.observations`}
                     label={MembershipHeaders.OBSERVATIONS}
                     placeholder="ex: Something something"
                   />
-                  <Button
-                    className="mb-[7px] h-5 w-5"
-                    onClick={() => fieldArray.remove(index)}
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <MinusIcon className="h-4 w-5" />
-                  </Button>
                 </div>
               ))}
             </div>
