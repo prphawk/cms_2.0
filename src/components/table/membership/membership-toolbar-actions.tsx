@@ -26,6 +26,7 @@ export default function MembershipTableToolbarActions(props: {
           props.onCreateMembership()
           props.handleOpenDialog(DialogsEnum.membership)
         }}
+        disabled={!props.committee.is_active}
         variant="outline"
         size="sm"
         className="ml-auto mr-2 hidden h-8 bg-transparent lg:flex"
@@ -63,7 +64,6 @@ const ActionsMenuButton = (props: {
         <DropdownMenuItem onClick={() => props.handleOpenDialog(DialogsEnum.committee)}>
           Editar {MyHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
-        {/*TODO botar uns icons aqui */}
         <DropdownMenuItem
           disabled={!props.committee.is_active || !props.committee.template_id}
           onClick={() => props.handleOpenDialog(DialogsEnum.succession)}

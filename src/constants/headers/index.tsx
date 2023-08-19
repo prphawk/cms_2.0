@@ -1,5 +1,6 @@
 export class MyHeaders {
   public static COMMITTEE = 'Órgão'
+  public static INSTANCE = 'Mandato'
   public static COMMITTEES = 'Órgãos'
   public static EMPLOYEE = 'Servidor(a)'
   public static EMPLOYEES = 'Servidores'

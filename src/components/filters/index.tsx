@@ -1,7 +1,7 @@
 'use client'
 
 import { HourglassIcon } from 'lucide-react'
-import { CircleOffIcon } from 'lucide-react'
+import { XIcon } from 'lucide-react'
 import { MyHeaders } from '~/constants/headers'
 import { FilterStateDatesType } from '~/types'
 import { _toLocaleStringFromForm } from '~/utils/string'
@@ -18,7 +18,7 @@ export const filterAProps = (sufix?: string) => {
     title: 'Status' + (sufix ? ` de ${sufix}` : ''),
     options: [
       { label: 'Ativo(a)', value: 'is_active' },
-      { label: 'Inativo(a)', value: 'is_inactive', icon: CircleOffIcon }
+      { label: 'Inativo(a)', value: 'is_inactive', icon: XIcon }
     ]
   }
 }

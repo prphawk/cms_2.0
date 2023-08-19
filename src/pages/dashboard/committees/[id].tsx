@@ -32,7 +32,7 @@ import { CommitteeSchema } from '~/schemas/committee'
 import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
-import { HourglassIcon, CircleOffIcon } from 'lucide-react'
+import { HourglassIcon, XIcon } from 'lucide-react'
 import { IconBadge } from '~/components/badge'
 import {
   CommitteeWithOptionalTemplateDataType,
@@ -259,7 +259,7 @@ export default function CommitteeMembership() {
               open={openDialog == DialogsEnum.alert_deactivate}
               description={
                 <>
-                  Esta ação irá <strong>encerrar</strong> esta participação. Deseja continuar?
+                  Esta ação irá <strong>encerrar</strong> a participação. Deseja continuar?
                 </>
               }
               handleOpenDialog={handleOpenDialog}
@@ -292,7 +292,7 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
               )}
               {!data.is_active && (
                 <IconBadge>
-                  <CircleOffIcon className="h-4 w-4 " />
+                  <XIcon className="h-4 w-4 " />
                 </IconBadge>
               )}
             </span>

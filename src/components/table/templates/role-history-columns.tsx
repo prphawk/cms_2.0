@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { MyHeaders, MembershipHeaders } from '~/constants/headers'
 import { _sortStringDate, _toLocaleString } from '~/utils/string'
-import { CircleOffIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
+import { XIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -37,7 +37,7 @@ export const getTemplateRoleHistoryColumns = (
           <strong className="truncate">{value}</strong>
           {is_inactive && (
             <IconBadge>
-              <CircleOffIcon className="h-3 w-3 text-white" />
+              <XIcon className="h-3 w-3 text-white" />
             </IconBadge>
           )}
         </div>
@@ -67,7 +67,7 @@ export const getTemplateRoleHistoryColumns = (
           </TooltipProvider>
           {is_inactive && (
             <IconBadge>
-              <CircleOffIcon className="h-3 w-3" />
+              <XIcon className="h-3 w-3" />
             </IconBadge>
           )}
         </div>

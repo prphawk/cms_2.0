@@ -70,7 +70,7 @@ export default function CommitteeDialog(props: {
         <DialogHeader>
           <DialogTitle>{`${
             props.succession ? 'Sucessão de ' : props.committee ? 'Editar' : 'Criar'
-          } ${MyHeaders.COMMITTEE}`}</DialogTitle>
+          } ${MyHeaders.INSTANCE}`}</DialogTitle>
           <DialogDescription>
             {props.succession ? (
               <>

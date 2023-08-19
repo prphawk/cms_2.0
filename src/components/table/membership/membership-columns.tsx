@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { MembershipHeaders } from '~/constants/headers'
 import { _sortStringDate, _toLocaleString } from '~/utils/string'
-import { CircleOffIcon, MoreHorizontal } from 'lucide-react'
+import { XIcon, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -41,7 +41,7 @@ export const getMembershipColumns = (
           <strong className="truncate">{value}</strong>
           {is_inactive && (
             <IconBadge>
-              <CircleOffIcon className="h-3 w-3 text-white" />
+              <XIcon className="h-3 w-3 text-white" />
             </IconBadge>
           )}
         </div>

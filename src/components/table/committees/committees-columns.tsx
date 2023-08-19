@@ -2,7 +2,7 @@ import { Committee } from '@prisma/client'
 import { ColumnDef, filterFns, sortingFns } from '@tanstack/react-table'
 import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import { _isDateComing, _sortStringDate, _toDate, _toLocaleString } from '~/utils/string'
-import { CircleOffIcon, HourglassIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
+import { XIcon, HourglassIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -58,7 +58,7 @@ export const getCommitteesColumns = (
               )}
               {is_inactive && (
                 <IconBadge>
-                  <CircleOffIcon className="h-3 w-3 text-white" />
+                  <XIcon className="h-3 w-3 text-white" />
                 </IconBadge>
               )}
             </div>
