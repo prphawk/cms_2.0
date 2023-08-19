@@ -129,7 +129,7 @@ export default function MembershipArrayDialog(props: {
                     form={form}
                     fieldName={`members.${index}.ordinance`}
                     label={MembershipHeaders.ORDINANCE}
-                    placeholder="ex: Portaria"
+                    placeholder="ex: 0000/2023-UFRGS"
                   />
                   <DateFormItem
                     hideLabel={index > 0}
@@ -153,7 +153,7 @@ export default function MembershipArrayDialog(props: {
                     form={form}
                     fieldName={`members.${index}.observations`}
                     label={MembershipHeaders.OBSERVATIONS}
-                    placeholder="ex: Something something"
+                    placeholder="ex: 2º mandato"
                   />
                 </div>
               ))}

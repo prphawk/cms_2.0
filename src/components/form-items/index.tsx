@@ -66,7 +66,7 @@ export const RoleSelectFormItem = (props: {
                 >
                   <span className="max-w-[149px] truncate">
                     {isLoading
-                      ? 'Loading...'
+                      ? 'Carregando...'
                       : field.value
                       ? roles.find((r) => r === field.value)
                       : 'ex: Membro(a)'}
@@ -182,7 +182,7 @@ export const EmployeeSelectFormItem = (props: {
                 >
                   <span className="max-w-[149px] truncate">
                     {isLoading
-                      ? 'Loading...'
+                      ? 'Carregando...'
                       : field.value.name
                       ? employees?.find((e) => e.name === field.value.name)?.name
                       : 'ex: Fulano(a)'}
@@ -198,7 +198,7 @@ export const EmployeeSelectFormItem = (props: {
                   className="h-9"
                   onValueChange={(search) => setCommandSearch(search)}
                 />
-                {/* {isLoading && <CommandLoading>Loading...</CommandLoading>} */}
+                {/* {isLoading && <CommandLoading>Carregando...</CommandLoading>} */}
                 <CommandEmpty className="p-0">
                   {commandSearch && (
                     <Button
@@ -263,7 +263,7 @@ export const ObservationsFormItem = (props: { form: any; label: string; fieldNam
           <FormControl>
             <Textarea
               rows={1}
-              placeholder="Something something..."
+              placeholder="ex: 2º mandato"
               className="resize-y placeholder:text-muted-foregroundPage"
               {...field}
             />
@@ -302,7 +302,6 @@ export const CommonFormItem = (props: {
           {!props.hideLabel && <MyLabel required={props.required}>{props.label}</MyLabel>}{' '}
           <FormControl>
             <Input
-              // required={props.required}
               className="placeholder:text-muted-foregroundPage"
               {...field}
               placeholder={props.placeholder}
@@ -388,7 +387,7 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
             <HelpCircleIcon className="ml-1 h-4 w-4 p-[2px]" />
           </TooltipTrigger>
           <TooltipContent>
-            {`Mandatos de comissões regimentais (permantentes) devem ser incluídas na coleção de mandatos seu ${MyHeaders.TEMPLATE.toLowerCase()}.`}
+            {`Mandatos de comissões regimentais (permantentes) são adicionados a coleção de mandatos de seu ${MyHeaders.TEMPLATE.toLowerCase()}.`}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -458,10 +457,10 @@ export const SelectFormItem = (
                   )}
                 >
                   {props.isLoading
-                    ? 'Loading...'
+                    ? 'Carregando...'
                     : field.value
                     ? props.options.find((option) => option === field.value)
-                    : 'ex: Direção INF'}
+                    : 'ex: Direção'}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
@@ -475,7 +474,7 @@ export const SelectFormItem = (
                 />
                 <CommandEmpty className="p-0">
                   {props.isLoading
-                    ? 'Loading...'
+                    ? 'Carregando...'
                     : props.searchValue && (
                         <Button
                           className="max-h-full w-full "

@@ -67,7 +67,6 @@ const createTemplate = async (key) => {
   return await prisma.template.create({
     data: {
       name: key
-      //notification: { create: {} }
     }
   })
 }

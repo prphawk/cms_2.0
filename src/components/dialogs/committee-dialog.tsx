@@ -114,21 +114,21 @@ export default function CommitteeDialog(props: {
               form={form}
               fieldName="name"
               label={CommitteeHeaders.NAME}
-              placeholder="ex: Direção INF (2023)"
+              placeholder="ex: Direção 2023"
               required
             />
             <CommonFormItem
               form={form}
               fieldName="bond"
               label={CommitteeHeaders.BOND}
-              placeholder="ex: Órgão"
+              placeholder="ex: INF"
               required
             />
             <CommonFormItem
               form={form}
               fieldName="ordinance"
               label={CommitteeHeaders.ORDINANCE}
-              placeholder="ex: Portaria"
+              placeholder="ex: 0000/2023-UFRGS"
             />
             <div className="flex flex-row justify-between gap-x-4 pt-2">
               <DateFormItem

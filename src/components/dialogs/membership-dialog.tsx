@@ -100,7 +100,7 @@ export default function MembershipDialog(props: {
               form={form}
               fieldName="ordinance"
               label={MembershipHeaders.ORDINANCE}
-              placeholder="ex: Portaria"
+              placeholder="ex: 0000/2023-UFRGS"
             />
             <div className="grid grid-cols-2 items-baseline justify-between gap-x-4 pt-2">
               <DateFormItem

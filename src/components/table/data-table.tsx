@@ -107,7 +107,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {isLoading ? 'Loading...' : 'No results.'}
+                  {isLoading ? 'Carregando...' : 'No results.'}
                 </TableCell>
               </TableRow>
             )}
