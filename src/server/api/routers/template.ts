@@ -114,6 +114,9 @@ export const templateRouter = createTRPCRouter({
         where: {
           template_id: t.id,
           is_active: true
+        },
+        orderBy: {
+          end_date: 'desc'
         }
       })
 
