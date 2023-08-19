@@ -8,7 +8,7 @@ import {
   FormDescription
 } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
-import { ChevronsUpDownIcon, CheckIcon } from 'lucide-react'
+import { ChevronsUpDownIcon, CheckIcon, HelpCircleIcon } from 'lucide-react'
 import { useState, useEffect, PropsWithChildren } from 'react'
 import { CommitteeHeaders, MembershipHeaders, MyHeaders } from '~/constants/headers'
 import { api } from '~/utils/api'
@@ -22,6 +22,8 @@ import {
 } from '@/components/ui/command'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export const RoleSelectFormItem = (props: {
   form: any
@@ -347,15 +349,102 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
 
   const [createdIndex, setCreatedIndex] = useState<number>()
 
-  const [commandSearch, setCommandSearch] = useState('')
+  const [searchValue, setSearchValue] = useState('')
 
+  const handleChangeValue = (value?: string) => {
+    const newValue = value || ''
+    props.form.setValue('template_name', newValue)
+    const nameValue = props.form.getValues('name')
+    if (!nameValue) props.form.setValue('name', newValue)
+  }
+
+  const handleSelectOption = () => {
+    if (createdIndex) templates.shift()
+    setCreatedIndex(templates.length)
+    setTemplates([searchValue, ...templates])
+    handleChangeValue(searchValue)
+  }
+
+  const handleChangeSearchValue = (value: string) => {
+    setSearchValue(value)
+  }
+
+  return (
+    <SelectFormItem
+      form={props.form}
+      fieldName={'template_name'}
+      label={MyHeaders.TEMPLATE}
+      onChangeValue={handleChangeValue}
+      options={templates}
+      onSelectOption={handleSelectOption}
+      searchValue={searchValue}
+      onChangeSearchValue={handleChangeSearchValue}
+      isLoading={isLoading}
+      disabled={props.disabled}
+    >
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <HelpCircleIcon className="ml-1 h-4 w-4 p-[2px]" />
+          </TooltipTrigger>
+          <TooltipContent>
+            {`Mandatos de comissões regimentais (permantentes) devem ser incluídas na coleção de mandatos seu ${MyHeaders.TEMPLATE.toLowerCase()}.`}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </SelectFormItem>
+  )
+}
+
+export const CheckBoxFormItem = (props: { form: any; disabled?: boolean }) => {
   return (
     <FormField
       control={props.form.control}
-      name="template_name"
+      name="is_active"
+      render={({ field }) => (
+        <FormItem className="flex w-full flex-row items-start space-x-3 space-y-0 rounded-md border p-2">
+          <FormControl>
+            <Checkbox
+              className="h-5 w-5"
+              disabled={props.disabled}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+          </FormControl>
+          <div className="space-y-1 leading-none">
+            <FormLabel>Mandato ativo</FormLabel>
+            {/* <FormDescription>You can manage your mobile notifications in the</FormDescription> */}
+          </div>
+        </FormItem>
+      )}
+    />
+  )
+}
+
+export const SelectFormItem = (
+  props: {
+    form: any
+    fieldName: string
+    label: string
+    onChangeValue: (value?: string) => void
+    options: string[]
+    onSelectOption: () => void
+    searchValue: string
+    onChangeSearchValue: (value: string) => void
+    disabled?: boolean
+    isLoading?: boolean
+  } & PropsWithChildren
+) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name={props.fieldName}
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel className="pb-1">{MyHeaders.TEMPLATE}</FormLabel>
+          <span className="flex flex-row">
+            <FormLabel className="pb-1">{props.label}</FormLabel>
+            {props.children}
+          </span>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
@@ -368,60 +457,55 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
                     !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage'
                   )}
                 >
-                  {isLoading
+                  {props.isLoading
                     ? 'Loading...'
                     : field.value
-                    ? templates.find((template) => template === field.value)
+                    ? props.options.find((option) => option === field.value)
                     : 'ex: Direção INF'}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset w-96 p-0">
-              <Command isLoading={isLoading}>
+            <PopoverContent className="offset w-[462px] p-0">
+              <Command isLoading={props.isLoading}>
                 <CommandInput
-                  placeholder={`Digite seu ${CommitteeHeaders.TEMPLATE}...`}
+                  placeholder={`Procure um valor`}
                   className="h-9"
-                  onValueChange={(search) => setCommandSearch(search)}
+                  onValueChange={props.onChangeSearchValue}
                 />
                 <CommandEmpty className="p-0">
-                  {isLoading
+                  {props.isLoading
                     ? 'Loading...'
-                    : commandSearch && (
+                    : props.searchValue && (
                         <Button
                           className="max-h-full w-full "
                           variant="ghost"
-                          onClick={() => {
-                            if (createdIndex) templates.pop()
-                            setCreatedIndex(templates.length)
-                            setTemplates([...templates, commandSearch])
-                            props.form.setValue('template_name', commandSearch)
-                          }}
+                          onClick={props.onSelectOption}
                         >
                           <div className="truncate">
-                            Criar {CommitteeHeaders.TEMPLATE.toLowerCase()} "{commandSearch}"?
+                            Criar {props.label.toLowerCase()} "{props.searchValue}"?
                           </div>
                         </Button>
                       )}
                 </CommandEmpty>
-                <CommandGroup className="max-h-64 overflow-y-auto">
-                  {templates.map((template) => (
+                <CommandGroup className="max-h-64 overflow-y-auto ">
+                  {props.options.map((option) => (
                     <CommandItem
-                      value={template}
-                      key={template}
+                      value={option}
+                      key={option}
                       onSelect={(value) => {
                         let found: string | undefined
-                        if (value === props.form.getValues('template_name')?.toLocaleLowerCase()) {
+                        if (value === props.form.getValues(props.fieldName)?.toLocaleLowerCase()) {
                           found = undefined
-                        } else found = templates.find((t) => t.toLocaleLowerCase() === value)
-                        props.form.setValue('template_name', found || '')
+                        } else found = props.options.find((o) => o.toLocaleLowerCase() === value)
+                        props.onChangeValue(found)
                       }}
                     >
-                      {template}
+                      {option}
                       <CheckIcon
                         className={cn(
                           'ml-auto h-4 w-4',
-                          template === field.value ? 'opacity-100' : 'opacity-0'
+                          option === field.value ? 'opacity-100' : 'opacity-0'
                         )}
                       />
                     </CommandItem>
@@ -430,10 +514,6 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
               </Command>
             </PopoverContent>
           </Popover>
-          {/* <FormDescription className="-mb-1.5">
-            Instâncias de comissões <strong>permanentes</strong> devem pertencer a sua{' '}
-            {CommitteeHeaders.TEMPLATE}.
-          </FormDescription> */}
           <FormMessage />
         </FormItem>
       )}

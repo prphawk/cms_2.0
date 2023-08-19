@@ -15,7 +15,8 @@ export const CommitteeSchema = z
     end_date: z.coerce.date().optional(),
     ordinance: z.string().optional(),
     observations: z.string().optional(),
-    template_name: z.string().optional()
+    template_name: z.string().optional(),
+    is_active: z.boolean()
   })
   .refine((data) => (data.begin_date || 0) < (data.end_date || new Date()), {
     message: `${CommitteeHeaders.END_DATE} não pode ser igual/antes de ${CommitteeHeaders.BEGIN_DATE}.`,
