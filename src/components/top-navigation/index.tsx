@@ -68,7 +68,7 @@ export const SignOutButton = ({
         )}
         onClick={() => signOut()}
       >
-        Sign Out
+        Sair
         <LogOutIcon className="ml-3 pt-0.5" />
       </button>
     </div>

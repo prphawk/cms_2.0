@@ -103,8 +103,8 @@ export const _formatCount = (
     })
   }
   return {
-    active_count: obj.active ?? 'Loading...',
-    total_count: obj.active + obj.inactive ?? 'Loading...'
+    active_count: obj.active ?? 'Carregando...',
+    total_count: obj.active + obj.inactive ?? 'Carregando...'
   }
 }
 

@@ -12,4 +12,4 @@ export default function LoadingLayout(props: PropsWithChildren & { isLoading?: b
   )
 }
 
-export const LoadingElement = () => <TextLayout className="m-auto">Loading...</TextLayout>
+export const LoadingElement = () => <TextLayout className="m-auto">Carregando...</TextLayout>

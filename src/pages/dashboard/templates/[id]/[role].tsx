@@ -92,7 +92,7 @@ export const HistoryDetails = (
     <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <TitleLayout>{props.isLoading ? 'Loading...' : props.title}</TitleLayout>
+          <TitleLayout>{props.isLoading ? 'Carregando...' : props.title}</TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">{props.children}</AccordionContent>
       </AccordionItem>

@@ -190,7 +190,6 @@ export const CommitteeActionsMenuColumn = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Ações</DropdownMenuLabel>
-        <Separator />
         <DropdownMenuItem onClick={onViewCommittee}>Ver membros</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem

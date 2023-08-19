@@ -128,8 +128,6 @@ export const getMembershipColumns = (
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                {/* <DropdownMenuItem>Ver histórico de cargo</DropdownMenuItem> */}
-                <DropdownMenuSeparator />
                 {committee.template_id ? (
                   <DropdownMenuItem>
                     <Link href={`${Routes.TEMPLATES}/${committee.template_id}/${role}`}>

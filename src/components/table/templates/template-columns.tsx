@@ -15,6 +15,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
@@ -162,10 +163,10 @@ export const getTemplateColumns = (
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                  <Separator />
                   <DropdownMenuItem onClick={() => handleViewCommittee(committee.id)}>
                     Ver mandato atual
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => handleCommitteeSuccession(row.original)}>
                     Suceder mandato atual
                   </DropdownMenuItem>

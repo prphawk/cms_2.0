@@ -116,7 +116,7 @@ export const TemplateDetails = (props: { isLoading?: boolean } & PropsWithChildr
     <Accordion className="mb-6" type="single" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <TitleLayout>{props.isLoading ? 'Loading' : MyHeaders.TEMPLATES}</TitleLayout>
+          <TitleLayout>{props.isLoading ? 'Carregando' : MyHeaders.TEMPLATES}</TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">{props.children}</AccordionContent>
       </AccordionItem>
