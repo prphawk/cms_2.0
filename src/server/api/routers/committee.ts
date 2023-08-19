@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { number, z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 import { _deactivateMembershipsByCommittee } from './membership'
 import { prisma } from '~/server/db'
@@ -6,7 +6,8 @@ import { _getTemplateByName } from './template'
 import { Prisma } from '@prisma/client'
 import { CommitteeSchema } from '~/schemas/committee'
 import { MembershipArraySchema } from '~/schemas/membership'
-import { DateSchema, FilterSchema } from '~/schemas'
+import { FilterSchema, TemplateSchema, DateSchema } from '~/schemas'
+import { _deleteManyNofifications, _notificationsSuccession } from './notification'
 import { _toDateFromForm } from '~/utils/string'
 
 export const _findUniqueCommittee = async (committee_id: number) => {
@@ -15,7 +16,7 @@ export const _findUniqueCommittee = async (committee_id: number) => {
   })
 }
 
-export const _deactivateCommittee = async (committee_id: number) => {
+const _deactivateCommittee = async (committee_id: number) => {
   return await prisma.committee.update({
     where: { id: committee_id },
     data: {
@@ -154,17 +155,15 @@ export const committeeRouter = createTRPCRouter({
     .input(
       CommitteeSchema.innerType()
         .merge(MembershipArraySchema)
+        .merge(TemplateSchema)
         .merge(
           z.object({
-            template: z.object({
-              id: z.number(),
-              name: z.string()
-            })
+            old_committee_id: z.number()
           })
         )
     )
     .mutation(async ({ ctx, input }) => {
-      const { template, members, template_name, ...data } = input
+      const { template, members, template_name, old_committee_id, ...data } = input
 
       const reduceResult = members.reduce(
         (obj, curr) => {
@@ -189,6 +188,8 @@ export const committeeRouter = createTRPCRouter({
           members: { createMany: { data: reduceResult.membershipsWithEmployee } }
         }
       })
+
+      _notificationsSuccession(old_committee_id, committee.id)
 
       const promises = reduceResult.membershipsWithoutEmployee.map((m) => {
         const { employee, employee_id, ...rest } = m
@@ -236,6 +237,7 @@ export const committeeRouter = createTRPCRouter({
 
       await _deactivateMembershipsByCommittee(id)
       await _deactivateCommittee(id)
+      _deleteManyNofifications(id)
     }),
 
   getRoleHistory: protectedProcedure

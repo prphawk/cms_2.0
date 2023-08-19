@@ -65,7 +65,11 @@ export default function SuccessionDialogs(props: {
   }
 
   const handleSave2nd = (data2nd: z.infer<typeof MembershipArraySchema>) => {
-    const readySuccessionData = { ...successionData, ...data2nd }
+    const readySuccessionData = {
+      old_committee_id: props.committeeId,
+      ...successionData,
+      ...data2nd
+    }
     setSuccessionData(readySuccessionData as any)
     succession.mutate(readySuccessionData as any)
   }

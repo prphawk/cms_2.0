@@ -1,18 +1,6 @@
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 import { _deactivateMembershipsByEmployee } from './membership'
-import { FilterSchema } from '~/schemas'
-
-// type commType = {
-//   role: string | null;
-//   begin_date: Date | null;
-//   observations: string | null;
-//   is_active: boolean;
-//   committee: {
-//     id: number;
-//     name: string;
-//   };
-// };
 
 export const employeeRouter = createTRPCRouter({
   getOne: protectedProcedure.input(z.object({ id: z.number() })).query(({ ctx, input }) => {
@@ -23,18 +11,6 @@ export const employeeRouter = createTRPCRouter({
       }
     })
   }),
-
-  // getAllActive: protectedProcedure.query(({ ctx }) => {
-  //   return ctx.prisma.employee.findMany({
-  //     where: { is_active: true },
-  //     orderBy: { name: 'asc' },
-  //     include: {
-  //       committees: {
-  //         include: { committee: true }
-  //       }
-  //     }
-  //   })
-  // }),
 
   getOptions: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.employee.findMany({
@@ -80,52 +56,4 @@ export const employeeRouter = createTRPCRouter({
 
       return await ctx.prisma.employee.update({ where: { id }, data: { is_active: false } })
     })
-
-  // //get (Active Employee only) Membership History per Employee
-  // getHistory: protectedProcedure.query(async ({ ctx }) => {
-  //   const queryResult = await ctx.prisma.employee.findMany({
-  //     select: {
-  //       id: true,
-  //       name: true,
-  //       committees: {
-  //         select: {
-  //           role: true,
-  //           begin_date: true,
-  //           observations: true,
-  //           is_active: true,
-  //           committee: {
-  //             select: {
-  //               id: true,
-  //               name: true,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //     where: {
-  //       is_active: true,
-  //     },
-  //     orderBy: {
-  //       name: 'asc',
-  //     },
-  //   });
-
-  //   if (!queryResult) return;
-
-  //   const employeesHistory = queryResult.map((e) => {
-  //     const committeesByActivity = e.committees.reduce(
-  //       (obj, currComm) => {
-  //         obj[currComm.is_active ? 'active' : 'inactive'].push(currComm);
-  //         return obj;
-  //       },
-  //       { active: new Array<commType>(), inactive: new Array<commType>() },
-  //     );
-  //     return {
-  //       ...e,
-  //       committees: committeesByActivity,
-  //     };
-  //   });
-
-  //   return employeesHistory;
-  // }),
 })

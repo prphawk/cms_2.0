@@ -1,22 +1,21 @@
-import { Committee, Template } from '@prisma/client'
+import { Committee, Notification, Prisma, Template, User } from '@prisma/client'
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
-import { _addMonths as _addDays, _subDays } from '~/utils/string'
+import { _addDays, _subDays } from '~/utils/string'
+import { _createNotification } from './notification'
 
 export const _getTemplateByName = async (name: string) => {
   return await prisma.template.findFirst({ where: { name } })
 }
 
-export const updateLastSent = (templates: { id: number }[]) => {
+export const updateLastSent = (notifications: Notification[]) => {
   const now = new Date()
-  const ids = templates.map((t) => t.id)
+  const ids = notifications.map((t) => t.id)
   return prisma.notification.updateMany({
     where: {
-      template: {
-        id: {
-          in: ids
-        }
+      id: {
+        in: ids
       }
     },
     data: {
@@ -25,64 +24,52 @@ export const updateLastSent = (templates: { id: number }[]) => {
   })
 }
 
-export const getEmails = () => {
+export const getUsersForNotifications = () => {
+  const now = new Date()
+  const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30)
+  const XDaysFromNow = _addDays(now, Number(process.env.DAYS) || 30)
+  console.log(XDaysFromNow, Number(process.env.DAYS))
   return prisma.user.findMany({
     where: {
-      emailVerified: {
-        not: null
-      },
       email: {
         not: null
-      }
-    },
-    select: {
-      email: true
-    }
-  })
-}
-
-export const getNotifications = async () => {
-  const now = new Date()
-  const XDaysFromNow = _addDays(now, Number(process.env.DAYS) || 30)
-  const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30)
-  const data = await prisma.template.findMany({
-    where: {
-      notification: {
-        OR: [
-          {
-            isOn: true,
-            lastSentOn: {
-              lt: XDaysBeforeNow
-            }
-          },
-          {
-            isOn: true,
-            lastSentOn: {
-              equals: null
-            }
-          }
-        ]
       },
-      committees: {
-        every: {
-          is_active: true,
-          end_date: {
-            lt: XDaysFromNow
-          }
-        }
+      notifications: {
+        some: { isOn: true }
       }
     },
     include: {
-      committees: {
-        where: { is_active: true }
+      notifications: {
+        include: { committee: true },
+        where: {
+          AND: [
+            { isOn: true },
+            {
+              OR: [
+                {
+                  lastSentOn: {
+                    lt: XDaysBeforeNow
+                  }
+                },
+                {
+                  lastSentOn: {
+                    equals: null
+                  }
+                }
+              ]
+            },
+            {
+              committee: {
+                is_active: true,
+                end_date: {
+                  lt: XDaysFromNow
+                }
+              }
+            }
+          ]
+        }
       }
     }
-  })
-
-  return data.map((t) => {
-    const committee = t.committees.length ? t.committees[0] : undefined // last active committee //TODO reinforce only one active committee
-    const { committees, ...rest } = t
-    return { committee, ...rest }
   })
 }
 
@@ -101,22 +88,56 @@ export const templateRouter = createTRPCRouter({
       })
     }),
 
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+  getOptions: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.template.findMany({
+      select: {
+        name: true
+      }
+    })
+  }),
+
+  getAllWithNotifs: protectedProcedure.query(async ({ ctx }) => {
+    const user = ctx.session.user
+
     const data = await ctx.prisma.template.findMany({
       include: {
-        _count: { select: { committees: true } },
-        notification: true,
-        committees: {
-          where: { is_active: true }
-        }
+        _count: { select: { committees: true } }
       }
     })
 
-    return data.map((t) => {
-      const committee = t.committees.length ? t.committees[0] : undefined // last active committee
-      const { committees, ...rest } = t
-      return { committee, ...rest }
+    const promises = data.map(async (t) => {
+      const committee = await ctx.prisma.committee.findFirst({
+        where: {
+          template_id: t.id,
+          is_active: true
+        }
+      })
+
+      let notification: Notification | null
+
+      if (!committee)
+        return {
+          ...t
+        }
+
+      notification = await ctx.prisma.notification.findUnique({
+        where: {
+          committee_id_user_id: { committee_id: committee.id, user_id: user.id }
+        }
+      })
+
+      if (!notification) {
+        notification = await _createNotification(committee.id, user.id)
+      }
+
+      return {
+        ...t,
+        committee,
+        notification
+      }
     })
+
+    return Promise.all(promises)
   }),
 
   create: protectedProcedure
@@ -134,8 +155,7 @@ export const templateRouter = createTRPCRouter({
             connect: input.committee_ids.map((c: number) => {
               return { id: c }
             })
-          },
-          notification: { create: {} }
+          }
         }
       })
     }),
@@ -156,12 +176,7 @@ export const templateRouter = createTRPCRouter({
       return ctx.prisma.template.update({
         where: { id: input.id },
         data: {
-          name: input.name,
-          notification: {
-            update: {
-              isOn: input.notification?.isOn
-            }
-          }
+          name: input.name
         }
       })
     }),

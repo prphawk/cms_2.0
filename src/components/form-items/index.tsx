@@ -339,7 +339,7 @@ export const DateFormItem = (props: {
 export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean }) => {
   const [templates, setTemplates] = useState<string[]>([])
 
-  const { data, isLoading } = api.template.getAll.useQuery()
+  const { data, isLoading } = api.template.getOptions.useQuery()
 
   useEffect(() => {
     if (data) setTemplates([...data.map((e) => e.name)])

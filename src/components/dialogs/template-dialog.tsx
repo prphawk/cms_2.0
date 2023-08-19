@@ -28,13 +28,13 @@ import {
 import { MyDialog, MyDialogClose } from './my-dialog'
 import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
-import { TemplateType } from '../table/templates/template-columns'
 import { TemplateSchema } from '~/schemas/committee'
+import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
 
 export default function TemplateDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
-  template?: TemplateType
+  template?: TemplateWithCommitteeCountAndNotifDataType
   handleSave: (templateSchema: z.infer<typeof TemplateSchema>) => void
 }) {
   const myDefaultValues = () => {

@@ -6,7 +6,6 @@ import DataTableColumnHeader, {
   EndDateBadge
 } from '~/components/table/data-table-column-header'
 
-import { Committee, Template, Notification } from '@prisma/client'
 import { BellRingIcon, HelpCircleIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -19,18 +18,16 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
-
-export type TemplateType = Template & {
-  _count: { committees: number }
-  committee?: Committee | null
-  notification: Notification | null
-}
+import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
 
 export const getTemplateColumns = (
-  handleChangeNotifValue: (template: TemplateType, value: boolean) => void,
+  handleChangeNotifValue: (
+    template: TemplateWithCommitteeCountAndNotifDataType,
+    value: boolean
+  ) => void,
   handleViewCommittee: (committee_id: number) => void,
-  onEditTemplate: (template: TemplateType) => void
-): ColumnDef<TemplateType>[] => [
+  onEditTemplate: (template: TemplateWithCommitteeCountAndNotifDataType) => void
+): ColumnDef<TemplateWithCommitteeCountAndNotifDataType>[] => [
   {
     accessorKey: 'name',
     id: MyHeaders.TEMPLATE,
@@ -128,7 +125,7 @@ export const getTemplateColumns = (
       return (
         <div className="flex flex-row items-center gap-x-2">
           <Switch
-            checked={template.notification?.isOn}
+            defaultChecked={template.notification?.isOn}
             onCheckedChange={(v) => handleChangeNotifValue(template, v)}
           />
           <BellRingIcon className="ml-1 h-4 w-4" />

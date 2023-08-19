@@ -54,6 +54,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    notifications Notification[]
 }
 
 model VerificationToken {
@@ -83,7 +84,8 @@ model Committee {
   members 					    Membership[]
   template 	  Template?  @relation(fields: [template_id], references: [id])
   template_id Int?                // relation scalar field (used in the `@relation` attribute above) @map("template_id")
-  
+  notifications   Notification[]
+
   @@index([template_id])
 }
 
@@ -108,13 +110,18 @@ model Notification {
   id    			Int       @id @default(autoincrement())
   isOn        Boolean   @default(true)
   lastSentOn  DateTime?  
-  template 	  Template  @relation(fields: [template_id], references: [id], onDelete: Cascade)
-  template_id Int       @unique
+  committee 	Committee @relation(fields: [committee_id], references: [id], onDelete: Cascade)
+  committee_id Int      
+  user 	      User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id 	  String       
+
+  @@index([committee_id])
+  @@index([user_id])
+  @@unique([committee_id, user_id]) 
 }
 model Template {
   id    			    Int      @id @default(autoincrement())
   name            String              
   committees 	    Committee[]
-  notification    Notification?
 }
 
