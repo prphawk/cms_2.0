@@ -11,9 +11,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const usersWithNotifs = await getUsersForNotifications()
     if (usersWithNotifs.length) {
-      const promises = usersWithNotifs.map((u) => {
-        const committees = u.notifications.map((n) => n.committee)
-        sendImminentElectionNotification(u.email!, committees)
+      const promises = usersWithNotifs.map(async (u) => {
+        console.log(u.email, '---------------')
+        const committees = u.notifications.map((n) => {
+          console.log(n.committee.name)
+          return n.committee
+        })
+        await sendImminentElectionNotification(u.email!, committees)
         return updateLastSent(u.notifications)
       })
 

@@ -42,16 +42,15 @@ export const getUsersForNotifications = () => {
         include: { committee: true },
         where: {
           AND: [
+            { isOn: true },
             {
               OR: [
                 {
-                  isOn: true,
                   lastSentOn: {
                     lt: XDaysBeforeNow
                   }
                 },
                 {
-                  isOn: true,
                   lastSentOn: {
                     equals: null
                   }
