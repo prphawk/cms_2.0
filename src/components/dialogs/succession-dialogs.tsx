@@ -32,8 +32,8 @@ export default function SuccessionDialogs(props: {
     if (committeeData) {
       const newData = {
         id: undefined,
-        begin_date: _addDays(committeeData.end_date!, 1),
-        end_date: _addDays(committeeData.end_date!, 1),
+        begin_date: committeeData.begin_date,
+        end_date: committeeData.end_date,
         ordinance: undefined,
         observations: undefined
       }

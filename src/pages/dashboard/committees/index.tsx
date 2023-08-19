@@ -110,6 +110,9 @@ export default function Committees() {
   })
 
   const create = api.committee.create.useMutation({
+    onSuccess(data) {
+      router.push(`${Routes.COMMITTEES}/${data.id}`)
+    },
     onSettled() {
       return utils.committee.getAll.invalidate()
     }
@@ -168,7 +171,7 @@ export default function Committees() {
         <SuccessionDialogs
           open={openDialog}
           handleOpenDialog={handleOpenDialog}
-          committeeId={selectedCommittee as number}
+          committeeId={selectedCommittee as number} //TODO refactor
         />
         <AlertDialog
           open={openDialog == DialogsEnum.alert_deactivate}

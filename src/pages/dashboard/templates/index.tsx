@@ -20,6 +20,7 @@ import { DialogsEnum } from '~/constants/enums'
 import { TemplateSchema } from '~/schemas/committee'
 import { z } from 'zod'
 import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
+import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 
 export default function TemplatePage() {
   const router = useRouter()
@@ -44,6 +45,7 @@ export default function TemplatePage() {
   const handleViewCommittee = (committee_id: number) => {
     router.push(`${Routes.COMMITTEES}/${committee_id}`)
   }
+
   const handleChangeNotifValue = async (
     template: TemplateWithCommitteeCountAndNotifDataType,
     value: boolean
@@ -52,12 +54,16 @@ export default function TemplatePage() {
       updateNotification.mutate({ id: template.notification.id, isOn: value })
       template.notification.isOn = value
     } else if (template.committee) {
-      const notif = await createNotification.mutate({
-        committee_id: template.committee.id,
+      createNotification.mutate({
+        committee: { id: template.committee.id, end_date: template.committee.end_date! },
         isOn: value
       })
-      console.log(notif)
     }
+  }
+
+  const handleCommitteeSuccession = (template: TemplateWithCommitteeCountAndNotifDataType) => {
+    setSelectedTemplate(template)
+    handleOpenDialog(DialogsEnum.succession)
   }
 
   const onEditTemplate = (template: TemplateWithCommitteeCountAndNotifDataType) => {
@@ -81,6 +87,7 @@ export default function TemplatePage() {
               columns={getTemplateColumns(
                 handleChangeNotifValue,
                 handleViewCommittee,
+                handleCommitteeSuccession,
                 onEditTemplate
               )}
             />
@@ -90,6 +97,13 @@ export default function TemplatePage() {
               handleSave={handleSaveTemplate}
               template={selectedTemplate}
             />
+            {selectedTemplate?.committee && (
+              <SuccessionDialogs
+                open={openDialog}
+                handleOpenDialog={handleOpenDialog}
+                committeeId={selectedTemplate.committee.id}
+              />
+            )}
           </>
         )}
       </ContentLayout>

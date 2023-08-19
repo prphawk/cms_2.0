@@ -61,7 +61,10 @@ const ActionsMenuButton = (props: {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => props.handleOpenDialog(DialogsEnum.committee)}>
+        <DropdownMenuItem
+          disabled={!props.committee.is_active}
+          onClick={() => props.handleOpenDialog(DialogsEnum.committee)}
+        >
           Editar {MyHeaders.COMMITTEE.toLowerCase()}
         </DropdownMenuItem>
         <DropdownMenuItem

@@ -90,8 +90,12 @@ export const templateRouter = createTRPCRouter({
 
   getOptions: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.template.findMany({
+      distinct: ['name'],
       select: {
         name: true
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
   }),
@@ -110,6 +114,9 @@ export const templateRouter = createTRPCRouter({
         where: {
           template_id: t.id,
           is_active: true
+        },
+        orderBy: {
+          end_date: 'desc'
         }
       })
 
@@ -126,7 +133,7 @@ export const templateRouter = createTRPCRouter({
         }
       })
 
-      if (!notification) {
+      if (!notification && committee.end_date) {
         notification = await _createNotification(committee.id, user.id)
       }
 

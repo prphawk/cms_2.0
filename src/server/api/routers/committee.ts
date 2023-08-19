@@ -138,8 +138,7 @@ export const committeeRouter = createTRPCRouter({
     const { template_name, ...rest } = input
 
     const committee = {
-      ...rest,
-      is_active: true
+      ...rest
     } as Prisma.CommitteeCreateInput
 
     if (template_name) {

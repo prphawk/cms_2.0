@@ -12,11 +12,19 @@ import { Form } from '@/components/ui/form'
 import { Committee } from '@prisma/client'
 import { useForm } from 'react-hook-form'
 import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
-import { _addYears, _toLocaleString, _toString } from '~/utils/string'
+import {
+  _addDays,
+  _addMonths,
+  _addYears,
+  _diffMonths,
+  _toLocaleString,
+  _toString
+} from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useEffect } from 'react'
 import {
+  CheckBoxFormItem,
   CommonFormItem,
   DateFormItem,
   ObservationsFormItem,
@@ -35,14 +43,23 @@ export default function CommitteeDialog(props: {
   succession?: boolean
 }) {
   const myDefaultValues = () => {
+    let diffMonths
+    let begin_date = props.committee?.begin_date
+    let end_date = props.committee?.end_date
+    if (props.succession && begin_date && end_date) {
+      diffMonths = _diffMonths(begin_date, end_date)
+      begin_date = _addDays(end_date, 1)
+      end_date = _addMonths(begin_date, diffMonths)
+    }
     return {
       bond: props.committee?.bond || '',
       name: props.committee?.name || '',
-      begin_date: _toString(props.committee?.begin_date || new Date()),
-      end_date: _toString(props.committee?.end_date || _addYears(new Date(), 1)),
+      begin_date: _toString(begin_date || new Date()),
+      end_date: _toString(end_date || _addYears(new Date(), 2)),
       ordinance: props.committee?.ordinance || '',
       observations: props.committee?.observations || '',
-      template_name: props.committee?.template?.name || ''
+      template_name: props.committee?.template?.name || '',
+      is_active: props.committee?.is_active || true
     }
   }
 
@@ -92,6 +109,7 @@ export default function CommitteeDialog(props: {
         <MyDialogClose onClose={onClose} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" id="formCommittee">
+            <TemplateSelectFormItem form={form} disabled={props.succession} />
             <CommonFormItem
               form={form}
               fieldName="name"
@@ -131,8 +149,12 @@ export default function CommitteeDialog(props: {
               form={form}
               label={CommitteeHeaders.OBSERVATIONS}
             />
-            <TemplateSelectFormItem form={form} disabled={props.succession} />
-            <DialogFooter>
+            <DialogFooter className="items-center">
+              {/* {!props.committee && !props.succession && (
+                <span className="mr-auto flex items-center">
+                  <CheckBoxFormItem form={form} />
+                </span>
+              )} */}
               <Button type="submit" form="formCommittee">
                 {props.succession ? 'Próximo' : 'Salvar'}
               </Button>
