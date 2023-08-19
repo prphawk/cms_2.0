@@ -33,3 +33,4 @@ botar filtro de intervalo de date: professor alberto, procurar os cargos do prof
 -> Dates de órgão e participação opcionais: existem órgaos sem eleição ✅
 -> Botão e titulo do diálogo "criar órgão" -> "criar mandato" ✅
 -> Tipos => Tipos regimentais ✅
+-> o novo eleito nao pode ter um 3º mandato (permanentes/regimentais)
