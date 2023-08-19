@@ -78,9 +78,7 @@ export const getTemplateColumns = (
     accessorFn: (row) => _toLocaleString(row.committee?.begin_date),
     sortingFn: _sortStringDate,
     id: CommitteeHeaders.BEGIN_DATE,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={`Início de Mandato Atual`} />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title={`Início de Mandato`} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
 
@@ -146,8 +144,7 @@ export const getTemplateColumns = (
       return (
         <div className="flex min-w-[64px]">
           {committee && (
-            // TODO replicate this changes
-            <div className="ml-auto px-2">
+            <div className="ml-auto px-4">
               <Button
                 onClick={() => handleViewCommittee(committee.id)}
                 variant="ghost"

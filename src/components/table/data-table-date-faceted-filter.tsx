@@ -86,7 +86,7 @@ function FilterDate({
     setDatesValue({ ...data })
   }
 
-  const form = useForm<z.infer<typeof DateSchema>>({
+  const form = useForm<FilterStateDatesType>({
     resolver: zodResolver(DateSchema),
     defaultValues: dates
   })
