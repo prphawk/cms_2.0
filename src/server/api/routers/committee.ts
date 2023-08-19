@@ -75,15 +75,15 @@ export const committeeRouter = createTRPCRouter({
           is_active: input.is_active,
           template,
           NOT: {
-            AND: [
+            OR: [
               {
                 begin_date: {
-                  gt: _toDateFromForm(input.dates.end_date)
+                  gt: _toDateFromForm(input.dates.begin_date)
                 }
               },
               {
                 end_date: {
-                  lt: _toDateFromForm(input.dates.begin_date)
+                  lt: _toDateFromForm(input.dates.end_date)
                 }
               }
             ]
