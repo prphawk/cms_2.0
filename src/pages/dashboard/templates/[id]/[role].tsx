@@ -12,23 +12,44 @@ import {
   AccordionItem,
   AccordionTrigger
 } from '@/components/ui/accordion'
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useState } from 'react'
 import { Routes } from '~/constants/routes'
 import { TitleLayout } from '~/layouts/text-layout'
+import { filterDProps, getActiveDateFilterLabels } from '~/components/filters'
+import { IFilter, TableToolbarFilter } from '~/components/table/data-table-toolbar'
+import { FilterStateDatesType } from '~/types'
 
 export default function TemplateRoleHistory() {
   const router = useRouter()
 
   const template_id = Number(router.query.id)
   const role = router.query.role as string
+  const [filterD, setFilterD] = useState<FilterStateDatesType>({
+    begin_date: undefined,
+    end_date: undefined
+  })
 
   const { data } = api.membership.getRoleHistory.useQuery(
     {
       template_id,
-      role
+      role,
+      dates: filterD
     },
     { enabled: !isNaN(template_id) && role != undefined }
   )
+
+  const handleChangeActiveFiltersD = (values: FilterStateDatesType) => {
+    setFilterD({ ...values })
+  }
+
+  const propsFilters: IFilter[] = [
+    {
+      ...filterDProps,
+      dates: filterD,
+      activeFilters: getActiveDateFilterLabels(filterD),
+      handleChangeActiveFilters: handleChangeActiveFiltersD
+    }
+  ]
 
   const handleViewCommittee = (committee_id: number) => {
     router.push(`${Routes.COMMITTEES}/${committee_id}`)
@@ -36,13 +57,14 @@ export default function TemplateRoleHistory() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="role my-6 mb-auto min-h-[90vh]">
+      <ContentLayout className="role my-6 mb-auto min-h-[89vh]">
         {data && (
           <>
             <TemplateHistoryTableTitle {...{ template_id, role }} />
             <DataTable
-              data={data || []}
+              data={data}
               columns={getTemplateRoleHistoryColumns(handleViewCommittee)}
+              tableFilters={<TableToolbarFilter filters={propsFilters} />}
             />
           </>
         )}
@@ -58,8 +80,8 @@ const TemplateHistoryTableTitle = (props: { template_id: number; role: string })
   return (
     <HistoryDetails
       isLoading={isLoading}
-      title={`Histórico de "${props.role}" - ${MyHeaders.TEMPLATE} ${data?.name}`}
-    ></HistoryDetails>
+      title={`${data?.name}: ${props.role}`}
+    >{`Histórico de participações de cargo "${props.role}" através de todos mandatos de ${data?.name}`}</HistoryDetails>
   )
 }
 //TODO arrumar essa historia aqui
@@ -67,7 +89,7 @@ export const HistoryDetails = (
   props: { title: string; isLoading?: boolean } & PropsWithChildren
 ) => {
   return (
-    <Accordion className="mb-6" type="single" collapsible>
+    <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
           <TitleLayout>{props.isLoading ? 'Loading...' : props.title}</TitleLayout>

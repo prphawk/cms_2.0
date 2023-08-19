@@ -22,14 +22,14 @@ export default function Home() {
       className: 'border-b-[1px] border-l-[1px] rounded-bl-lg'
     },
     {
-      title: MyHeaders.TEMPLATES,
+      title: MyHeaders.TEMPLATES_MENU,
       href: Routes.TEMPLATES,
-      className: 'border-t-[1px] border-r-[1px] rounded-tr-lg'
+      className: 'border-t-[1px] border-r-[1px] rounded-tr-lg p-1'
     },
     {
       title: MyHeaders.ABOUT,
       href: Routes.ABOUT,
-      className: 'border-l-[1px] border-t-[1px] rounded-tl-lg'
+      className: 'border-l-[1px] border-t-[1px] rounded-tl-lg p-1'
     }
   ]
   return (

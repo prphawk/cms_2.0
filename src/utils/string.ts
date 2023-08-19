@@ -21,9 +21,22 @@ export const _sortStringDate = (
 }
 
 export const _toDate = (str: string) => {
-  if (str === CommitteeHeaders.PERMANENT) return null
+  if (str === CommitteeHeaders.VALUE_NULL) return null
   const arr = str.split('/')
   return new Date(`${arr[2]}/${arr[1]}/${arr[0]}`)
+}
+
+export const _toDateFromForm = (str?: string) => {
+  if (!str) return undefined
+  const newStr = str.replace('-', '/')
+  return new Date(newStr)
+}
+
+export const _toLocaleStringFromForm = (str?: string) => {
+  if (!str) return undefined
+  const arr = str.split('-')
+  if (arr?.length < 3) return CommitteeHeaders.VALUE_NULL
+  return `${arr[2]}/${arr[1]}/${arr[0]}`
 }
 
 export const _toLocaleString = (date?: Date | null) => {
@@ -31,7 +44,7 @@ export const _toLocaleString = (date?: Date | null) => {
     const arr = _toString(date)?.split('-')
     if (arr?.length) return `${arr[2]}/${arr[1]}/${arr[0]}`
   }
-  return CommitteeHeaders.PERMANENT
+  return CommitteeHeaders.VALUE_NULL
 }
 
 export const _toLocaleExtendedString = (date: Date) =>

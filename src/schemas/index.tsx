@@ -12,9 +12,9 @@ export const TemplateSchema = z.object({
   })
 })
 
-// export const NotificationSchema = z.object({
-//   notification: z.object({
-//     id: z.number(),
-//     isOn: z.boolean()
-//   })
-// })
+export const DateSchema = z
+  .object({
+    begin_date: z.string().optional(),
+    end_date: z.string().optional()
+  })
+  .optional()

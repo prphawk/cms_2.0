@@ -20,6 +20,8 @@ import { CommitteeHeaders, MembershipHeaders, MyHeaders } from '~/constants/head
 import {
   FilterStateType,
   filterAProps,
+  filterDProps,
+  getActiveDateFilterLabels,
   getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'
@@ -30,9 +32,13 @@ import { CommitteeSchema } from '~/schemas/committee'
 import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
-import { HourglassIcon, CircleOffIcon } from 'lucide-react'
+import { HourglassIcon, XIcon } from 'lucide-react'
 import { IconBadge } from '~/components/badge'
-import { CommitteeWithOptionalTemplateDataType, MembershipWithEmployeeDataType } from '~/types'
+import {
+  CommitteeWithOptionalTemplateDataType,
+  FilterStateDatesType,
+  MembershipWithEmployeeDataType
+} from '~/types'
 import ErrorPage from '~/pages/500'
 import { LS } from '~/constants/local_storage'
 import { TitleLayout } from '~/layouts/text-layout'
@@ -88,6 +94,10 @@ export default function CommitteeMembership() {
 
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterC, setFilterC] = useState<string[]>()
+  const [filterD, setFilterD] = useState<FilterStateDatesType>({
+    begin_date: undefined,
+    end_date: undefined
+  })
 
   useEffect(() => {
     setFilterA(getComplementaryFilterValue(LS.MEMBERSHIP_A, 'is_active', 'is_inactive'))
@@ -101,7 +111,8 @@ export default function CommitteeMembership() {
     {
       id: param_id,
       is_active: filterA?.value,
-      roles: filterC
+      roles: filterC,
+      dates: filterD
     },
     { enabled: !isNaN(param_id) }
   )
@@ -121,6 +132,10 @@ export default function CommitteeMembership() {
     setFilterC(!values?.length ? undefined : values)
   }
 
+  const handleChangeActiveFiltersD = (values: FilterStateDatesType) => {
+    setFilterD({ ...values })
+  }
+
   const propsFilters: IFilter[] = [
     {
       ...filterAProps(),
@@ -133,6 +148,12 @@ export default function CommitteeMembership() {
       options: roleOptions?.length ? (roleOptions as IFilterOptions[]) : [],
       activeFilters: filterC,
       handleChangeActiveFilters: handleChangeActiveFiltersC
+    },
+    {
+      ...filterDProps,
+      dates: filterD,
+      activeFilters: getActiveDateFilterLabels(filterD),
+      handleChangeActiveFilters: handleChangeActiveFiltersD
     }
   ]
 
@@ -186,7 +207,7 @@ export default function CommitteeMembership() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="committee my-6 mb-auto min-h-[90vh]">
+      <ContentLayout className="committee my-6 mb-auto min-h-[89vh]">
         {committeeData && (
           <>
             <CommitteesTableTitle data={committeeData} />
@@ -238,7 +259,7 @@ export default function CommitteeMembership() {
               open={openDialog == DialogsEnum.alert_deactivate}
               description={
                 <>
-                  Esta ação irá <strong>encerrar</strong> esta participação. Deseja continuar?
+                  Esta ação irá <strong>encerrar</strong> a participação. Deseja continuar?
                 </>
               }
               handleOpenDialog={handleOpenDialog}
@@ -271,7 +292,7 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
               )}
               {!data.is_active && (
                 <IconBadge>
-                  <CircleOffIcon className="h-4 w-4 " />
+                  <XIcon className="h-4 w-4 " />
                 </IconBadge>
               )}
             </span>
@@ -281,7 +302,7 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
           <strong>{CommitteeHeaders.BOND}: </strong> {data?.bond}
           <Dot />
           <strong>{CommitteeHeaders.ORDINANCE}: </strong>
-          {data?.ordinance || '-'}
+          {data?.ordinance || 'Não informado'}
           <Dot />
           <strong>{CommitteeHeaders.BEGIN_DATE}: </strong>
           {_toLocaleString(data?.begin_date)}
@@ -308,7 +329,7 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
           ) : (
             <></>
           )}
-          <strong>{MyHeaders.STATUS_F}: </strong> {data?.is_active ? 'Ativa' : 'Inativa'}
+          <strong>{MyHeaders.STATUS_F}: </strong> {data?.is_active ? 'Ativo' : 'Inativo'}
           <Dot />
           <strong>{CommitteeHeaders.MEMBERS}: </strong> {active_count} de {total_count}
         </AccordionContent>

@@ -28,8 +28,8 @@ progressão funcional: passar adjunto (niveis)
 botar filtro de intervalo de date: professor alberto, procurar os cargos do prof num periodo de tempo
 
 -> Add botão "Criar servidor" na tela de servidores
--> Bloquear botão "Adicionar membro" para orgaos desativados
+-> Bloquear botão "Adicionar membro" para orgaos desativados ✅
 -> Trava de data de fim participação < data de fim do órgão
--> Dates de órgão e participação opcionais: existem órgaos sem eleição
--> Botão e titulo do diálogo "criar órgão" -> "criar mandato"
--> Tipos => Tipos regimentais
+-> Dates de órgão e participação opcionais: existem órgaos sem eleição ✅
+-> Botão e titulo do diálogo "criar órgão" -> "criar mandato" ✅
+-> Tipos => Tipos regimentais ✅

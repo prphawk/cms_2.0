@@ -9,7 +9,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { Form } from '@/components/ui/form'
-import { PlusIcon, SaveIcon, XIcon } from 'lucide-react'
+import { MinusIcon, PlusIcon, SaveIcon, XIcon } from 'lucide-react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -92,10 +92,12 @@ export default function MembershipArrayDialog(props: {
 
   return (
     <MyDialog open={props.open}>
-      <DialogContent className="max-w-[64rem] overflow-x-auto">
+      <DialogContent className="max-w-[68rem] overflow-x-auto">
         <DialogHeader>
           <DialogTitle>Sucessão de Membros</DialogTitle>
-          <DialogDescription>Outra coisa sobre sucessão de membros.</DialogDescription>
+          <DialogDescription>
+            Participações ativas são importadas do último mandato.
+          </DialogDescription>
         </DialogHeader>
         <MyDialogClose onClose={onClose} />
         <Form {...form}>
@@ -103,14 +105,6 @@ export default function MembershipArrayDialog(props: {
             <div className="grid max-h-[70vh] gap-y-2 overflow-y-auto">
               {fieldArray.fields.map((f, index) => (
                 <div key={f.id} className={'flex flex-row items-end justify-between gap-x-4'}>
-                  <Button
-                    className="mb-[7px] h-5 w-5"
-                    onClick={() => fieldArray.remove(index)}
-                    variant="outline"
-                    size="icon"
-                  >
-                    <XIcon className="h-4 w-4" />
-                  </Button>
                   <EmployeeSelectFormItem
                     hideLabel={index > 0}
                     form={form}
@@ -153,14 +147,22 @@ export default function MembershipArrayDialog(props: {
                     label={MembershipHeaders.OBSERVATIONS}
                     placeholder="ex: Something something"
                   />
+                  <Button
+                    className="mb-[7px] h-5 w-5"
+                    onClick={() => fieldArray.remove(index)}
+                    variant="ghost"
+                    size="icon"
+                  >
+                    <MinusIcon className="h-4 w-5" />
+                  </Button>
                 </div>
               ))}
             </div>
-            <DialogFooter className="mt-4">
+            <DialogFooter className="mt-6">
               <Button
                 size="sm"
-                className="mr-auto"
-                variant="outline"
+                className="mr-auto "
+                variant="secondary"
                 type="button"
                 onClick={() => fieldArray.append(newAppendedValue() as any)}
               >

@@ -33,3 +33,8 @@ export type TemplateWithCommitteeCountAndNotifDataType = Id<
 > & { committee?: Committee | null } & {
   notification?: Notification | null
 }
+
+export type FilterStateDatesType = {
+  begin_date?: string
+  end_date?: string
+}

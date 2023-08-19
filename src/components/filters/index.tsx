@@ -1,8 +1,10 @@
 'use client'
 
 import { HourglassIcon } from 'lucide-react'
-import { CircleOffIcon } from 'lucide-react'
+import { XIcon } from 'lucide-react'
 import { MyHeaders } from '~/constants/headers'
+import { FilterStateDatesType } from '~/types'
+import { _toLocaleStringFromForm } from '~/utils/string'
 
 export type FilterStateType =
   | {
@@ -16,7 +18,7 @@ export const filterAProps = (sufix?: string) => {
     title: 'Status' + (sufix ? ` de ${sufix}` : ''),
     options: [
       { label: 'Ativo(a)', value: 'is_active' },
-      { label: 'Inativo(a)', value: 'is_inactive', icon: CircleOffIcon }
+      { label: 'Inativo(a)', value: 'is_inactive', icon: XIcon }
     ]
   }
 }
@@ -27,6 +29,11 @@ export const filterTProps = {
     { label: 'Permanente', value: 'is_permanent' },
     { label: 'Temporário(a)', value: 'is_temporary', icon: HourglassIcon }
   ]
+}
+export const filterDProps = {
+  title: MyHeaders.CATEGORY_D,
+  dates: { begin_date: undefined, end_date: undefined },
+  date: true
 }
 
 export const handleChangeComplementaryFilters = (
@@ -60,11 +67,14 @@ export const getComplementaryFilterValue = (
   }
   return undefined
 }
-// export const getArrayFilterValue = (ls_key: string) => {
-//   const ls_value = localStorage.getItem(ls_key)
-//   if (ls_value) {
-//     const value = ls_value.split(',')
-//     return value
-//   }
-//   return undefined
-// }
+
+export const getActiveDateFilterLabels = (dates: FilterStateDatesType) => {
+  const arr = new Array<string>()
+  if (dates.begin_date) {
+    arr.push(`De: ${_toLocaleStringFromForm(dates.begin_date)}`)
+  }
+  if (dates.end_date) {
+    arr.push(`Até: ${_toLocaleStringFromForm(dates.end_date)}`)
+  }
+  return arr
+}

@@ -6,11 +6,14 @@ import {
 } from '@/components/ui/accordion'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { z } from 'zod'
 import AuthenticatedPage from '~/components/authenticated-page'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import {
   FilterStateType,
   filterAProps,
+  filterDProps,
+  getActiveDateFilterLabels,
   getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'
@@ -24,7 +27,10 @@ import { Routes } from '~/constants/routes'
 import { ContentLayout } from '~/layouts/page-layout'
 import { TitleLayout } from '~/layouts/text-layout'
 import ErrorPage from '~/pages/500'
-import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
+import {
+  FilterStateDatesType,
+  MembershipWithEmployeeCommitteeAndMembershipCountDataType
+} from '~/types'
 import { api } from '~/utils/api'
 import { _toLocaleString } from '~/utils/string'
 
@@ -41,15 +47,19 @@ export default function Employees() {
   const [filterAM, setFilterAM] = useState<FilterStateType>()
   const [filterAE, setFilterAE] = useState<FilterStateType>()
   const [filterC, setFilterC] = useState<string[]>()
+  const [filterD, setFilterD] = useState<FilterStateDatesType>({
+    begin_date: undefined,
+    end_date: undefined
+  })
 
   const { data: roleOptions } = api.membership.getRoleOptions.useQuery({ filterFormat: true })
 
   const handleChangeActiveFiltersC = (values?: string[]) => {
     setFilterC(!values?.length ? undefined : values)
-    // if (values?.length) {
-    //   localStorage.setItem(LS.EMPLOYEE_C, values.toString())
-    //   setFilterC(values)
-    // } else setFilterC(undefined)
+  }
+
+  const handleChangeActiveFiltersD = (values: FilterStateDatesType) => {
+    setFilterD({ ...values })
   }
 
   const propsFilters: IFilter[] = [
@@ -70,6 +80,12 @@ export default function Employees() {
       options: roleOptions?.length ? (roleOptions as IFilterOptions[]) : [],
       activeFilters: filterC,
       handleChangeActiveFilters: handleChangeActiveFiltersC
+    },
+    {
+      ...filterDProps,
+      dates: filterD,
+      activeFilters: getActiveDateFilterLabels(filterD),
+      handleChangeActiveFilters: handleChangeActiveFiltersD
     }
   ]
 
@@ -88,7 +104,8 @@ export default function Employees() {
   const { data, isLoading, isError } = api.membership.getAll.useQuery({
     is_membership_active: filterAM?.value,
     is_employee_active: filterAE?.value,
-    roles: filterC
+    roles: filterC,
+    dates: filterD
   })
 
   if (isError) {
@@ -136,7 +153,7 @@ export default function Employees() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="employees my-6 mb-auto min-h-[90vh]">
+      <ContentLayout className="employees my-6 mb-auto min-h-[89vh]">
         {data && (
           <>
             <EmployeesTableTitle data={data} />

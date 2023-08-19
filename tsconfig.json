@@ -28,7 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
-    "**/*.mjs"
+    "**/*.mjs",
+    "src/components/table/colums"
   ],
   "exclude": ["node_modules", "prisma/data.js", "prisma/seed.js", "prisma/data.factory.js"]
 }

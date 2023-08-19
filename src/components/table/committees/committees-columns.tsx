@@ -2,7 +2,7 @@ import { Committee } from '@prisma/client'
 import { ColumnDef, filterFns, sortingFns } from '@tanstack/react-table'
 import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import { _isDateComing, _sortStringDate, _toDate, _toLocaleString } from '~/utils/string'
-import { CircleOffIcon, HourglassIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
+import { XIcon, HourglassIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ import { Separator } from '@radix-ui/react-dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge } from '~/components/badge'
 import { CountDataType, CommitteeWithMembershipCountDataType } from '~/types'
+import { Observations, Ordinance } from '../colums'
 
 export const getCommitteesColumns = (
   onDeactivateCommittee: (id: number) => void,
@@ -36,7 +37,7 @@ export const getCommitteesColumns = (
       const is_inactive = !row.original.is_active
 
       return (
-        <div className="flex w-[280px] flex-row">
+        <div className="flex w-[250px] flex-row">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -57,7 +58,7 @@ export const getCommitteesColumns = (
               )}
               {is_inactive && (
                 <IconBadge>
-                  <CircleOffIcon className="h-3 w-3 text-white" />
+                  <XIcon className="h-3 w-3 text-white" />
                 </IconBadge>
               )}
             </div>
@@ -81,7 +82,7 @@ export const getCommitteesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return <div className="truncate">{value}</div>
+      return Ordinance(value)
     }
   },
   {
@@ -99,7 +100,7 @@ export const getCommitteesColumns = (
     accessorKey: 'end_date',
     id: CommitteeHeaders.END_DATE,
     sortingFn: _sortStringDate,
-    accessorFn: (row) => _toLocaleString(row.end_date), //TODO e tirar os toString dos outros date tbm!! E ARRUMAR O SORT!!!
+    accessorFn: (row) => _toLocaleString(row.end_date),
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
@@ -136,16 +137,7 @@ export const getCommitteesColumns = (
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="w-48 truncate">{value}</div>
-            </TooltipTrigger>
-            <TooltipContent>{value}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )
+      return Observations(value)
     }
   },
   {
@@ -154,21 +146,23 @@ export const getCommitteesColumns = (
     cell: ({ row }) => {
       const committee = row.original
       return (
-        <div className="min-w-[64px]">
-          <Button
-            onClick={() => handleViewCommittee(committee.id)}
-            variant="ghost"
-            className="h-8 w-8 p-0"
-          >
-            <span className="sr-only">Ver detalhes</span>
-            <Users2Icon className="h-4 w-4" />
-          </Button>
-          <CommitteeActionsMenuColumn
-            committee={committee}
-            onViewCommittee={() => handleViewCommittee(committee.id)}
-            onDeactivateCommittee={onDeactivateCommittee}
-            onCommitteeSuccession={onCommitteeSuccession}
-          />
+        <div className="flex min-w-[64px]">
+          <div className="ml-auto px-4">
+            <Button
+              onClick={() => handleViewCommittee(committee.id)}
+              variant="ghost"
+              className="h-8 w-8 p-0"
+            >
+              <span className="sr-only">Ver detalhes</span>
+              <Users2Icon className="h-4 w-4" />
+            </Button>
+            <CommitteeActionsMenuColumn
+              committee={committee}
+              onViewCommittee={() => handleViewCommittee(committee.id)}
+              onDeactivateCommittee={onDeactivateCommittee}
+              onCommitteeSuccession={onCommitteeSuccession}
+            />
+          </div>
         </div>
       )
     }
