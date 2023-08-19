@@ -2,7 +2,7 @@
 
 import { HourglassIcon } from 'lucide-react'
 import { CircleOffIcon } from 'lucide-react'
-import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
+import { MyHeaders } from '~/constants/headers'
 
 export type FilterStateType =
   | {
