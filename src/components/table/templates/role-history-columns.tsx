@@ -76,6 +76,15 @@ export const getTemplateRoleHistoryColumns = (
     }
   },
   {
+    accessorKey: 'ordinance',
+    id: MembershipHeaders.ORDINANCE,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
+    cell: ({ row, column }) => {
+      const value = row.getValue(column.id) as string
+      return <div className="truncate">{value || '-'}</div>
+    }
+  },
+  {
     accessorKey: 'begin_date',
     id: MembershipHeaders.BEGIN_DATE,
     sortingFn: _sortStringDate,
@@ -111,9 +120,9 @@ export const getTemplateRoleHistoryColumns = (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="w-60 truncate">{value}</div>
+              <div className="max-w-[100px] truncate">{value || '-'}</div>
             </TooltipTrigger>
-            <TooltipContent>{value}</TooltipContent>
+            {value && <TooltipContent>{value}</TooltipContent>}
           </Tooltip>
         </TooltipProvider>
       )

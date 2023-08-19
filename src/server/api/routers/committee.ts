@@ -32,7 +32,8 @@ export const committeeRouter = createTRPCRouter({
         id: z.number(),
         is_active: z.boolean().optional(),
         is_temporary: z.boolean().optional(),
-        roles: z.string().array().optional()
+        roles: z.string().array().optional(),
+        dates: DateSchema
       })
     )
     .query(({ ctx, input }) => {
@@ -45,7 +46,21 @@ export const committeeRouter = createTRPCRouter({
             include: { employee: true },
             where: {
               is_active: input.is_active,
-              role: { in: input.roles }
+              role: { in: input.roles },
+              NOT: {
+                OR: [
+                  {
+                    begin_date: {
+                      gt: _toDateFromForm(input.dates.begin_date)
+                    }
+                  },
+                  {
+                    end_date: {
+                      lt: _toDateFromForm(input.dates.end_date)
+                    }
+                  }
+                ]
+              }
             }
           },
           template: true

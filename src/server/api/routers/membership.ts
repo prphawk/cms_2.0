@@ -68,11 +68,19 @@ export const membershipRouter = createTRPCRouter({
             is_active: input.is_employee_active
           },
           role: { in: input.roles },
-          begin_date: {
-            gte: _toDateFromForm(input.dates.begin_date)
-          },
-          end_date: {
-            lte: _toDateFromForm(input.dates.end_date)
+          NOT: {
+            OR: [
+              {
+                begin_date: {
+                  gt: _toDateFromForm(input.dates.begin_date)
+                }
+              },
+              {
+                end_date: {
+                  lt: _toDateFromForm(input.dates.end_date)
+                }
+              }
+            ]
           }
         },
         orderBy: {
@@ -146,7 +154,8 @@ export const membershipRouter = createTRPCRouter({
     .input(
       z.object({
         role: z.string(),
-        template_id: z.number()
+        template_id: z.number(),
+        dates: DateSchema
       })
     )
     .query(({ ctx, input }) => {
@@ -155,7 +164,21 @@ export const membershipRouter = createTRPCRouter({
       return ctx.prisma.membership.findMany({
         where: {
           committee: { template_id: template_id },
-          role
+          role,
+          NOT: {
+            OR: [
+              {
+                begin_date: {
+                  gt: _toDateFromForm(input.dates.begin_date)
+                }
+              },
+              {
+                end_date: {
+                  lt: _toDateFromForm(input.dates.end_date)
+                }
+              }
+            ]
+          }
         },
         include: {
           committee: true,

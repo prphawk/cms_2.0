@@ -4,6 +4,7 @@ import { HourglassIcon } from 'lucide-react'
 import { CircleOffIcon } from 'lucide-react'
 import { MyHeaders } from '~/constants/headers'
 import { FilterStateDatesType } from '~/types'
+import { _toLocaleStringFromForm } from '~/utils/string'
 
 export type FilterStateType =
   | {
@@ -70,10 +71,10 @@ export const getComplementaryFilterValue = (
 export const getActiveDateFilterLabels = (dates: FilterStateDatesType) => {
   const arr = new Array<string>()
   if (dates.begin_date) {
-    arr.push(`De: ${dates.begin_date}`)
+    arr.push(`De: ${_toLocaleStringFromForm(dates.begin_date)}`)
   }
   if (dates.end_date) {
-    arr.push(`Até: ${dates.end_date}`)
+    arr.push(`Até: ${_toLocaleStringFromForm(dates.end_date)}`)
   }
   return arr
 }
