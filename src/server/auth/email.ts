@@ -108,8 +108,6 @@ function text({ url, host }: { url: string; host: string }) {
 
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
 function electionText(committees: Committee[]) {
-  const strArr = committees.map(
-    (c) => `- ${c.name} | Data de fim: ${_toLocaleString(c.end_date)}\n`
-  )
-  return `Eleição Iminente de órgãos:\n ${strArr.toString()}\n\n`
+  const strArr = committees.map((c) => `- ${c.name} | Data de fim: ${_toLocaleString(c.end_date)}`)
+  return `Eleição Iminente de órgãos:\n ${strArr.join('\n')}\n\n`
 }

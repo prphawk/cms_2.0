@@ -2,7 +2,7 @@ import { Committee, Notification, Prisma, Template, User } from '@prisma/client'
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
-import { _addMonths as _addDays, _subDays } from '~/utils/string'
+import { _addDays, _subDays } from '~/utils/string'
 import { _createNotification } from './notification'
 
 export const _getTemplateByName = async (name: string) => {
@@ -28,6 +28,7 @@ export const getUsersForNotifications = () => {
   const now = new Date()
   const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30)
   const XDaysFromNow = _addDays(now, Number(process.env.DAYS) || 30)
+  console.log(XDaysFromNow, Number(process.env.DAYS))
   return prisma.user.findMany({
     where: {
       email: {
