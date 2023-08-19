@@ -21,7 +21,9 @@ import { DialogsEnum } from '~/constants/enums'
 import {
   FilterStateType,
   filterAProps,
+  filterDProps,
   filterTProps,
+  getActiveDateFilterLabels,
   getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'
@@ -33,6 +35,7 @@ import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 import ErrorPage from '~/pages/500'
 import { LS } from '~/constants/local_storage'
 import { TitleLayout } from '~/layouts/text-layout'
+import { FilterStateDatesType } from '~/types'
 
 export default function Committees() {
   const router = useRouter()
@@ -45,6 +48,10 @@ export default function Committees() {
 
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterT, setFilterT] = useState<FilterStateType>()
+  const [filterD, setFilterD] = useState<FilterStateDatesType>({
+    begin_date: undefined,
+    end_date: undefined
+  })
 
   useEffect(() => {
     const valueA = getComplementaryFilterValue(LS.COMMITTEE_A, 'is_active', 'is_inactive')
@@ -60,11 +67,16 @@ export default function Committees() {
 
   const { data, isLoading, isError } = api.committee.getAll.useQuery({
     is_active: filterA?.value,
-    is_temporary: filterT?.value
+    is_temporary: filterT?.value,
+    dates: filterD
   })
 
   if (isError) {
     return <ErrorPage />
+  }
+
+  const handleChangeActiveFiltersD = (values: FilterStateDatesType) => {
+    setFilterD({ ...values })
   }
 
   const propsFilters: IFilter[] = [
@@ -79,6 +91,12 @@ export default function Committees() {
       activeFilters: filterT?.labels,
       handleChangeActiveFilters: (labels) =>
         handleChangeComplementaryFilters(LS.COMMITTEE_T, 'is_temporary', setFilterT, labels)
+    },
+    {
+      ...filterDProps,
+      dates: filterD,
+      activeFilters: getActiveDateFilterLabels(filterD),
+      handleChangeActiveFilters: handleChangeActiveFiltersD
     }
   ]
 

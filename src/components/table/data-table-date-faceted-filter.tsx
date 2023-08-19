@@ -103,11 +103,7 @@ function FilterDate({
                   fieldName="begin_date"
                   label={CommitteeHeaders.BEGIN_DATE}
                 />
-                <DateFormItem
-                  form={form}
-                  fieldName="end_date"
-                  label={CommitteeHeaders.BEGIN_DATE}
-                />
+                <DateFormItem form={form} fieldName="end_date" label={CommitteeHeaders.END_DATE} />
               </div>
               <Button
                 variant="outline"

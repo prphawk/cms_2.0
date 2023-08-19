@@ -13,6 +13,7 @@ import {
   FilterStateType,
   filterAProps,
   filterDProps,
+  getActiveDateFilterLabels,
   getComplementaryFilterValue,
   handleChangeComplementaryFilters
 } from '~/components/filters'
@@ -58,19 +59,7 @@ export default function Employees() {
   }
 
   const handleChangeActiveFiltersD = (values: FilterStateDatesType) => {
-    console.log(values)
     setFilterD({ ...values })
-  }
-
-  const getActiveDateFilterLabels = () => {
-    const arr = new Array<string>()
-    if (filterD.begin_date) {
-      arr.push(`De: ${filterD.begin_date}`)
-    }
-    if (filterD.end_date) {
-      arr.push(`Até: ${filterD.end_date}`)
-    }
-    return arr
   }
 
   const propsFilters: IFilter[] = [
@@ -95,7 +84,7 @@ export default function Employees() {
     {
       ...filterDProps,
       dates: filterD,
-      activeFilters: getActiveDateFilterLabels(),
+      activeFilters: getActiveDateFilterLabels(filterD),
       handleChangeActiveFilters: handleChangeActiveFiltersD
     }
   ]
