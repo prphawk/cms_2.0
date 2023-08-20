@@ -180,7 +180,7 @@ export const getEmployeesColumns = (
                 {template_id ? (
                   <DropdownMenuItem>
                     <Link href={`${Routes.TEMPLATES}/${template_id}/${role}`}>
-                      Ver histórico do cargo
+                      {`Ver histórico de "${role}"`}
                     </Link>
                   </DropdownMenuItem>
                 ) : (

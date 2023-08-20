@@ -15,27 +15,19 @@ import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useEffect } from 'react'
-import { CommitteeHeaders, MembershipHeaders, MyHeaders } from '~/constants/headers'
-import { Employee, Membership } from '@prisma/client'
+import { CommitteeHeaders } from '~/constants/headers'
 import React from 'react'
-import {
-  CommonFormItem,
-  DateFormItem,
-  EmployeeSelectFormItem,
-  ObservationsFormItem,
-  RoleSelectFormItem
-} from '../form-items'
+import { CommonFormItem } from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
-import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
-import { TemplateSchema } from '~/schemas/committee'
 import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
+import { CreateTemplateFormSchema } from '~/schemas'
 
 export default function TemplateDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
   template?: TemplateWithCommitteeCountAndNotifDataType
-  handleSave: (templateSchema: z.infer<typeof TemplateSchema>) => void
+  handleSave: (templateSchema: z.infer<typeof CreateTemplateFormSchema>) => void
 }) {
   const myDefaultValues = () => {
     return {
@@ -43,15 +35,15 @@ export default function TemplateDialog(props: {
     }
   }
 
-  const form = useForm<z.infer<typeof TemplateSchema>>({
-    resolver: zodResolver(TemplateSchema)
+  const form = useForm<z.infer<typeof CreateTemplateFormSchema>>({
+    resolver: zodResolver(CreateTemplateFormSchema)
   })
 
   useEffect(() => {
     if (props.open) form.reset(myDefaultValues() as any)
   }, [props.open])
 
-  function onSubmit(templateSchema: z.infer<typeof TemplateSchema>) {
+  function onSubmit(templateSchema: z.infer<typeof CreateTemplateFormSchema>) {
     props.handleSave(templateSchema)
     onClose()
   }

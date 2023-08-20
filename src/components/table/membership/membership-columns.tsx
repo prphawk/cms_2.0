@@ -131,19 +131,15 @@ export const getMembershipColumns = (
                 {committee.template_id ? (
                   <DropdownMenuItem>
                     <Link href={`${Routes.TEMPLATES}/${committee.template_id}/${role}`}>
-                      Ver histórico do cargo
+                      {`Ver histórico de "${role}"`}
                     </Link>
                   </DropdownMenuItem>
                 ) : (
                   <></>
                 )}
-                <DropdownMenuItem
-                  disabled={!row.original.is_active}
-                  onClick={() => onChangeMembership(row.original)}
-                >
+                <DropdownMenuItem onClick={() => onChangeMembership(row.original)}>
                   Editar participação
                 </DropdownMenuItem>
-
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   danger

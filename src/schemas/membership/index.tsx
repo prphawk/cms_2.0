@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { MembershipHeaders } from '~/constants/headers'
 
-export const MembershipFormSchema = z
+export const MembershipSchema = z
   .object({
     employee: z.object(
       {
@@ -28,5 +28,9 @@ export const MembershipFormSchema = z
   })
 
 export const MembershipArraySchema = z.object({
-  members: z.array(MembershipFormSchema)
+  members: z.array(MembershipSchema)
 })
+
+export const MembershipFormSchema = MembershipSchema.innerType().merge(
+  z.object({ is_active: z.boolean() })
+)

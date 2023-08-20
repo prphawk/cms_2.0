@@ -1,12 +1,5 @@
 import { Button } from '@/components/ui/button'
-import {
-  FormField,
-  FormItem,
-  FormControl,
-  FormMessage,
-  FormLabel,
-  FormDescription
-} from '@/components/ui/form'
+import { FormField, FormItem, FormControl, FormMessage, FormLabel } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
 import { ChevronsUpDownIcon, CheckIcon, HelpCircleIcon } from 'lucide-react'
 import { useState, useEffect, PropsWithChildren } from 'react'
@@ -24,6 +17,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Checkbox } from '@/components/ui/checkbox'
+import { z } from 'zod'
+import { CommitteeTemplateFormSchema } from '~/schemas/committee'
 
 export const RoleSelectFormItem = (props: {
   form: any
@@ -60,11 +55,15 @@ export const RoleSelectFormItem = (props: {
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-                    !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage'
+                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
                   )}
                 >
-                  <span className="max-w-[149px] truncate">
+                  <span
+                    className={cn(
+                      'max-w-[149px] truncate',
+                      !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage'
+                    )}
+                  >
                     {isLoading
                       ? 'Carregando...'
                       : field.value
@@ -176,11 +175,15 @@ export const EmployeeSelectFormItem = (props: {
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    'flex h-9 justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-                    !field.value.name && 'text-muted-foregroundPage'
+                    'flex h-9 justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
                   )}
                 >
-                  <span className="max-w-[149px] truncate">
+                  <span
+                    className={cn(
+                      'max-w-[149px] truncate',
+                      !field.value.name && 'text-muted-foregroundPage'
+                    )}
+                  >
                     {isLoading
                       ? 'Carregando...'
                       : field.value.name
@@ -337,112 +340,94 @@ export const DateFormItem = (props: {
   )
 }
 
+const TemplateTooltip = () => {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <HelpCircleIcon className="ml-1 h-4 w-4 p-[2px]" />
+        </TooltipTrigger>
+        <TooltipContent className="max-w-[52ch] bg-black text-center text-white">
+          {`Mandatos de comissões regimentais (permantentes) devem ser incluidos em seu ${MyHeaders.TEMPLATE.toLowerCase()}.`}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+
 export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean }) => {
-  const [templates, setTemplates] = useState<string[]>([])
+  type OptionType = {
+    id?: number
+    name: string
+    committees?: {
+      id: number
+    }[]
+  }
+  const [options, setOptions] = useState<OptionType[]>([])
 
   const { data, isLoading } = api.template.getOptions.useQuery()
 
   useEffect(() => {
-    if (data) setTemplates([...data.map((e) => e.name)])
+    if (data) setOptions([...data])
   }, [data])
 
   const [createdIndex, setCreatedIndex] = useState<number>()
 
   const [searchValue, setSearchValue] = useState('')
 
-  const handleChangeValue = (value?: string) => {
-    const newValue = value || ''
-    props.form.setValue('template_name', newValue)
-    const nameValue = props.form.getValues('name')
-    if (!nameValue) props.form.setValue('name', newValue)
+  const handleChangeFormValue = (value?: z.infer<typeof CommitteeTemplateFormSchema>) => {
+    props.form.setValue('template', value)
+    console.log(props.form.getValues('template'))
+    console.log(
+      props.form.getValues('is_active') && !!props.form.getValues('template')?.committees?.length
+    )
+    const formNameValue = props.form.getValues('name')
+    if (!formNameValue) props.form.setValue('name', value?.name)
   }
 
-  const handleSelectOption = () => {
-    if (createdIndex) templates.shift()
-    setCreatedIndex(templates.length)
-    setTemplates([searchValue, ...templates])
-    handleChangeValue(searchValue)
+  const handleClickCreateOption = () => {
+    if (createdIndex) options.shift()
+    setCreatedIndex(options.length)
+    const newOption = { name: searchValue }
+    setOptions([newOption, ...options])
+    handleChangeFormValue(newOption)
+  }
+
+  const handleClickOption = (clickedOption: OptionType, clickedOptionIndex: number) => {
+    const fieldValue = props.form.getValues('template')
+    const fieldValueName = fieldValue?.name
+    if (clickedOption.name === fieldValueName) {
+      handleChangeFormValue(undefined)
+    } else {
+      const newFieldValue = options[clickedOptionIndex]
+      handleChangeFormValue(newFieldValue)
+    }
   }
 
   const handleChangeSearchValue = (value: string) => {
     setSearchValue(value)
   }
 
-  return (
-    <SelectFormItem
-      form={props.form}
-      fieldName={'template_name'}
-      label={MyHeaders.TEMPLATE}
-      onChangeValue={handleChangeValue}
-      options={templates}
-      onSelectOption={handleSelectOption}
-      searchValue={searchValue}
-      onChangeSearchValue={handleChangeSearchValue}
-      isLoading={isLoading}
-      disabled={props.disabled}
-    >
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <HelpCircleIcon className="ml-1 h-4 w-4 p-[2px]" />
-          </TooltipTrigger>
-          <TooltipContent>
-            {`Mandatos de comissões regimentais (permantentes) são adicionados a coleção de mandatos de seu ${MyHeaders.TEMPLATE.toLowerCase()}.`}
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </SelectFormItem>
-  )
-}
+  const getButtonValue = (fieldValue: OptionType) => {
+    if (isLoading) return 'Loading...'
 
-export const CheckBoxFormItem = (props: { form: any; disabled?: boolean }) => {
+    if (fieldValue?.name) {
+      const searchResult = options.find((option) => option.name === fieldValue.name)
+      if (searchResult) return searchResult.name
+    }
+
+    return 'ex: Direção'
+  }
+
   return (
     <FormField
       control={props.form.control}
-      name="is_active"
-      render={({ field }) => (
-        <FormItem className="flex w-full flex-row items-start space-x-3 space-y-0 rounded-md border p-2">
-          <FormControl>
-            <Checkbox
-              className="h-5 w-5"
-              disabled={props.disabled}
-              checked={field.value}
-              onCheckedChange={field.onChange}
-            />
-          </FormControl>
-          <div className="space-y-1 leading-none">
-            <FormLabel>Mandato ativo</FormLabel>
-            {/* <FormDescription>You can manage your mobile notifications in the</FormDescription> */}
-          </div>
-        </FormItem>
-      )}
-    />
-  )
-}
-
-export const SelectFormItem = (
-  props: {
-    form: any
-    fieldName: string
-    label: string
-    onChangeValue: (value?: string) => void
-    options: string[]
-    onSelectOption: () => void
-    searchValue: string
-    onChangeSearchValue: (value: string) => void
-    disabled?: boolean
-    isLoading?: boolean
-  } & PropsWithChildren
-) => {
-  return (
-    <FormField
-      control={props.form.control}
-      name={props.fieldName}
+      name="template"
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <span className="flex flex-row">
-            <FormLabel className="pb-1">{props.label}</FormLabel>
-            {props.children}
+            <FormLabel className="pb-1">{MyHeaders.TEMPLATE}</FormLabel>
+            <TemplateTooltip />
           </span>
           <Popover>
             <PopoverTrigger asChild>
@@ -452,59 +437,50 @@ export const SelectFormItem = (
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-                    !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage'
+                    'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
                   )}
                 >
-                  {props.isLoading
-                    ? 'Carregando...'
-                    : field.value
-                    ? props.options.find((option) => option === field.value)
-                    : 'ex: Direção'}
+                  <span className={!field.value?.name ? 'text-muted-foregroundPage' : ''}>
+                    {getButtonValue(field.value)}
+                  </span>
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
             <PopoverContent className="offset w-[462px] p-0">
-              <Command isLoading={props.isLoading}>
+              <Command isLoading={isLoading}>
                 <CommandInput
-                  placeholder={`Procure um valor`}
+                  placeholder={`Digite o nome de um ${CommitteeHeaders.TEMPLATE.toLowerCase()}...`}
                   className="h-9"
-                  onValueChange={props.onChangeSearchValue}
+                  onValueChange={handleChangeSearchValue}
                 />
                 <CommandEmpty className="p-0">
-                  {props.isLoading
-                    ? 'Carregando...'
-                    : props.searchValue && (
+                  {isLoading
+                    ? 'Loading...'
+                    : searchValue && (
                         <Button
                           className="max-h-full w-full "
                           variant="ghost"
-                          onClick={props.onSelectOption}
+                          onClick={handleClickCreateOption}
                         >
                           <div className="truncate">
-                            Criar {props.label.toLowerCase()} "{props.searchValue}"?
+                            Criar {CommitteeHeaders.TEMPLATE.toLowerCase()} "{searchValue}"?
                           </div>
                         </Button>
                       )}
                 </CommandEmpty>
-                <CommandGroup className="max-h-64 overflow-y-auto ">
-                  {props.options.map((option) => (
+                <CommandGroup className="max-h-64 overflow-y-auto">
+                  {options.map((option, index) => (
                     <CommandItem
-                      value={option}
-                      key={option}
-                      onSelect={(value) => {
-                        let found: string | undefined
-                        if (value === props.form.getValues(props.fieldName)?.toLocaleLowerCase()) {
-                          found = undefined
-                        } else found = props.options.find((o) => o.toLocaleLowerCase() === value)
-                        props.onChangeValue(found)
-                      }}
+                      value={option.name}
+                      key={option.name}
+                      onSelect={() => handleClickOption(option, index)}
                     >
-                      {option}
+                      {option.name}
                       <CheckIcon
                         className={cn(
                           'ml-auto h-4 w-4',
-                          option === field.value ? 'opacity-100' : 'opacity-0'
+                          option.name === field.value?.name ? 'opacity-100' : 'opacity-0'
                         )}
                       />
                     </CommandItem>
@@ -519,3 +495,138 @@ export const SelectFormItem = (
     />
   )
 }
+
+export const CheckBoxFormItem = (props: {
+  form: any
+  fieldName: string
+  label: string
+  disabled?: boolean
+}) => {
+  return (
+    <FormField
+      control={props.form.control}
+      name={props.fieldName}
+      render={({ field }) => (
+        <FormItem
+          className={cn(
+            'flex w-full flex-row items-start space-x-3 space-y-0 rounded-md border p-2',
+            props.disabled ? 'opacity-50' : undefined
+          )}
+        >
+          <FormControl>
+            <Checkbox
+              className="h-5 w-5"
+              disabled={props.disabled}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+          </FormControl>
+          <div className="space-y-1 leading-none">
+            <FormLabel>{props.label}</FormLabel>
+            {/* <FormDescription>You can manage your mobile notifications in the</FormDescription> */}
+          </div>
+        </FormItem>
+      )}
+    />
+  )
+}
+
+// export const SelectFormItem = (
+//   props: {
+//     form: any
+//     fieldName: string
+//     label: string
+//     onChangeValue: (value?: { id: number; name: string }) => void
+//     options: { id: number; name: string }[]
+//     onSelectOption: () => void
+//     searchValue: string
+//     onChangeSearchValue: (value: string) => void
+//     disabled?: boolean
+//     isLoading?: boolean
+//   } & PropsWithChildren
+// ) => {
+//   return (
+//     <FormField
+//       control={props.form.control}
+//       name={props.fieldName}
+//       render={({ field }) => (
+//         <FormItem className="flex flex-col">
+//           <span className="flex flex-row">
+//             <FormLabel className="pb-1">{props.label}</FormLabel>
+//             {props.children}
+//           </span>
+//           <Popover>
+//             <PopoverTrigger asChild>
+//               <FormControl>
+//                 <Button
+//                   disabled={props.disabled}
+//                   variant="outline"
+//                   role="combobox"
+//                   className={cn(
+//                     'flex h-9 w-full justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+//                     !field.value && 'text-muted-foregroundPage hover:text-muted-foregroundPage'
+//                   )}
+//                 >
+//                   {props.isLoading
+//                     ? 'Carregando...'
+//                     : field.value.name
+//                     ? props.options.find((option) => option.name === field.value.name)
+//                     : 'ex: Direção'}
+//                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+//                 </Button>
+//               </FormControl>
+//             </PopoverTrigger>
+//             <PopoverContent className="offset w-[462px] p-0">
+//               <Command isLoading={props.isLoading}>
+//                 <CommandInput
+//                   placeholder={`Procure um valor`}
+//                   className="h-9"
+//                   onValueChange={props.onChangeSearchValue}
+//                 />
+//                 <CommandEmpty className="p-0">
+//                   {props.isLoading
+//                     ? 'Carregando...'
+//                     : props.searchValue && (
+//                         <Button
+//                           className="max-h-full w-full "
+//                           variant="ghost"
+//                           onClick={props.onSelectOption}
+//                         >
+//                           <div className="truncate">
+//                             Criar {props.label.toLowerCase()} "{props.searchValue}"?
+//                           </div>
+//                         </Button>
+//                       )}
+//                 </CommandEmpty>
+//                 <CommandGroup className="max-h-64 overflow-y-auto ">
+//                   {props.options.map((option) => (
+//                     <CommandItem
+//                       value={option}
+//                       key={option}
+//                       onSelect={(value) => {
+//                         let found: string | undefined
+//                         if (value === props.form.getValues(props.fieldName)?.toLocaleLowerCase()) {
+//                           found = undefined
+//                         } else found = props.options.find((o) => o.toLocaleLowerCase() === value)
+//                         props.onChangeValue(found)
+//                       }}
+//                     >
+//                       {option}
+//                       <CheckIcon
+//                         className={cn(
+//                           'ml-auto h-4 w-4',
+//                           option === field.value ? 'opacity-100' : 'opacity-0'
+//                         )}
+//                       />
+//                     </CommandItem>
+//                   ))}
+//                 </CommandGroup>
+//               </Command>
+//             </PopoverContent>
+//           </Popover>
+//           <FormMessage />
+//         </FormItem>
+//       )}
+//     />
+//   )
+// }

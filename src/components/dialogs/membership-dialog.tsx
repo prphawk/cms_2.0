@@ -19,6 +19,7 @@ import { MembershipHeaders, MyHeaders } from '~/constants/headers'
 import { Employee, Membership } from '@prisma/client'
 import React from 'react'
 import {
+  CheckBoxFormItem,
   CommonFormItem,
   DateFormItem,
   EmployeeSelectFormItem,
@@ -34,9 +35,10 @@ export default function MembershipDialog(props: {
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
   member?: Membership & { employee: Employee }
   handleSave: (membershipSchema: z.infer<typeof MembershipFormSchema>) => void
-  committee: { id: number; begin_date: Date | null; end_date: Date | null }
+  committee: { id: number; begin_date: Date | null; end_date: Date | null; is_active: boolean }
 }) {
   const myDefaultValues = () => {
+    const is_active_member_default_value = props.member ? props.member.is_active : true
     return {
       employee: {
         id: props.member?.employee.id,
@@ -48,7 +50,8 @@ export default function MembershipDialog(props: {
         props.member?.end_date || props.committee.end_date || _addYears(new Date(), 1)
       ),
       ordinance: props.member?.ordinance || '',
-      observations: props.member?.observations || ''
+      observations: props.member?.observations || '',
+      is_active: props.committee.is_active ? is_active_member_default_value : false
     }
   }
 
@@ -121,7 +124,15 @@ export default function MembershipDialog(props: {
               form={form}
               label={MembershipHeaders.OBSERVATIONS}
             />
-            <DialogFooter>
+            <DialogFooter className="pt-2">
+              <span className="mr-auto flex items-center">
+                <CheckBoxFormItem
+                  fieldName="is_active"
+                  disabled={!!props.member || !props.committee.is_active}
+                  form={form}
+                  label={'Membro(a) ativo(a)'}
+                />
+              </span>
               <Button type="submit" form="formMembership">
                 Salvar
               </Button>

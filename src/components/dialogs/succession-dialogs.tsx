@@ -7,7 +7,7 @@ import { Routes } from '~/constants/routes'
 import CommitteeDialog from './committee-dialog'
 import MembershipArrayDialog from './membership-array-dialog'
 import { AlertDialog } from './alert-dialog'
-import { CommitteeSchema } from '~/schemas/committee'
+import { CommitteeFormSchema } from '~/schemas/committee'
 import { MembershipArraySchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { MyHeaders } from '~/constants/headers'
@@ -56,7 +56,7 @@ export default function SuccessionDialogs(props: {
     deactivate.mutate({ id: props.committeeId })
   }
 
-  const handleSave1st = (data1st: z.infer<typeof CommitteeSchema>) => {
+  const handleSave1st = (data1st: z.infer<typeof CommitteeFormSchema>) => {
     setSuccessionData({
       ...successionData,
       ...data1st

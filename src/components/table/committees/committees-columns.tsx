@@ -146,7 +146,7 @@ export const getCommitteesColumns = (
     cell: ({ row }) => {
       const committee = row.original
       return (
-        <div className="flex min-w-[64px]">
+        <div className="flex min-w-[96px]">
           <div className="ml-auto px-4">
             <Button
               onClick={() => handleViewCommittee(committee.id)}
@@ -196,14 +196,14 @@ export const CommitteeActionsMenuColumn = ({
           disabled={!committee.is_active || !committee.template_id}
           onClick={() => onCommitteeSuccession(committee.id)}
         >
-          Suceder {MyHeaders.COMMITTEE.toLowerCase()}
+          Suceder mandato
         </DropdownMenuItem>
         <DropdownMenuItem
           danger
           disabled={!committee.is_active}
           onClick={() => onDeactivateCommittee(committee.id)}
         >
-          Encerrar {MyHeaders.COMMITTEE.toLowerCase()}
+          Encerrar mandato
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
