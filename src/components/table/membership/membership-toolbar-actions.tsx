@@ -26,13 +26,12 @@ export default function MembershipTableToolbarActions(props: {
           props.onCreateMembership()
           props.handleOpenDialog(DialogsEnum.membership)
         }}
-        disabled={!props.committee.is_active}
         variant="outline"
         size="sm"
         className="ml-auto mr-2 hidden h-8 bg-transparent lg:flex"
       >
         <PlusIcon className="mr-2 h-5 w-5" />
-        Adicionar membro(s)
+        Adicionar membro(a)
       </Button>
       <ActionsMenuButton
         committee={props.committee}
@@ -62,16 +61,16 @@ const ActionsMenuButton = (props: {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem
-          disabled={!props.committee.is_active}
+          //disabled={!props.committee.is_active}
           onClick={() => props.handleOpenDialog(DialogsEnum.committee)}
         >
-          Editar {MyHeaders.COMMITTEE.toLowerCase()}
+          Editar mandato
         </DropdownMenuItem>
         <DropdownMenuItem
           disabled={!props.committee.is_active || !props.committee.template_id}
           onClick={() => props.handleOpenDialog(DialogsEnum.succession)}
         >
-          Suceder {MyHeaders.COMMITTEE.toLowerCase()}
+          Suceder mandato
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -79,7 +78,7 @@ const ActionsMenuButton = (props: {
           disabled={!props.committee.is_active}
           onClick={props.onDeactivateCommittee}
         >
-          Encerrar {MyHeaders.COMMITTEE.toLowerCase()}
+          Encerrar mandato
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
