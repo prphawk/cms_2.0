@@ -4,6 +4,7 @@ import { prisma } from '~/server/db'
 import { _findUniqueCommittee } from './committee'
 import { DateSchema } from '~/schemas'
 import { _toDateFromForm } from '~/utils/string'
+import { MembershipFormSchema, MembershipSchema } from '~/schemas/membership'
 
 export const _deactivateMembershipsByCommittee = async (committee_id: number) => {
   return await prisma.membership.updateMany({
@@ -21,15 +22,11 @@ export const _deactivateMembershipsByEmployee = async (employee_id: number) => {
 export const membershipRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
-      z.object({
-        committee_id: z.number(),
-        employee: z.object({ id: z.number().optional(), name: z.string() }),
-        role: z.string(),
-        begin_date: z.date().optional(),
-        end_date: z.date().optional(),
-        ordinance: z.string().optional(),
-        observations: z.optional(z.string())
-      })
+      z
+        .object({
+          committee_id: z.number()
+        })
+        .merge(MembershipFormSchema)
     )
     .mutation(({ ctx, input }) => {
       const { employee, committee_id, ...data } = input
