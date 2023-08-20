@@ -28,7 +28,6 @@ export const getUsersForNotifications = () => {
   const now = new Date()
   const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30)
   const XDaysFromNow = _addDays(now, Number(process.env.DAYS) || 30)
-  console.log(XDaysFromNow, Number(process.env.DAYS))
   return prisma.user.findMany({
     where: {
       email: {

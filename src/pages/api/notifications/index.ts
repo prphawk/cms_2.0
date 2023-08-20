@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         body: 'OK!',
         cookies: req.cookies
       })
-    }
+    } else console.log('No notifications to send this time.')
   } catch (error) {
     console.error(error)
     return res.status(500).json({
