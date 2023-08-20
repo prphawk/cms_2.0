@@ -167,7 +167,7 @@ export default function MembershipArrayDialog(props: {
                 onClick={() => fieldArray.append(newAppendedValue() as any)}
               >
                 <PlusIcon className="mr-2 h-5 w-5" />
-                Adicionar novo(a) membro(a)
+                Adicionar membro(a)
               </Button>
               <Button size="sm" type="submit" form="formMembership">
                 <SaveIcon className="mr-1 h-5 w-5" />

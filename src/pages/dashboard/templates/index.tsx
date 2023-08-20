@@ -17,10 +17,10 @@ import { ContentLayout } from '~/layouts/page-layout'
 import { TitleLayout } from '~/layouts/text-layout'
 import TemplateDialog from '~/components/dialogs/template-dialog'
 import { DialogsEnum } from '~/constants/enums'
-import { TemplateSchema } from '~/schemas/committee'
 import { z } from 'zod'
 import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
+import { CreateTemplateFormSchema } from '~/schemas'
 
 export default function TemplatePage() {
   const router = useRouter()
@@ -71,7 +71,7 @@ export default function TemplatePage() {
     handleOpenDialog(DialogsEnum.template)
   }
 
-  const handleSaveTemplate = (templateSchema: z.infer<typeof TemplateSchema>) => {
+  const handleSaveTemplate = (templateSchema: z.infer<typeof CreateTemplateFormSchema>) => {
     if (selectedTemplate)
       updateTemplate.mutate({ id: selectedTemplate.id, name: templateSchema.name })
   }

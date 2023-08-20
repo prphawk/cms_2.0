@@ -1,6 +1,6 @@
-import { Committee, Notification, Prisma, Template, User } from '@prisma/client'
+import { Notification } from '@prisma/client'
 import { z } from 'zod'
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 import { prisma } from '~/server/db'
 import { _addDays, _subDays } from '~/utils/string'
 import { _createNotification } from './notification'
@@ -89,9 +89,18 @@ export const templateRouter = createTRPCRouter({
 
   getOptions: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.template.findMany({
-      distinct: ['name'],
+      // distinct: ['name'],
       select: {
-        name: true
+        id: true,
+        name: true,
+        committees: {
+          where: {
+            is_active: true
+          },
+          select: {
+            id: true
+          }
+        }
       },
       orderBy: {
         name: 'asc'

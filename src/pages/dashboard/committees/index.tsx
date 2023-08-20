@@ -28,7 +28,7 @@ import {
   handleChangeComplementaryFilters
 } from '~/components/filters'
 import CommitteeDialog from '~/components/dialogs/committee-dialog'
-import { CommitteeSchema } from '~/schemas/committee'
+import { CommitteeFormSchema } from '~/schemas/committee'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { Committee } from '@prisma/client'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
@@ -137,7 +137,7 @@ export default function Committees() {
     router.push(`${Routes.COMMITTEES}/${id}`)
   }
 
-  const handleSaveCommittee = (data: z.infer<typeof CommitteeSchema>) => {
+  const handleSaveCommittee = (data: z.infer<typeof CommitteeFormSchema>) => {
     create.mutate(data)
   }
 

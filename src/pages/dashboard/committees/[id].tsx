@@ -28,7 +28,7 @@ import {
 import CommitteeDialog from '~/components/dialogs/committee-dialog'
 import MembershipDialog from '~/components/dialogs/membership-dialog'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
-import { CommitteeSchema } from '~/schemas/committee'
+import { CommitteeFormSchema } from '~/schemas/committee'
 import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
@@ -158,7 +158,7 @@ export default function CommitteeMembership() {
   ]
 
   const handleSaveCommittee = (
-    committeeSchema: z.infer<typeof CommitteeSchema> & { id?: number }
+    committeeSchema: z.infer<typeof CommitteeFormSchema> & { id?: number }
   ) => {
     if (committeeData?.id) {
       updateCommittee.mutate({ id: committeeData.id, ...committeeSchema })
@@ -236,7 +236,8 @@ export default function CommitteeMembership() {
               committee={{
                 id: committeeData.id,
                 begin_date: committeeData.begin_date,
-                end_date: committeeData.end_date
+                end_date: committeeData.end_date,
+                is_active: committeeData.is_active
               }}
             />
             <SuccessionDialogs

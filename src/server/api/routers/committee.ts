@@ -4,9 +4,9 @@ import { _deactivateMembershipsByCommittee } from './membership'
 import { prisma } from '~/server/db'
 import { _getTemplateByName } from './template'
 import { Prisma } from '@prisma/client'
-import { CommitteeSchema } from '~/schemas/committee'
+import { CommitteeFormSchema } from '~/schemas/committee'
 import { MembershipArraySchema } from '~/schemas/membership'
-import { FilterSchema, TemplateSchema, DateSchema } from '~/schemas'
+import { FilterSchema, DateSchema, TemplateSchema } from '~/schemas'
 import { _deleteManyNofifications, _notificationsSuccession } from './notification'
 import { _toDateFromForm } from '~/utils/string'
 
@@ -134,26 +134,24 @@ export const committeeRouter = createTRPCRouter({
     })
   }),
 
-  create: protectedProcedure.input(CommitteeSchema).mutation(async ({ ctx, input }) => {
-    const { template_name, ...rest } = input
+  create: protectedProcedure.input(CommitteeFormSchema).mutation(async ({ ctx, input }) => {
+    const { template, ...rest } = input
 
     const committee = {
       ...rest
     } as Prisma.CommitteeCreateInput
 
-    if (template_name) {
-      const templateSearch = await _getTemplateByName(template_name)
-      committee.template = templateSearch
-        ? { connect: { id: templateSearch.id } }
-        : { create: { name: template_name } }
-    }
+    if (template)
+      committee.template = template?.id
+        ? { connect: { id: template.id } }
+        : { create: { name: template.name } }
+
     return ctx.prisma.committee.create({ data: committee })
   }),
 
   succession: protectedProcedure
     .input(
-      CommitteeSchema.innerType()
-        .merge(MembershipArraySchema)
+      CommitteeFormSchema.merge(MembershipArraySchema)
         .merge(TemplateSchema)
         .merge(
           z.object({
@@ -162,7 +160,7 @@ export const committeeRouter = createTRPCRouter({
         )
     )
     .mutation(async ({ ctx, input }) => {
-      const { template, members, template_name, old_committee_id, ...data } = input
+      const { template, members, old_committee_id, is_active, ...data } = input
 
       const reduceResult = members.reduce(
         (obj, curr) => {
@@ -207,20 +205,18 @@ export const committeeRouter = createTRPCRouter({
     }),
 
   update: protectedProcedure
-    .input(CommitteeSchema.innerType().merge(z.object({ id: z.number() })))
+    .input(CommitteeFormSchema.merge(z.object({ id: z.number() })))
     .mutation(async ({ ctx, input }) => {
-      const { template_name, id, ...rest } = input
+      const { template, id, is_active, ...rest } = input
       const committee = rest as Prisma.CommitteeUpdateInput
 
-      if (!template_name) {
-        committee.template = { disconnect: true }
-      } else {
-        //TODO fazer a mesma coisa q isso pra poder dar a chance de editar um employee numa membership
-        const templateSearch = await _getTemplateByName(template_name)
-        committee.template = templateSearch
-          ? { connect: { id: templateSearch.id } }
-          : { create: { name: template_name } }
-      }
+      // if (!template) {
+      //   committee.template = { disconnect: true }
+      // } else {
+      //   committee.template = template.id
+      //     ? { connect: { id: template.id } }
+      //     : { create: { name: template.name } }
+      // }
 
       return ctx.prisma.committee.update({ where: { id }, data: committee })
     }),

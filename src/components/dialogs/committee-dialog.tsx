@@ -31,7 +31,7 @@ import {
   TemplateSelectFormItem
 } from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
-import { CommitteeSchema } from '~/schemas/committee'
+import { CommitteeFormSchema, CommitteeFormSchemaEffect } from '~/schemas/committee'
 import { DialogsEnum } from '~/constants/enums'
 import { CommitteeWithOptionalTemplateDataType } from '~/types'
 
@@ -39,7 +39,7 @@ export default function CommitteeDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
   committee?: CommitteeWithOptionalTemplateDataType
-  handleSave: (data: z.infer<typeof CommitteeSchema> & { id?: number }) => void
+  handleSave: (data: z.infer<typeof CommitteeFormSchema> & { id?: number }) => void
   succession?: boolean
 }) {
   const myDefaultValues = () => {
@@ -58,20 +58,20 @@ export default function CommitteeDialog(props: {
       end_date: _toString(end_date || _addYears(new Date(), 2)),
       ordinance: props.committee?.ordinance || '',
       observations: props.committee?.observations || '',
-      template_name: props.committee?.template?.name || '',
-      is_active: props.committee?.is_active || true
+      template: props.committee?.template || undefined,
+      is_active: props.committee ? props.committee.is_active : true
     }
   }
 
-  const form = useForm<z.infer<typeof CommitteeSchema>>({
-    resolver: zodResolver(CommitteeSchema)
+  const form = useForm<z.infer<typeof CommitteeFormSchema>>({
+    resolver: zodResolver(CommitteeFormSchemaEffect)
   })
 
   useEffect(() => {
     if (props.open) form.reset(myDefaultValues() as any)
   }, [props.open])
 
-  function onSubmit(data: z.infer<typeof CommitteeSchema>) {
+  function onSubmit(data: z.infer<typeof CommitteeFormSchema>) {
     onClose()
     props.handleSave({ id: props.committee?.id || undefined, ...data })
   }
@@ -109,7 +109,7 @@ export default function CommitteeDialog(props: {
         <MyDialogClose onClose={onClose} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" id="formCommittee">
-            <TemplateSelectFormItem form={form} disabled={props.succession} />
+            <TemplateSelectFormItem form={form} disabled={props.succession || !!props.committee} />
             <CommonFormItem
               form={form}
               fieldName="name"
@@ -149,12 +149,15 @@ export default function CommitteeDialog(props: {
               form={form}
               label={CommitteeHeaders.OBSERVATIONS}
             />
-            <DialogFooter className="items-center">
-              {/* {!props.committee && !props.succession && (
-                <span className="mr-auto flex items-center">
-                  <CheckBoxFormItem form={form} />
-                </span>
-              )} */}
+            <DialogFooter className="items-center pt-2">
+              <span className="mr-auto flex items-center">
+                <CheckBoxFormItem
+                  form={form}
+                  fieldName="is_active"
+                  label="Mandato ativo"
+                  disabled={!!props.committee || props.succession}
+                />
+              </span>
               <Button type="submit" form="formCommittee">
                 {props.succession ? 'Próximo' : 'Salvar'}
               </Button>
