@@ -47,14 +47,16 @@ export const _toLocaleString = (date?: Date | null) => {
   return CommitteeHeaders.VALUE_NULL
 }
 
-export const _toLocaleExtendedString = (date: Date) =>
-  date.toLocaleDateString('pt-BR', {
+export const _toLocaleExtendedString = (date?: Date | null) => {
+  if (!date) return CommitteeHeaders.VALUE_NULL
+
+  return date.toLocaleDateString('pt-BR', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   })
-
+}
 export const _toString = (date?: Date | null) => {
   if (!date) return undefined
   return date.toISOString().substring(0, 10)
