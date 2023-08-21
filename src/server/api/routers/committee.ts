@@ -9,6 +9,7 @@ import { MembershipArraySchema } from '~/schemas/membership'
 import { FilterSchema, DateSchema, TemplateSchema } from '~/schemas'
 import { _deleteManyNofifications, _notificationsSuccession } from './notification'
 import { _toDateFromForm } from '~/utils/string'
+import { getDatesQuery } from '../queries'
 
 export const _findUniqueCommittee = async (committee_id: number) => {
   return await prisma.committee.findUnique({
@@ -48,20 +49,7 @@ export const committeeRouter = createTRPCRouter({
             where: {
               is_active: input.is_active,
               role: { in: input.roles },
-              NOT: {
-                OR: [
-                  {
-                    begin_date: {
-                      gt: _toDateFromForm(input.dates?.begin_date)
-                    }
-                  },
-                  {
-                    end_date: {
-                      lt: _toDateFromForm(input.dates?.end_date)
-                    }
-                  }
-                ]
-              }
+              ...getDatesQuery(input.dates)
             }
           },
           template: true
@@ -90,20 +78,7 @@ export const committeeRouter = createTRPCRouter({
         where: {
           is_active: input.is_active,
           template,
-          NOT: {
-            OR: [
-              {
-                begin_date: {
-                  gt: _toDateFromForm(input.dates?.begin_date)
-                }
-              },
-              {
-                end_date: {
-                  lt: _toDateFromForm(input.dates?.end_date)
-                }
-              }
-            ]
-          }
+          ...getDatesQuery(input.dates)
         },
         orderBy: { name: 'asc' },
         include: {

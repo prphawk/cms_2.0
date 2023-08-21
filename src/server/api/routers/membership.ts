@@ -5,6 +5,7 @@ import { _findUniqueCommittee } from './committee'
 import { DateSchema } from '~/schemas'
 import { _toDateFromForm } from '~/utils/string'
 import { MembershipFormSchema, MembershipSchema } from '~/schemas/membership'
+import { getDatesQuery } from '../queries'
 
 export const _deactivateMembershipsByCommittee = async (committee_id: number) => {
   return await prisma.membership.updateMany({
@@ -65,20 +66,7 @@ export const membershipRouter = createTRPCRouter({
             is_active: input.is_employee_active
           },
           role: { in: input.roles },
-          NOT: {
-            OR: [
-              {
-                begin_date: {
-                  gt: _toDateFromForm(input.dates?.begin_date)
-                }
-              },
-              {
-                end_date: {
-                  lt: _toDateFromForm(input.dates?.end_date)
-                }
-              }
-            ]
-          }
+          ...getDatesQuery(input.dates)
         },
         orderBy: {
           employee: { name: 'asc' }
@@ -162,20 +150,7 @@ export const membershipRouter = createTRPCRouter({
         where: {
           committee: { template_id: template_id },
           role,
-          NOT: {
-            OR: [
-              {
-                begin_date: {
-                  gt: _toDateFromForm(input.dates?.begin_date)
-                }
-              },
-              {
-                end_date: {
-                  lt: _toDateFromForm(input.dates?.end_date)
-                }
-              }
-            ]
-          }
+          ...getDatesQuery(input.dates)
         },
         include: {
           committee: true,
