@@ -5,6 +5,7 @@ import { prisma } from '~/server/db'
 import GoogleProvider from 'next-auth/providers/google'
 import EmailProvider from 'next-auth/providers/email'
 import { sendVerificationRequest } from './email'
+import { Routes } from '~/constants/routes'
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -40,10 +41,23 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         id: user.id
       }
-    })
+    }),
     // async signIn({ user, account, profile, email, credentials }) {
-    //   return true
-    // }
+    //   const isAllowedToSignIn =
+    //     user.email &&
+    //     (user.email === process.env.EMAIL_DEVELOPER || user.email.endsWith('@ufrgs.br'))
+    //   if (isAllowedToSignIn) {
+    //     return true
+    //   } else {
+    //     // Return false to display a default error message
+    //     return false
+    //     // Or you can return a URL to redirect to:
+    //     // return '/unauthorized'
+    //   }
+    // },
+    async redirect() {
+      return Routes.AUTHENTICATED
+    }
   },
   adapter: PrismaAdapter(prisma), // Ref: Do not forget to setup one of the database adapters for storing the Email verification token. https://next-auth.js.org/providers/email
   providers: [
