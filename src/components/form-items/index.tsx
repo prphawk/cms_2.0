@@ -66,7 +66,7 @@ export const RoleSelectFormItem = (props: {
                     )}
                   >
                     {isLoading
-                      ? 'Carregando...'
+                      ? PLACEHOLDER.LOADING
                       : field.value
                       ? roles.find((r) => r === field.value)
                       : 'ex: Membro(a)'}
@@ -186,7 +186,7 @@ export const EmployeeSelectFormItem = (props: {
                     )}
                   >
                     {isLoading
-                      ? 'Carregando...'
+                      ? PLACEHOLDER.LOADING
                       : field.value.name
                       ? employees?.find((e) => e.name === field.value.name)?.name
                       : 'ex: Fulano(a)'}

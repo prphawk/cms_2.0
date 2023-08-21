@@ -24,6 +24,7 @@ import {
 import DataTablePagination from './data-table-pagination'
 import { useState } from 'react'
 import { TableToolbar } from './data-table-toolbar'
+import { PLACEHOLDER } from '~/constants/placeholders'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -107,7 +108,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {isLoading ? 'Carregando...' : 'Sem resultados.'}
+                  {isLoading ? PLACEHOLDER.LOADING : 'Sem resultados.'}
                 </TableCell>
               </TableRow>
             )}

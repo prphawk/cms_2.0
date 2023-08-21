@@ -18,6 +18,7 @@ import { TitleLayout } from '~/layouts/text-layout'
 import { filterDProps, getActiveDateFilterLabels } from '~/components/filters'
 import { IFilter, TableToolbarFilter } from '~/components/table/data-table-toolbar'
 import { FilterStateDatesType } from '~/types'
+import { PLACEHOLDER } from '~/constants/placeholders'
 
 export default function TemplateRoleHistory() {
   const router = useRouter()
@@ -92,7 +93,7 @@ export const HistoryDetails = (
     <Accordion className="mb-6" type="single" defaultValue="item-1" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <TitleLayout>{props.isLoading ? 'Carregando...' : props.title}</TitleLayout>
+          <TitleLayout>{props.isLoading ? PLACEHOLDER.LOADING : props.title}</TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">{props.children}</AccordionContent>
       </AccordionItem>

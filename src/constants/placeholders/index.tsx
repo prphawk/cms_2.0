@@ -1,5 +1,5 @@
 export class PLACEHOLDER {
-  public static LOADING = 'Loading...'
+  public static LOADING = 'Carregando...'
   public static TEMPLATE = 'ex: Direção'
   public static COMMITTEE = 'ex: Direção 2023'
   public static BOND = 'ex: INF'

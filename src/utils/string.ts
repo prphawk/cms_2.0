@@ -1,4 +1,5 @@
 import { CommitteeHeaders } from '~/constants/headers'
+import { PLACEHOLDER } from '~/constants/placeholders'
 import { CountDataType, RawCountDataType } from '~/types'
 
 export const _diffMonths = (d1: Date, d2: Date) => {
@@ -105,8 +106,8 @@ export const _formatCount = (
     })
   }
   return {
-    active_count: obj.active ?? 'Carregando...',
-    total_count: obj.active + obj.inactive ?? 'Carregando...'
+    active_count: obj.active ?? PLACEHOLDER.LOADING,
+    total_count: obj.active + obj.inactive ?? PLACEHOLDER.LOADING
   }
 }
 
