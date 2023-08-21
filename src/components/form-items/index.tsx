@@ -349,7 +349,7 @@ const TemplateTooltip = () => {
           <HelpCircleIcon className="ml-1 h-4 w-4 p-[2px]" />
         </TooltipTrigger>
         <TooltipContent className="max-w-[52ch] bg-black text-center text-white">
-          {`Mandatos de comissões regimentais (permantentes) devem ser incluidos em seu ${MyHeaders.TEMPLATE.toLowerCase()}.`}
+          {`Mandatos de comissões regimentais (permanentes) devem ser incluidos em seu ${MyHeaders.TEMPLATE.toLowerCase()}.`}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
