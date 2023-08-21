@@ -34,12 +34,13 @@ import { MyDialog, MyDialogClose } from './my-dialog'
 import { CommitteeFormSchema, CommitteeFormSchemaEffect } from '~/schemas/committee'
 import { DialogsEnum } from '~/constants/enums'
 import { CommitteeWithOptionalTemplateDataType } from '~/types'
+import { PLACEHOLDER } from '~/constants/placeholders'
 
 export default function CommitteeDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
   committee?: CommitteeWithOptionalTemplateDataType
-  handleSave: (data: z.infer<typeof CommitteeFormSchema> & { id?: number }) => void
+  handleSave: (data: z.infer<typeof CommitteeFormSchema>) => void
   succession?: boolean
 }) {
   const myDefaultValues = () => {
@@ -114,21 +115,21 @@ export default function CommitteeDialog(props: {
               form={form}
               fieldName="name"
               label={CommitteeHeaders.NAME}
-              placeholder="ex: Direção 2023"
+              placeholder={PLACEHOLDER.COMMITTEE}
               required
             />
             <CommonFormItem
               form={form}
               fieldName="bond"
               label={CommitteeHeaders.BOND}
-              placeholder="ex: INF"
+              placeholder={PLACEHOLDER.BOND}
               required
             />
             <CommonFormItem
               form={form}
               fieldName="ordinance"
               label={CommitteeHeaders.ORDINANCE}
-              placeholder="ex: 0000/2023-UFRGS"
+              placeholder={PLACEHOLDER.ORDINANCE}
             />
             <div className="flex flex-row justify-between gap-x-4 pt-2">
               <DateFormItem

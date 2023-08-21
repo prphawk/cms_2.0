@@ -29,6 +29,7 @@ import {
 import { MyDialog, MyDialogClose } from './my-dialog'
 import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
+import { PLACEHOLDER } from '~/constants/placeholders'
 
 export default function MembershipDialog(props: {
   open: boolean
@@ -103,7 +104,7 @@ export default function MembershipDialog(props: {
               form={form}
               fieldName="ordinance"
               label={MembershipHeaders.ORDINANCE}
-              placeholder="ex: 0000/2023-UFRGS"
+              placeholder={PLACEHOLDER.ORDINANCE}
             />
             <div className="grid grid-cols-2 items-baseline justify-between gap-x-4 pt-2">
               <DateFormItem

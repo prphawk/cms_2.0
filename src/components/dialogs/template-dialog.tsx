@@ -22,6 +22,7 @@ import { MyDialog, MyDialogClose } from './my-dialog'
 import { DialogsEnum } from '~/constants/enums'
 import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
 import { CreateTemplateFormSchema } from '~/schemas'
+import { PLACEHOLDER } from '~/constants/placeholders'
 
 export default function TemplateDialog(props: {
   open: boolean
@@ -76,7 +77,7 @@ export default function TemplateDialog(props: {
               form={form}
               fieldName="name"
               label={CommitteeHeaders.TEMPLATE_NAME}
-              placeholder="ex: Direção"
+              placeholder={PLACEHOLDER.COMMITTEE}
             />
 
             <DialogFooter>

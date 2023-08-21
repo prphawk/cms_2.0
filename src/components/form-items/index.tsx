@@ -19,6 +19,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Checkbox } from '@/components/ui/checkbox'
 import { z } from 'zod'
 import { CommitteeTemplateFormSchema } from '~/schemas/committee'
+import { PLACEHOLDER } from '~/constants/placeholders'
 
 export const RoleSelectFormItem = (props: {
   form: any
@@ -409,14 +410,14 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
   }
 
   const getButtonValue = (fieldValue: OptionType) => {
-    if (isLoading) return 'Loading...'
+    if (isLoading) return PLACEHOLDER.LOADING
 
     if (fieldValue?.name) {
       const searchResult = options.find((option) => option.name === fieldValue.name)
       if (searchResult) return searchResult.name
     }
 
-    return 'ex: Direção'
+    return PLACEHOLDER.TEMPLATE
   }
 
   return (
@@ -456,7 +457,7 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
                 />
                 <CommandEmpty className="p-0">
                   {isLoading
-                    ? 'Loading...'
+                    ? PLACEHOLDER.LOADING
                     : searchValue && (
                         <Button
                           className="max-h-full w-full "

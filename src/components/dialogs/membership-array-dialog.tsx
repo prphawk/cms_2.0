@@ -27,6 +27,7 @@ import {
 import { MyDialog, MyDialogClose } from './my-dialog'
 import { MembershipArraySchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
+import { PLACEHOLDER } from '~/constants/placeholders'
 
 export default function MembershipArrayDialog(props: {
   open: boolean
@@ -129,7 +130,7 @@ export default function MembershipArrayDialog(props: {
                     form={form}
                     fieldName={`members.${index}.ordinance`}
                     label={MembershipHeaders.ORDINANCE}
-                    placeholder="ex: 0000/2023-UFRGS"
+                    placeholder={PLACEHOLDER.BOND}
                   />
                   <DateFormItem
                     hideLabel={index > 0}
@@ -153,7 +154,7 @@ export default function MembershipArrayDialog(props: {
                     form={form}
                     fieldName={`members.${index}.observations`}
                     label={MembershipHeaders.OBSERVATIONS}
-                    placeholder="ex: 2º mandato"
+                    placeholder={PLACEHOLDER.OBSERVATIONS}
                   />
                 </div>
               ))}
