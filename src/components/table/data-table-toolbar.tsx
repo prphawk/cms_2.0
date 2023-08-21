@@ -31,7 +31,7 @@ export function TableToolbar<TData>(
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder={'Buscar...' || props.searchPlaceholder}
-          value={props.globalFilter}
+          defaultValue={props.globalFilter}
           onChange={(event) => props.onChange(event.target.value)}
           className="h-8 w-[150px] bg-transparent text-muted-foregroundPage lg:w-[250px]"
         />

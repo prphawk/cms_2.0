@@ -16,6 +16,12 @@ const resetDB = async () => {
     await prisma.committee.deleteMany()
     console.log('Deleted records in Committee table')
 
+    await prisma.user.deleteMany()
+    console.log('Deleted records in User table')
+
+    await prisma.$queryRaw`ALTER TABLE User AUTO_INCREMENT = 1`
+    console.log('reset User auto increment to 1')
+
     await prisma.$queryRaw`ALTER TABLE Employee AUTO_INCREMENT = 1`
     console.log('reset Employee auto increment to 1')
 

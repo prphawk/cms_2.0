@@ -44,6 +44,7 @@ export default function Employees() {
 
   const handleOpenDialog = (dialogEnum: DialogsEnum) => setOpenDialog(dialogEnum)
 
+  const [filter, setFilter] = useState('')
   const [filterAM, setFilterAM] = useState<FilterStateType>()
   const [filterAE, setFilterAE] = useState<FilterStateType>()
   const [filterC, setFilterC] = useState<string[]>()
@@ -158,8 +159,10 @@ export default function Employees() {
           <>
             <EmployeesTableTitle data={data} />
             <DataTable
-              isLoading={isLoading}
               data={data}
+              isLoading={isLoading}
+              globalFilter={filter}
+              onChangeGlobalFilter={(value) => setFilter(value)}
               columns={getEmployeesColumns(
                 handleViewCommittee,
                 onDeactivateMembership,

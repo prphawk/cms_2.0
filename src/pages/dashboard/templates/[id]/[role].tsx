@@ -25,6 +25,8 @@ export default function TemplateRoleHistory() {
 
   const template_id = Number(router.query.id)
   const role = router.query.role as string
+
+  const [filter, setFilter] = useState('')
   const [filterD, setFilterD] = useState<FilterStateDatesType>({
     begin_date: undefined,
     end_date: undefined
@@ -64,6 +66,8 @@ export default function TemplateRoleHistory() {
             <TemplateHistoryTableTitle {...{ template_id, role }} />
             <DataTable
               data={data}
+              globalFilter={filter}
+              onChangeGlobalFilter={(value) => setFilter(value)}
               columns={getTemplateRoleHistoryColumns(handleViewCommittee)}
               tableFilters={<TableToolbarFilter filters={propsFilters} />}
             />

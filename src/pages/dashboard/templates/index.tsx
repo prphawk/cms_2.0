@@ -26,6 +26,7 @@ export default function TemplatePage() {
   const router = useRouter()
   const utils = api.useContext()
 
+  const [filter, setFilter] = useState('')
   const [openDialog, setOpenDialog] = useState(DialogsEnum.none)
   const [selectedTemplate, setSelectedTemplate] =
     useState<TemplateWithCommitteeCountAndNotifDataType>()
@@ -83,6 +84,8 @@ export default function TemplatePage() {
           <>
             <TemplateDetails {...{ isLoading }} />
             <DataTable
+              globalFilter={filter}
+              onChangeGlobalFilter={(value) => setFilter(value)}
               data={data as any}
               columns={getTemplateColumns(
                 handleChangeNotifValue,

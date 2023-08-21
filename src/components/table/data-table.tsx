@@ -22,7 +22,7 @@ import {
   TableRow
 } from '@/components/ui/table'
 import DataTablePagination from './data-table-pagination'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { TableToolbar } from './data-table-toolbar'
 import { PLACEHOLDER } from '~/constants/placeholders'
 
@@ -36,15 +36,18 @@ export function DataTable<TData, TValue>({
   data,
   isLoading,
   tableFilters,
-  tableActions
+  tableActions,
+  globalFilter,
+  onChangeGlobalFilter
 }: DataTableProps<TData, TValue> & {
   tableFilters?: JSX.Element
   isLoading?: boolean
   tableActions?: JSX.Element
+  globalFilter: string
+  onChangeGlobalFilter: (value: string) => void
 }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [globalFilter, setGlobalFilter] = useState('')
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     Participações: false
   })
@@ -74,7 +77,7 @@ export function DataTable<TData, TValue>({
         table={table}
         tableFilters={tableFilters}
         globalFilter={globalFilter}
-        onChange={setGlobalFilter}
+        onChange={onChangeGlobalFilter}
         tableActions={tableActions}
       />
       <div className="mt-3 h-fit rounded-md border">

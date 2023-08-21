@@ -16,7 +16,7 @@ import {
 import { _toLocaleString, _formatCount } from '~/utils/string'
 import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions'
 import { z } from 'zod'
-import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
+import { MyHeaders } from '~/constants/headers'
 import { DialogsEnum } from '~/constants/enums'
 import {
   FilterStateType,
@@ -46,6 +46,7 @@ export default function Committees() {
 
   const handleOpenDialog = (dialogEnum: DialogsEnum) => setOpenDialog(dialogEnum)
 
+  const [filter, setFilter] = useState('')
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterT, setFilterT] = useState<FilterStateType>()
   const [filterD, setFilterD] = useState<FilterStateDatesType>({
@@ -165,6 +166,8 @@ export default function Committees() {
       <ContentLayout className="committees my-6 mb-auto min-h-[89vh]">
         <CommitteeTableTitle />
         <DataTable
+          globalFilter={filter}
+          onChangeGlobalFilter={(value) => setFilter(value)}
           data={data || []}
           isLoading={isLoading}
           columns={getCommitteesColumns(

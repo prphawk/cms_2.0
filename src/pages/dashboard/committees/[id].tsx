@@ -92,6 +92,7 @@ export default function CommitteeMembership() {
     setOpenDialog(dialogEnum)
   }
 
+  const [filter, setFilter] = useState('')
   const [filterA, setFilterA] = useState<FilterStateType>()
   const [filterC, setFilterC] = useState<string[]>()
   const [filterD, setFilterD] = useState<FilterStateDatesType>({
@@ -211,6 +212,8 @@ export default function CommitteeMembership() {
             <CommitteesTableTitle data={committeeData} />
             <DataTable
               isLoading={isLoading}
+              globalFilter={filter}
+              onChangeGlobalFilter={(value) => setFilter(value)}
               data={committeeData?.members || []}
               columns={getMembershipColumns(
                 onChangeMembership,
