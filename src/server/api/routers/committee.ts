@@ -109,7 +109,8 @@ export const committeeRouter = createTRPCRouter({
         include: {
           members: {
             select: { is_active: true } //for filtering the counting above
-          }
+          },
+          template: true
         }
       })
 
@@ -160,7 +161,7 @@ export const committeeRouter = createTRPCRouter({
         )
     )
     .mutation(async ({ ctx, input }) => {
-      const { template, members, old_committee_id, is_active, ...data } = input
+      const { id, template, members, old_committee_id, is_active, ...data } = input
 
       const reduceResult = members.reduce(
         (obj, curr) => {

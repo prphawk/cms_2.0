@@ -157,11 +157,9 @@ export default function CommitteeMembership() {
     }
   ]
 
-  const handleSaveCommittee = (
-    committeeSchema: z.infer<typeof CommitteeFormSchema> & { id?: number }
-  ) => {
+  const handleSaveCommittee = (committeeSchema: z.infer<typeof CommitteeFormSchema>) => {
     if (committeeData?.id) {
-      updateCommittee.mutate({ id: committeeData.id, ...committeeSchema })
+      updateCommittee.mutate({ ...committeeSchema, id: committeeData.id })
     }
   }
 

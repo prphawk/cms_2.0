@@ -42,7 +42,7 @@ export default function Committees() {
 
   const [openDialog, setOpenDialog] = useState(DialogsEnum.none)
 
-  const [selectedCommittee, setSelectedCommittee] = useState<Committee | number>()
+  const [selectedCommittee, setSelectedCommittee] = useState<Committee>()
 
   const handleOpenDialog = (dialogEnum: DialogsEnum) => setOpenDialog(dialogEnum)
 
@@ -104,22 +104,31 @@ export default function Committees() {
     onMutate() {
       return utils.committee.getAll.cancel()
     },
-    onSettled() {
+    onSuccess() {
       return utils.committee.getAll.invalidate()
     }
   })
 
   const create = api.committee.create.useMutation({
+    onMutate() {
+      return utils.committee.getAll.cancel()
+    },
     onSuccess(data) {
       router.push(`${Routes.COMMITTEES}/${data.id}`)
+    }
+  })
+
+  const update = api.committee.update.useMutation({
+    onMutate() {
+      return utils.committee.getAll.cancel()
     },
-    onSettled() {
+    onSuccess() {
       return utils.committee.getAll.invalidate()
     }
   })
 
-  function onDeactivateCommittee(id: number) {
-    setSelectedCommittee(id)
+  function onDeactivateCommittee(com: Committee) {
+    setSelectedCommittee(com)
     setOpenDialog(DialogsEnum.alert_deactivate)
   }
 
@@ -128,17 +137,22 @@ export default function Committees() {
       deactivate.mutate({ id: selectedCommittee })
   }
 
-  function onCommitteeSuccession(id: number) {
-    setSelectedCommittee(id)
+  function onCommitteeSuccession(com: Committee) {
+    setSelectedCommittee(com)
     setOpenDialog(DialogsEnum.succession)
   }
 
-  function handleViewCommittee(id: number) {
-    router.push(`${Routes.COMMITTEES}/${id}`)
+  function onViewCommittee(com: Committee) {
+    router.push(`${Routes.COMMITTEES}/${com.id}`)
+  }
+
+  function onEditCommittee(com: Committee) {
+    setSelectedCommittee(com)
+    setOpenDialog(DialogsEnum.committee)
   }
 
   const handleSaveCommittee = (data: z.infer<typeof CommitteeFormSchema>) => {
-    create.mutate(data)
+    data.id ? update.mutate({ id: data.id, ...data }) : create.mutate(data)
   }
 
   const handleCreateCommittee = () => {
@@ -154,9 +168,10 @@ export default function Committees() {
           data={data || []}
           isLoading={isLoading}
           columns={getCommitteesColumns(
-            onDeactivateCommittee,
+            onViewCommittee,
+            onEditCommittee,
             onCommitteeSuccession,
-            handleViewCommittee
+            onDeactivateCommittee
           )}
           tableFilters={<TableToolbarFilter filters={propsFilters} />}
           tableActions={
@@ -167,12 +182,15 @@ export default function Committees() {
           open={openDialog === DialogsEnum.committee}
           handleOpenDialog={handleOpenDialog}
           handleSave={handleSaveCommittee}
+          committee={selectedCommittee}
         />
-        <SuccessionDialogs
-          open={openDialog}
-          handleOpenDialog={handleOpenDialog}
-          committeeId={selectedCommittee as number} //TODO refactor
-        />
+        {selectedCommittee && (
+          <SuccessionDialogs
+            open={openDialog}
+            handleOpenDialog={handleOpenDialog}
+            committeeId={selectedCommittee?.id}
+          />
+        )}
         <AlertDialog
           open={openDialog == DialogsEnum.alert_deactivate}
           description={

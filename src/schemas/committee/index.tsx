@@ -11,6 +11,7 @@ export const CommitteeTemplateFormSchema = z
   .optional()
 
 export const CommitteeFormSchema = z.object({
+  id: z.number().optional(),
   name: z
     .string({ required_error: `${CommitteeHeaders.NAME} é obrigatório` })
     .trim()

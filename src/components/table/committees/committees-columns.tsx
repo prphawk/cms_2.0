@@ -16,16 +16,16 @@ import DataTableColumnHeader, {
   DateColumn,
   EndDateBadge
 } from '~/components/table/data-table-column-header'
-import { Separator } from '@radix-ui/react-dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge } from '~/components/badge'
 import { CountDataType, CommitteeWithMembershipCountDataType } from '~/types'
 import { Observations, Ordinance } from '../colums'
 
 export const getCommitteesColumns = (
-  onDeactivateCommittee: (id: number) => void,
-  onCommitteeSuccession: (id: number) => void,
-  handleViewCommittee: (id: number) => void
+  onViewCommittee: (com: Committee) => void,
+  onEditCommittee: (com: Committee) => void,
+  onCommitteeSuccession: (com: Committee) => void,
+  onDeactivateCommittee: (com: Committee) => void
 ): ColumnDef<CommitteeWithMembershipCountDataType>[] => [
   {
     accessorKey: 'name',
@@ -149,63 +149,47 @@ export const getCommitteesColumns = (
         <div className="flex min-w-[96px]">
           <div className="ml-auto px-4">
             <Button
-              onClick={() => handleViewCommittee(committee.id)}
+              onClick={() => onViewCommittee(committee)}
               variant="ghost"
               className="h-8 w-8 p-0"
             >
               <span className="sr-only">Ver detalhes</span>
               <Users2Icon className="h-4 w-4" />
             </Button>
-            <CommitteeActionsMenuColumn
-              committee={committee}
-              onViewCommittee={() => handleViewCommittee(committee.id)}
-              onDeactivateCommittee={onDeactivateCommittee}
-              onCommitteeSuccession={onCommitteeSuccession}
-            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Abrir menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => onViewCommittee(committee)}>
+                  Ver membros
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onEditCommittee(committee)}>
+                  Editar mandato
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  disabled={!committee.is_active || !committee.template_id}
+                  onClick={() => onCommitteeSuccession(committee)}
+                >
+                  Suceder mandato
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  danger
+                  disabled={!committee.is_active}
+                  onClick={() => onDeactivateCommittee(committee)}
+                >
+                  Encerrar mandato
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       )
     }
   }
 ]
-
-export const CommitteeActionsMenuColumn = ({
-  committee,
-  onViewCommittee,
-  onCommitteeSuccession,
-  onDeactivateCommittee
-}: {
-  committee: Committee
-  onViewCommittee: () => void
-  onCommitteeSuccession: (id: number) => void
-  onDeactivateCommittee: (id: number) => void
-}) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Abrir menu</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Ações</DropdownMenuLabel>
-        <DropdownMenuItem onClick={onViewCommittee}>Ver membros</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          disabled={!committee.is_active || !committee.template_id}
-          onClick={() => onCommitteeSuccession(committee.id)}
-        >
-          Suceder mandato
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          danger
-          disabled={!committee.is_active}
-          onClick={() => onDeactivateCommittee(committee.id)}
-        >
-          Encerrar mandato
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
