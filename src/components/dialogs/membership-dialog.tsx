@@ -96,6 +96,8 @@ export default function MembershipDialog(props: {
               <EmployeeSelectFormItem
                 fieldName="employee"
                 form={form}
+                committee_id={props.committee.id}
+                membership_id={props.member?.id}
                 //disabled={props.member?.employee.id !== undefined}
               />
               <RoleSelectFormItem form={form} fieldName="role" />

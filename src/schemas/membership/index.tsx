@@ -1,18 +1,21 @@
 import { z } from 'zod'
 import { MembershipHeaders } from '~/constants/headers'
 
+export const EmployeeFormSchema = z.object(
+  {
+    id: z.number().optional(),
+    name: z
+      .string({ required_error: `${MembershipHeaders.NAME} é obrigatório` })
+      .trim()
+      .min(1, { message: `${MembershipHeaders.NAME} é obrigatório` }),
+    committees: z.object({ committee_id: z.number() }).array().optional()
+  },
+  { required_error: `${MembershipHeaders.NAME} é obrigatório` }
+)
+
 export const MembershipFormSchema = z.object({
   id: z.number().optional(),
-  employee: z.object(
-    {
-      id: z.number().optional(),
-      name: z
-        .string({ required_error: `${MembershipHeaders.NAME} é obrigatório` })
-        .trim()
-        .min(1, { message: `${MembershipHeaders.NAME} é obrigatório` })
-    },
-    { required_error: `${MembershipHeaders.NAME} é obrigatório` }
-  ),
+  employee: EmployeeFormSchema,
   role: z
     .string({ required_error: `${MembershipHeaders.ROLE} é obrigatório` })
     .trim()
@@ -30,7 +33,10 @@ export const MembershipSchemaEffect = MembershipFormSchema.refine(
     message: `${MembershipHeaders.END_DATE} não pode ocorrer antes de ${MembershipHeaders.BEGIN_DATE}.`,
     path: ['end_date']
   }
-)
+).refine((data) => !(data.is_active && data.employee?.committees?.length), {
+  message: `Este servidor já possui participação ativa no mandato. Selecione outro ou desative esta participação.`,
+  path: ['employee']
+})
 
 export const MembershipArraySchema = z.object({
   members: z.array(MembershipSchemaEffect)

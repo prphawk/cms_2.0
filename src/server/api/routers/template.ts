@@ -91,7 +91,6 @@ export const templateRouter = createTRPCRouter({
     .input(z.object({ committee_id: z.number().optional() }))
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.template.findMany({
-        // distinct: ['name'],
         select: {
           id: true,
           name: true,

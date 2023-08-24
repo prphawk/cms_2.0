@@ -64,7 +64,7 @@ export default function CommitteeMembership() {
 
   const createMembership = api.membership.create.useMutation({
     onSuccess() {
-      utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
+      // utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
     },
     onSettled() {
       utils.committee.getOne.invalidate()
@@ -79,7 +79,11 @@ export default function CommitteeMembership() {
     }
   })
   const deactivateMembership = api.membership.deactivate.useMutation({
-    onSuccess() {
+    onMutate() {
+      utils.committee.getOne.cancel()
+    },
+    onSettled() {
+      // utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
       utils.committee.getOne.invalidate()
     }
   })
@@ -101,6 +105,7 @@ export default function CommitteeMembership() {
   })
 
   useEffect(() => {
+    console.log('rerender')
     setFilterA(getComplementaryFilterValue(LS.MEMBERSHIP_A, 'is_active', 'is_inactive'))
   }, [])
 

@@ -73,12 +73,10 @@ export default function CommitteeDialog(props: {
     }
   }, [props.open])
 
-  useEffect(() => {
-    const subscription = form.watch((template, { name, type }) => console.log(template.name))
-    return () => subscription.unsubscribe()
-  }, [form.watch])
-
-  function checkActiveCommittees() {}
+  // useEffect(() => {
+  //   const subscription = form.watch((template, { name, type }) => console.log(template.name))
+  //   return () => subscription.unsubscribe()
+  // }, [form.watch])
 
   function onSubmit(data: z.infer<typeof CommitteeFormSchema>) {
     onClose()

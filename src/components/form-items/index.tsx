@@ -20,11 +20,13 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { z } from 'zod'
 import { CommitteeTemplateFormSchema } from '~/schemas/committee'
 import { PLACEHOLDER } from '~/constants/placeholders'
+import { EmployeeFormSchema, MembershipFormSchema } from '~/schemas/membership'
 
 export const RoleSelectFormItem = (props: {
   form: any
   fieldName: 'role' | `members.${number}.role`
   hideLabel?: boolean
+  className?: string
 }) => {
   const [roles, setRoles] = useState<string[]>([])
 
@@ -76,7 +78,7 @@ export const RoleSelectFormItem = (props: {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset w-[249px] p-0">
+            <PopoverContent className={cn('offset h-[310px] w-[226px] p-0', props.className)}>
               <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite seu ${MembershipHeaders.ROLE}...`}
@@ -137,25 +139,75 @@ export const RoleSelectFormItem = (props: {
 export const EmployeeSelectFormItem = (props: {
   form: any
   fieldName: `members.${number}.employee` | 'employee'
+  committee_id?: number
+  membership_id?: number
   disabled?: boolean
   hideLabel?: boolean
+  className?: string
 }) => {
-  type EmployeeDataType = {
+  type OptionType = {
     id?: number
     name: string
+    committees?: { committee_id: number }[]
   }
 
-  const [employees, setEmployees] = useState<EmployeeDataType[]>([])
+  const [options, setOptions] = useState<OptionType[]>([])
 
-  const { data, isLoading } = api.employee.getOptions.useQuery()
+  const { data, isLoading } = api.employee.getOptions.useQuery(
+    {
+      committee_id: props.committee_id,
+      membership_id: props.membership_id
+    },
+    { refetchOnMount: 'always' }
+  )
 
   useEffect(() => {
-    if (data) setEmployees([...data])
+    if (data) setOptions([...data])
   }, [data])
 
   const [createdIndex, setCreatedIndex] = useState<number>()
 
-  const [commandSearch, setCommandSearch] = useState('')
+  const [searchValue, setSearchValue] = useState('')
+
+  const handleChangeFormValue = (value: z.infer<typeof EmployeeFormSchema>) => {
+    props.form.setValue(props.fieldName, value)
+  }
+
+  const handleClickCreateOption = () => {
+    if (createdIndex) options.shift()
+    setCreatedIndex(options.length)
+    const newOption = { name: searchValue }
+    setOptions([newOption, ...options])
+    handleChangeFormValue(newOption)
+  }
+
+  const handleClickOption = (clickedOption: OptionType, clickedOptionIndex: number) => {
+    const fieldValue = props.form.getValues(props.fieldName)
+    const fieldValueName = fieldValue?.name
+    if (clickedOption.name === fieldValueName) {
+      handleChangeFormValue({ name: '' })
+    } else {
+      const newFieldValue = options[clickedOptionIndex]
+      handleChangeFormValue(newFieldValue || { name: '' })
+    }
+  }
+
+  const handleChangeSearchValue = (value: string) => {
+    setSearchValue(value)
+  }
+
+  const getButtonValue = (fieldValue: OptionType) => {
+    if (isLoading) return PLACEHOLDER.LOADING
+
+    if (!!fieldValue?.name) {
+      const searchResult = options.find((option) => option.name === fieldValue.name)
+      if (!!searchResult) {
+        return searchResult.name
+      }
+    }
+
+    return PLACEHOLDER.MEMBER
+  }
 
   return (
     <FormField
@@ -185,62 +237,40 @@ export const EmployeeSelectFormItem = (props: {
                       !field.value.name && 'text-muted-foregroundPage'
                     )}
                   >
-                    {isLoading
-                      ? PLACEHOLDER.LOADING
-                      : field.value.name
-                      ? employees?.find((e) => e.name === field.value.name)?.name
-                      : 'ex: Fulano(a)'}
+                    {getButtonValue(field.value)}
                   </span>
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset w-[249px] p-0">
+            <PopoverContent className={cn('offset h-[310px] w-[226px] p-0', props.className)}>
               <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite seu/sua ${MembershipHeaders.NAME}...`}
                   className="h-9"
-                  onValueChange={(search) => setCommandSearch(search)}
+                  onValueChange={handleChangeSearchValue}
                 />
-                {/* {isLoading && <CommandLoading>Carregando...</CommandLoading>} */}
                 <CommandEmpty className="p-0">
-                  {commandSearch && (
-                    <Button
-                      variant="ghost"
-                      onClick={() => {
-                        if (createdIndex) employees.shift()
-                        setCreatedIndex(employees.length)
-                        const newItem = { name: commandSearch }
-                        setEmployees([newItem, ...employees])
-                        props.form.setValue(props.fieldName, newItem)
-                      }}
-                    >
-                      <div className="truncate">
-                        Criar {MembershipHeaders.NAME.toLowerCase()} "{commandSearch}"?
+                  {searchValue && (
+                    <Button className="w-full" variant="ghost" onClick={handleClickCreateOption}>
+                      <div className="w-full truncate">
+                        Criar {MembershipHeaders.NAME.toLowerCase()} "{searchValue}"?
                       </div>
                     </Button>
                   )}
                 </CommandEmpty>
                 <CommandGroup className="max-h-80 overflow-y-auto">
-                  {employees.map((employee, index) => (
+                  {options.map((option, index) => (
                     <CommandItem
-                      value={employee.name}
+                      value={option.name}
                       key={index}
-                      onSelect={(value) => {
-                        let found: EmployeeDataType | undefined
-                        if (
-                          value === props.form.getValues(props.fieldName)?.name.toLocaleLowerCase()
-                        ) {
-                          found = undefined
-                        } else found = employees.find((e) => e.name.toLocaleLowerCase() === value)
-                        props.form.setValue(props.fieldName, found || { name: '' })
-                      }}
+                      onSelect={() => handleClickOption(option, index)}
                     >
-                      {employee.name}
+                      {option.name}
                       <CheckIcon
                         className={cn(
                           'ml-auto h-4 w-4',
-                          employee.name === field.value.name ? 'opacity-100' : 'opacity-0'
+                          option.name === field.value.name ? 'opacity-100' : 'opacity-0'
                         )}
                       />
                     </CommandItem>
@@ -360,6 +390,7 @@ export const TemplateSelectFormItem = (props: {
   form: any
   committee_id?: number
   disabled?: boolean
+  className?: string
 }) => {
   type OptionType = {
     id?: number
@@ -373,10 +404,7 @@ export const TemplateSelectFormItem = (props: {
   const { data, isLoading } = api.template.getOptions.useQuery({ committee_id: props.committee_id })
 
   useEffect(() => {
-    if (data) {
-      console.log('hi')
-      setOptions([...data])
-    }
+    if (data) setOptions([...data])
   }, [data])
 
   const [createdIndex, setCreatedIndex] = useState<number>()
@@ -404,7 +432,7 @@ export const TemplateSelectFormItem = (props: {
     const fieldValue = props.form.getValues('template')
     const fieldValueName = fieldValue?.name
     if (clickedOption.name === fieldValueName) {
-      handleChangeFormValue({ name: '' }) //TODO fix around the fact that it wont simply update the value when updating it with undefined
+      handleChangeFormValue({ name: '' })
     } else {
       const newFieldValue = options[clickedOptionIndex]
       handleChangeFormValue(newFieldValue)
@@ -456,7 +484,7 @@ export const TemplateSelectFormItem = (props: {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="offset w-[462px] p-0">
+            <PopoverContent className={cn('offset h-[300px] w-[465px] p-0', props.className)}>
               <Command isLoading={isLoading}>
                 <CommandInput
                   placeholder={`Digite o nome de um ${CommitteeHeaders.TEMPLATE.toLowerCase()}...`}

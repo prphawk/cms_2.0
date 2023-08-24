@@ -12,16 +12,29 @@ export const employeeRouter = createTRPCRouter({
     })
   }),
 
-  getOptions: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.employee.findMany({
-      where: { is_active: true },
-      orderBy: { name: 'asc' },
-      select: {
-        id: true,
-        name: true
-      }
-    })
-  }),
+  getOptions: protectedProcedure
+    .input(z.object({ committee_id: z.number().optional(), membership_id: z.number().optional() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.employee.findMany({
+        distinct: ['name'],
+        where: { is_active: true },
+        orderBy: { name: 'asc' },
+        select: {
+          id: true,
+          name: true,
+          committees: {
+            where: {
+              //NOT: { id: input.membership_id },
+              committee_id: input.committee_id,
+              is_active: true
+            },
+            select: {
+              committee_id: true
+            }
+          }
+        }
+      })
+    }),
 
   create: protectedProcedure.input(z.object({ name: z.string() })).mutation(({ ctx, input }) => {
     return ctx.prisma.employee.create({ data: input })

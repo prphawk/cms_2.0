@@ -67,7 +67,6 @@ export default function MembershipArrayDialog(props: {
   }
 
   const form = useForm<z.infer<typeof MembershipArraySchema>>({
-    //defaultValues: myDefaultValues() as any,
     resolver: zodResolver(MembershipArraySchema),
     mode: 'onChange'
   })
@@ -118,11 +117,14 @@ export default function MembershipArrayDialog(props: {
                     hideLabel={index > 0}
                     form={form}
                     fieldName={`members.${index}.employee`}
+                    committee_id={props.committee?.id}
+                    className="h-[275px] w-[215px]"
                   />
                   <RoleSelectFormItem
                     hideLabel={index > 0}
                     form={form}
                     fieldName={`members.${index}.role`}
+                    className="h-[275px] w-[215px]"
                   />
                   <CommonFormItem
                     hideLabel={index > 0}
