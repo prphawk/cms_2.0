@@ -25,6 +25,7 @@ import { Observations, Ordinance } from '../colums'
 export const getMembershipColumns = (
   onChangeMembership: (membership: MembershipWithEmployeeDataType) => void,
   onDeactivateMembership: (membership: MembershipWithEmployeeDataType) => void,
+  onDeleteMembership: (membership: MembershipWithEmployeeDataType) => void,
   committee: CommitteeWithMembersDataType
 ): ColumnDef<MembershipWithEmployeeDataType>[] => [
   {
@@ -148,6 +149,18 @@ export const getMembershipColumns = (
                 >
                   Encerrar participação
                 </DropdownMenuItem>
+                {!row.original.is_active && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      danger
+                      disabled={!!row.original.is_active}
+                      onClick={() => onDeleteMembership(row.original)}
+                    >
+                      Deletar participação
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

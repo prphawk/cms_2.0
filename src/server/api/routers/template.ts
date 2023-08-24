@@ -87,26 +87,30 @@ export const templateRouter = createTRPCRouter({
       })
     }),
 
-  getOptions: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.template.findMany({
-      // distinct: ['name'],
-      select: {
-        id: true,
-        name: true,
-        committees: {
-          where: {
-            is_active: true
-          },
-          select: {
-            id: true
+  getOptions: protectedProcedure
+    .input(z.object({ committee_id: z.number().optional() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.template.findMany({
+        select: {
+          id: true,
+          name: true,
+          committees: {
+            where: {
+              is_active: true,
+              NOT: {
+                id: input.committee_id
+              }
+            },
+            select: {
+              id: true
+            }
           }
+        },
+        orderBy: {
+          name: 'asc'
         }
-      },
-      orderBy: {
-        name: 'asc'
-      }
-    })
-  }),
+      })
+    }),
 
   getAllWithNotifs: protectedProcedure.query(async ({ ctx }) => {
     const user = ctx.session.user

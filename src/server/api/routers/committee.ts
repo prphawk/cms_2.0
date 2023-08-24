@@ -1,6 +1,6 @@
 import { number, z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
-import { _deactivateMembershipsByCommittee } from './membership'
+import { _deactivateMembershipsByCommittee, _deleteMembershipsByCommittee } from './membership'
 import { prisma } from '~/server/db'
 import { _getTemplateByName } from './template'
 import { Prisma } from '@prisma/client'
@@ -117,7 +117,7 @@ export const committeeRouter = createTRPCRouter({
       ...rest
     } as Prisma.CommitteeCreateInput
 
-    if (template)
+    if (!!template?.name)
       committee.template = template?.id
         ? { connect: { id: template.id } }
         : { create: { name: template.name } }
@@ -186,13 +186,13 @@ export const committeeRouter = createTRPCRouter({
       const { template, id, is_active, ...rest } = input
       const committee = rest as Prisma.CommitteeUpdateInput
 
-      // if (!template) {
-      //   committee.template = { disconnect: true }
-      // } else {
-      //   committee.template = template.id
-      //     ? { connect: { id: template.id } }
-      //     : { create: { name: template.name } }
-      // }
+      if (!template?.name) {
+        committee.template = { disconnect: true }
+      } else {
+        committee.template = template.id
+          ? { connect: { id: template.id } }
+          : { create: { name: template.name } }
+      }
 
       return ctx.prisma.committee.update({ where: { id }, data: committee })
     }),
@@ -235,9 +235,12 @@ export const committeeRouter = createTRPCRouter({
           }
         }
       })
-    })
+    }),
 
-  // delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
-  //   return ctx.prisma.committee.delete({ where: input });
-  // }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await _deleteMembershipsByCommittee(input.id)
+      return ctx.prisma.committee.delete({ where: input })
+    })
 })

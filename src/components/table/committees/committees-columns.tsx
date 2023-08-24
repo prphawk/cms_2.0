@@ -25,7 +25,8 @@ export const getCommitteesColumns = (
   onViewCommittee: (com: Committee) => void,
   onEditCommittee: (com: Committee) => void,
   onCommitteeSuccession: (com: Committee) => void,
-  onDeactivateCommittee: (com: Committee) => void
+  onDeactivateCommittee: (com: Committee) => void,
+  onDeleteCommittee: (com: Committee) => void
 ): ColumnDef<CommitteeWithMembershipCountDataType>[] => [
   {
     accessorKey: 'name',
@@ -171,13 +172,13 @@ export const getCommitteesColumns = (
                 <DropdownMenuItem onClick={() => onEditCommittee(committee)}>
                   Editar mandato
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   disabled={!committee.is_active || !committee.template_id}
                   onClick={() => onCommitteeSuccession(committee)}
                 >
                   Suceder mandato
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   danger
                   disabled={!committee.is_active}
@@ -185,6 +186,18 @@ export const getCommitteesColumns = (
                 >
                   Encerrar mandato
                 </DropdownMenuItem>
+                {!committee.is_active && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      danger
+                      disabled={!!committee.is_active}
+                      onClick={() => onDeleteCommittee(committee)}
+                    >
+                      Deletar mandato
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

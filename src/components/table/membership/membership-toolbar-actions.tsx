@@ -15,9 +15,10 @@ import { CommitteeWithMembersDataType } from '~/types'
 
 export default function MembershipTableToolbarActions(props: {
   committee: CommitteeWithMembersDataType
-  onDeactivateCommittee: () => void
-  onCreateMembership: () => void
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
+  onCreateMembership: () => void
+  onDeactivateCommittee: () => void
+  onDeleteCommittee: () => void
 }) {
   return (
     <>
@@ -35,8 +36,9 @@ export default function MembershipTableToolbarActions(props: {
       </Button>
       <ActionsMenuButton
         committee={props.committee}
-        onDeactivateCommittee={props.onDeactivateCommittee}
         handleOpenDialog={props.handleOpenDialog}
+        onDeactivateCommittee={props.onDeactivateCommittee}
+        onDeleteCommittee={props.onDeleteCommittee}
       />
     </>
   )
@@ -45,6 +47,7 @@ export default function MembershipTableToolbarActions(props: {
 const ActionsMenuButton = (props: {
   committee: Committee
   onDeactivateCommittee: () => void
+  onDeleteCommittee: () => void
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
 }) => {
   return (
@@ -80,6 +83,18 @@ const ActionsMenuButton = (props: {
         >
           Encerrar mandato
         </DropdownMenuItem>
+        {!props.committee.is_active && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              danger
+              disabled={!!props.committee.is_active}
+              onClick={() => props.onDeleteCommittee()}
+            >
+              Deletar mandato
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

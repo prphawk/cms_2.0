@@ -27,9 +27,9 @@ import {
   RoleSelectFormItem
 } from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
-import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { PLACEHOLDER } from '~/constants/placeholders'
+import { MembershipFormSchema, MembershipSchemaEffect } from '~/schemas/membership'
 
 export default function MembershipDialog(props: {
   open: boolean
@@ -56,8 +56,8 @@ export default function MembershipDialog(props: {
     }
   }
 
-  const form = useForm<z.infer<typeof MembershipFormSchema>>({
-    resolver: zodResolver(MembershipFormSchema)
+  const form = useForm<z.infer<typeof MembershipSchemaEffect>>({
+    resolver: zodResolver(MembershipSchemaEffect)
   })
 
   useEffect(() => {
@@ -96,7 +96,9 @@ export default function MembershipDialog(props: {
               <EmployeeSelectFormItem
                 fieldName="employee"
                 form={form}
-                disabled={props.member?.employee.id !== undefined}
+                committee_id={props.committee.id}
+                membership_id={props.member?.id}
+                //disabled={props.member?.employee.id !== undefined}
               />
               <RoleSelectFormItem form={form} fieldName="role" />
             </div>

@@ -7,7 +7,6 @@ export const CommitteeTemplateFormSchema = z
     name: z.string(),
     committees: z.object({ id: z.number() }).array().optional()
   })
-  // .nullable()
   .optional()
 
 export const CommitteeFormSchema = z.object({

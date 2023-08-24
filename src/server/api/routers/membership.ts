@@ -4,9 +4,14 @@ import { prisma } from '~/server/db'
 import { _findUniqueCommittee } from './committee'
 import { DateSchema } from '~/schemas'
 import { _toDateFromForm } from '~/utils/string'
-import { MembershipFormSchema, MembershipSchema } from '~/schemas/membership'
+import { MembershipFormSchema } from '~/schemas/membership'
 import { getDatesQuery } from '../queries'
 
+export const _deleteMembershipsByCommittee = async (committee_id: number) => {
+  return prisma.membership.deleteMany({
+    where: { committee: { id: committee_id } }
+  })
+}
 export const _deactivateMembershipsByCommittee = async (committee_id: number) => {
   return await prisma.membership.updateMany({
     where: { committee: { id: committee_id } },
@@ -30,7 +35,7 @@ export const membershipRouter = createTRPCRouter({
         .merge(MembershipFormSchema)
     )
     .mutation(({ ctx, input }) => {
-      const { employee, committee_id, ...data } = input
+      const { id, employee, committee_id, ...data } = input
       const employee_params = employee.id
         ? {
             connect: { id: employee.id }
@@ -97,29 +102,26 @@ export const membershipRouter = createTRPCRouter({
       })
     }),
 
-  update: protectedProcedure
-    .input(
-      z.object({
-        id: z.number(),
-        begin_date: z.date().optional(),
-        end_date: z.date().optional(),
-        role: z.string(),
-        ordinance: z.string().optional(),
-        observations: z.string().optional()
-      })
-    )
-    .mutation(({ ctx, input }) => {
-      const { id, ...data } = input
+  update: protectedProcedure.input(MembershipFormSchema).mutation(({ ctx, input }) => {
+    const { id, employee, is_active, ...data } = input
 
-      return ctx.prisma.membership.update({
-        where: { id },
-        data
-      })
-    }),
+    const employee_param = employee.id
+      ? { connect: { id: employee.id } }
+      : { create: { name: employee.name } }
 
-  // delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
-  //   return ctx.prisma.membership.delete({ employee_id_committee_id: { employee_id, committee_id } });
-  // }),
+    return ctx.prisma.membership.update({
+      where: { id },
+      data: { ...data, employee: employee_param }
+    })
+  }),
+
+  delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
+    return ctx.prisma.membership.delete({
+      where: {
+        id: input.id
+      }
+    })
+  }),
 
   deactivate: protectedProcedure
     .input(

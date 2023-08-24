@@ -16,7 +16,7 @@ import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string'
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions'
 import { Dot } from '~/components/dot'
 import { z } from 'zod'
-import { CommitteeHeaders, MembershipHeaders, MyHeaders } from '~/constants/headers'
+import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import {
   FilterStateType,
   filterAProps,
@@ -29,7 +29,6 @@ import CommitteeDialog from '~/components/dialogs/committee-dialog'
 import MembershipDialog from '~/components/dialogs/membership-dialog'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 import { CommitteeFormSchema } from '~/schemas/committee'
-import { MembershipFormSchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
 import { HourglassIcon, XIcon } from 'lucide-react'
@@ -42,6 +41,8 @@ import {
 import ErrorPage from '~/pages/500'
 import { LS } from '~/constants/local_storage'
 import { TitleLayout } from '~/layouts/text-layout'
+import { MembershipFormSchema } from '~/schemas/membership'
+import { Routes } from '~/constants/routes'
 
 export default function CommitteeMembership() {
   const router = useRouter()
@@ -55,6 +56,12 @@ export default function CommitteeMembership() {
     }
   })
 
+  const deleteMembership = api.membership.delete.useMutation({
+    onSettled() {
+      utils.committee.getOne.invalidate()
+    }
+  })
+
   const updateMembership = api.membership.update.useMutation({
     onSettled() {
       utils.committee.getOne.invalidate()
@@ -64,11 +71,18 @@ export default function CommitteeMembership() {
 
   const createMembership = api.membership.create.useMutation({
     onSuccess() {
-      utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
+      // utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
     },
     onSettled() {
       utils.committee.getOne.invalidate()
       utils.membership.getRoleOptionsByCommittee.invalidate()
+    }
+  })
+
+  const deleteCommittee = api.committee.delete.useMutation({
+    onSuccess() {
+      utils.committee.getAll.invalidate() //TODO ver aquele negócio de mudar o resultado da chamada pra so mudar o status dessa comissão
+      router.push(`${Routes.COMMITTEES}`)
     }
   })
 
@@ -79,7 +93,11 @@ export default function CommitteeMembership() {
     }
   })
   const deactivateMembership = api.membership.deactivate.useMutation({
-    onSuccess() {
+    onMutate() {
+      utils.committee.getOne.cancel()
+    },
+    onSettled() {
+      // utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
       utils.committee.getOne.invalidate()
     }
   })
@@ -167,7 +185,7 @@ export default function CommitteeMembership() {
   const handleSaveMembership = (membershipSchema: z.infer<typeof MembershipFormSchema>) => {
     if (!committeeData?.id) return
     if (selectedMembership) {
-      updateMembership.mutate({ id: selectedMembership.id, ...membershipSchema })
+      updateMembership.mutate({ ...membershipSchema, id: selectedMembership.id })
     } else createMembership.mutate({ committee_id: committeeData.id, ...membershipSchema })
   }
 
@@ -185,6 +203,23 @@ export default function CommitteeMembership() {
     setSelectedMembership({ ...membership })
   }
 
+  const onDeleteMembership = (membership: MembershipWithEmployeeDataType) => {
+    handleOpenDialog(DialogsEnum.alert_delete_membership)
+    setSelectedMembership({ ...membership })
+  }
+  const handleDeleteMembership = () => {
+    if (selectedMembership) deleteMembership.mutate({ id: selectedMembership.id })
+    setSelectedMembership(undefined)
+  }
+
+  const onDeleteCommittee = () => {
+    handleOpenDialog(DialogsEnum.alert_delete_committee)
+  }
+
+  const handleDeleteCommittee = () => {
+    deleteCommittee.mutate({ id: param_id })
+  }
+
   const onDeactivateCommittee = () => {
     handleOpenDialog(DialogsEnum.alert_succession)
   }
@@ -199,9 +234,10 @@ export default function CommitteeMembership() {
 
   const propsActions = {
     committee: committeeData!,
+    handleOpenDialog,
     onCreateMembership,
     onDeactivateCommittee,
-    handleOpenDialog
+    onDeleteCommittee
   }
 
   return (
@@ -218,6 +254,7 @@ export default function CommitteeMembership() {
               columns={getMembershipColumns(
                 onChangeMembership,
                 onDeactivateMembership,
+                onDeleteMembership,
                 committeeData
               )}
               tableFilters={<TableToolbarFilter filters={propsFilters} />}
@@ -245,6 +282,28 @@ export default function CommitteeMembership() {
               open={openDialog}
               handleOpenDialog={handleOpenDialog}
               committeeId={committeeData.id}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_delete_membership}
+              description={
+                <>
+                  Esta ação irá <strong>deletar</strong> a participação atual de qualquer histórico
+                  e <strong>não pode ser revertida</strong>. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeleteMembership}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_delete_committee}
+              description={
+                <>
+                  Esta ação irá <strong>deletar</strong> o mandato atual de qualquer histórico e{' '}
+                  <strong>não pode ser revertida</strong>. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeleteCommittee}
             />
             <AlertDialog
               open={openDialog == DialogsEnum.alert_succession}
