@@ -6,7 +6,8 @@ export enum DialogsEnum {
   alert_succession,
   alert_deactivate,
   alert_deactivate_employee,
-  alert_delete,
+  alert_delete_committee,
+  alert_delete_membership,
   succession,
   succession1st,
   succession2nd

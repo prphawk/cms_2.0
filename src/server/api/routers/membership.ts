@@ -7,6 +7,11 @@ import { _toDateFromForm } from '~/utils/string'
 import { MembershipFormSchema } from '~/schemas/membership'
 import { getDatesQuery } from '../queries'
 
+export const _deleteMembershipsByCommittee = async (committee_id: number) => {
+  return prisma.membership.deleteMany({
+    where: { committee: { id: committee_id } }
+  })
+}
 export const _deactivateMembershipsByCommittee = async (committee_id: number) => {
   return await prisma.membership.updateMany({
     where: { committee: { id: committee_id } },

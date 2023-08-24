@@ -42,6 +42,7 @@ import ErrorPage from '~/pages/500'
 import { LS } from '~/constants/local_storage'
 import { TitleLayout } from '~/layouts/text-layout'
 import { MembershipFormSchema } from '~/schemas/membership'
+import { Routes } from '~/constants/routes'
 
 export default function CommitteeMembership() {
   const router = useRouter()
@@ -75,6 +76,13 @@ export default function CommitteeMembership() {
     onSettled() {
       utils.committee.getOne.invalidate()
       utils.membership.getRoleOptionsByCommittee.invalidate()
+    }
+  })
+
+  const deleteCommittee = api.committee.delete.useMutation({
+    onSuccess() {
+      utils.committee.getAll.invalidate() //TODO ver aquele negócio de mudar o resultado da chamada pra so mudar o status dessa comissão
+      router.push(`${Routes.COMMITTEES}`)
     }
   })
 
@@ -196,12 +204,20 @@ export default function CommitteeMembership() {
   }
 
   const onDeleteMembership = (membership: MembershipWithEmployeeDataType) => {
-    handleOpenDialog(DialogsEnum.alert_delete)
+    handleOpenDialog(DialogsEnum.alert_delete_membership)
     setSelectedMembership({ ...membership })
   }
   const handleDeleteMembership = () => {
     if (selectedMembership) deleteMembership.mutate({ id: selectedMembership.id })
     setSelectedMembership(undefined)
+  }
+
+  const onDeleteCommittee = () => {
+    handleOpenDialog(DialogsEnum.alert_delete_committee)
+  }
+
+  const handleDeleteCommittee = () => {
+    deleteCommittee.mutate({ id: param_id })
   }
 
   const onDeactivateCommittee = () => {
@@ -218,9 +234,10 @@ export default function CommitteeMembership() {
 
   const propsActions = {
     committee: committeeData!,
+    handleOpenDialog,
     onCreateMembership,
     onDeactivateCommittee,
-    handleOpenDialog
+    onDeleteCommittee
   }
 
   return (
@@ -267,7 +284,7 @@ export default function CommitteeMembership() {
               committeeId={committeeData.id}
             />
             <AlertDialog
-              open={openDialog == DialogsEnum.alert_delete}
+              open={openDialog == DialogsEnum.alert_delete_membership}
               description={
                 <>
                   Esta ação irá <strong>deletar</strong> a participação atual de qualquer histórico
@@ -276,6 +293,17 @@ export default function CommitteeMembership() {
               }
               handleOpenDialog={handleOpenDialog}
               handleContinue={handleDeleteMembership}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_delete_committee}
+              description={
+                <>
+                  Esta ação irá <strong>deletar</strong> o mandato atual de qualquer histórico e{' '}
+                  <strong>não pode ser revertida</strong>. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeleteCommittee}
             />
             <AlertDialog
               open={openDialog == DialogsEnum.alert_succession}

@@ -1,6 +1,6 @@
 import { number, z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
-import { _deactivateMembershipsByCommittee } from './membership'
+import { _deactivateMembershipsByCommittee, _deleteMembershipsByCommittee } from './membership'
 import { prisma } from '~/server/db'
 import { _getTemplateByName } from './template'
 import { Prisma } from '@prisma/client'
@@ -235,9 +235,12 @@ export const committeeRouter = createTRPCRouter({
           }
         }
       })
-    })
+    }),
 
-  // delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
-  //   return ctx.prisma.committee.delete({ where: input });
-  // }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await _deleteMembershipsByCommittee(input.id)
+      return ctx.prisma.committee.delete({ where: input })
+    })
 })

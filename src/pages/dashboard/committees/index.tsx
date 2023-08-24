@@ -101,6 +101,12 @@ export default function Committees() {
     }
   ]
 
+  const _delete = api.committee.delete.useMutation({
+    onSuccess() {
+      return utils.committee.getAll.invalidate()
+    }
+  })
+
   const deactivate = api.committee.deactivate.useMutation({
     onMutate() {
       return utils.committee.getAll.cancel()
@@ -111,11 +117,9 @@ export default function Committees() {
   })
 
   const create = api.committee.create.useMutation({
-    onMutate() {
-      return utils.committee.getAll.cancel()
-    },
     onSuccess(data) {
       router.push(`${Routes.COMMITTEES}/${data.id}`)
+      return utils.committee.getAll.invalidate()
     }
   })
 
@@ -134,8 +138,16 @@ export default function Committees() {
   }
 
   function handleDeactivateCommittee() {
-    if (selectedCommittee && typeof selectedCommittee == 'number')
-      deactivate.mutate({ id: selectedCommittee })
+    if (selectedCommittee) deactivate.mutate({ id: selectedCommittee.id })
+  }
+
+  function onDeleteCommittee(com: Committee) {
+    setSelectedCommittee(com)
+    setOpenDialog(DialogsEnum.alert_delete_committee)
+  }
+
+  function handleDeleteCommittee() {
+    if (selectedCommittee) _delete.mutate({ id: selectedCommittee.id })
   }
 
   function onCommitteeSuccession(com: Committee) {
@@ -174,7 +186,8 @@ export default function Committees() {
             onViewCommittee,
             onEditCommittee,
             onCommitteeSuccession,
-            onDeactivateCommittee
+            onDeactivateCommittee,
+            onDeleteCommittee
           )}
           tableFilters={<TableToolbarFilter filters={propsFilters} />}
           tableActions={
@@ -204,6 +217,18 @@ export default function Committees() {
           }
           handleOpenDialog={handleOpenDialog}
           handleContinue={handleDeactivateCommittee}
+        />
+        <AlertDialog
+          open={openDialog == DialogsEnum.alert_delete_committee}
+          description={
+            <>
+              Esta ação irá <strong>deletar</strong> o {MyHeaders.COMMITTEE.toLowerCase()} atual e
+              todas as suas participações. <strong>Esta ação não pode ser revertida. </strong>Deseja
+              continuar?
+            </>
+          }
+          handleOpenDialog={handleOpenDialog}
+          handleContinue={handleDeleteCommittee}
         />
       </ContentLayout>
     </AuthenticatedPage>
