@@ -16,7 +16,7 @@ import { _isNumeric, _toLocaleString, _formatCount } from '~/utils/string'
 import MembershipTableToolbarActions from '~/components/table/membership/membership-toolbar-actions'
 import { Dot } from '~/components/dot'
 import { z } from 'zod'
-import { CommitteeHeaders, MembershipHeaders, MyHeaders } from '~/constants/headers'
+import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import {
   FilterStateType,
   filterAProps,
@@ -52,6 +52,12 @@ export default function CommitteeMembership() {
   const updateCommittee = api.committee.update.useMutation({
     onSettled() {
       return utils.committee.getOne.invalidate()
+    }
+  })
+
+  const deleteMembership = api.membership.delete.useMutation({
+    onSettled() {
+      utils.committee.getOne.invalidate()
     }
   })
 
@@ -105,7 +111,6 @@ export default function CommitteeMembership() {
   })
 
   useEffect(() => {
-    console.log('rerender')
     setFilterA(getComplementaryFilterValue(LS.MEMBERSHIP_A, 'is_active', 'is_inactive'))
   }, [])
 
@@ -190,6 +195,15 @@ export default function CommitteeMembership() {
     setSelectedMembership({ ...membership })
   }
 
+  const onDeleteMembership = (membership: MembershipWithEmployeeDataType) => {
+    handleOpenDialog(DialogsEnum.alert_delete)
+    setSelectedMembership({ ...membership })
+  }
+  const handleDeleteMembership = () => {
+    if (selectedMembership) deleteMembership.mutate({ id: selectedMembership.id })
+    setSelectedMembership(undefined)
+  }
+
   const onDeactivateCommittee = () => {
     handleOpenDialog(DialogsEnum.alert_succession)
   }
@@ -223,6 +237,7 @@ export default function CommitteeMembership() {
               columns={getMembershipColumns(
                 onChangeMembership,
                 onDeactivateMembership,
+                onDeleteMembership,
                 committeeData
               )}
               tableFilters={<TableToolbarFilter filters={propsFilters} />}
@@ -250,6 +265,17 @@ export default function CommitteeMembership() {
               open={openDialog}
               handleOpenDialog={handleOpenDialog}
               committeeId={committeeData.id}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_delete}
+              description={
+                <>
+                  Esta ação irá <strong>deletar</strong> a participação atual de qualquer histórico
+                  e <strong>não pode ser revertida</strong>. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeleteMembership}
             />
             <AlertDialog
               open={openDialog == DialogsEnum.alert_succession}

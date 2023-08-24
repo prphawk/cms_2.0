@@ -110,9 +110,13 @@ export const membershipRouter = createTRPCRouter({
     })
   }),
 
-  // delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
-  //   return ctx.prisma.membership.delete({ employee_id_committee_id: { employee_id, committee_id } });
-  // }),
+  delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
+    return ctx.prisma.membership.delete({
+      where: {
+        id: input.id
+      }
+    })
+  }),
 
   deactivate: protectedProcedure
     .input(
