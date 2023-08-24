@@ -9,7 +9,6 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { Form } from '@/components/ui/form'
-import { Committee } from '@prisma/client'
 import { useForm } from 'react-hook-form'
 import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import {
@@ -69,8 +68,17 @@ export default function CommitteeDialog(props: {
   })
 
   useEffect(() => {
-    if (props.open) form.reset(myDefaultValues() as any)
+    if (props.open) {
+      form.reset(myDefaultValues() as any)
+    }
   }, [props.open])
+
+  useEffect(() => {
+    const subscription = form.watch((template, { name, type }) => console.log(template.name))
+    return () => subscription.unsubscribe()
+  }, [form.watch])
+
+  function checkActiveCommittees() {}
 
   function onSubmit(data: z.infer<typeof CommitteeFormSchema>) {
     onClose()
@@ -110,7 +118,11 @@ export default function CommitteeDialog(props: {
         <MyDialogClose onClose={onClose} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" id="formCommittee">
-            <TemplateSelectFormItem form={form} disabled={props.succession || !!props.committee} />
+            <TemplateSelectFormItem
+              form={form}
+              disabled={props.succession}
+              committee_id={props.committee?.id}
+            />
             <CommonFormItem
               form={form}
               fieldName="name"

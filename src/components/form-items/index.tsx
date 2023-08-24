@@ -208,10 +208,10 @@ export const EmployeeSelectFormItem = (props: {
                     <Button
                       variant="ghost"
                       onClick={() => {
-                        if (createdIndex) employees.pop()
+                        if (createdIndex) employees.shift()
                         setCreatedIndex(employees.length)
                         const newItem = { name: commandSearch }
-                        setEmployees([...employees, newItem])
+                        setEmployees([newItem, ...employees])
                         props.form.setValue(props.fieldName, newItem)
                       }}
                     >
@@ -356,7 +356,11 @@ const TemplateTooltip = () => {
   )
 }
 
-export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean }) => {
+export const TemplateSelectFormItem = (props: {
+  form: any
+  committee_id?: number
+  disabled?: boolean
+}) => {
   type OptionType = {
     id?: number
     name: string
@@ -366,24 +370,26 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
   }
   const [options, setOptions] = useState<OptionType[]>([])
 
-  const { data, isLoading } = api.template.getOptions.useQuery()
+  const { data, isLoading } = api.template.getOptions.useQuery({ committee_id: props.committee_id })
 
   useEffect(() => {
-    if (data) setOptions([...data])
+    if (data) {
+      console.log('hi')
+      setOptions([...data])
+    }
   }, [data])
 
   const [createdIndex, setCreatedIndex] = useState<number>()
 
   const [searchValue, setSearchValue] = useState('')
 
-  const handleChangeFormValue = (value?: z.infer<typeof CommitteeTemplateFormSchema>) => {
+  const handleChangeFormValue = (value: z.infer<typeof CommitteeTemplateFormSchema>) => {
     props.form.setValue('template', value)
-    console.log(props.form.getValues('template'))
-    console.log(
-      props.form.getValues('is_active') && !!props.form.getValues('template')?.committees?.length
-    )
     const formNameValue = props.form.getValues('name')
     if (!formNameValue) props.form.setValue('name', value?.name)
+
+    const fieldValue = props.form.getValues('template')
+    console.log(fieldValue)
   }
 
   const handleClickCreateOption = () => {
@@ -398,7 +404,7 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
     const fieldValue = props.form.getValues('template')
     const fieldValueName = fieldValue?.name
     if (clickedOption.name === fieldValueName) {
-      handleChangeFormValue(undefined)
+      handleChangeFormValue({ name: '' }) //TODO fix around the fact that it wont simply update the value when updating it with undefined
     } else {
       const newFieldValue = options[clickedOptionIndex]
       handleChangeFormValue(newFieldValue)
@@ -412,9 +418,11 @@ export const TemplateSelectFormItem = (props: { form: any; disabled?: boolean })
   const getButtonValue = (fieldValue: OptionType) => {
     if (isLoading) return PLACEHOLDER.LOADING
 
-    if (fieldValue?.name) {
+    if (!!fieldValue?.name) {
       const searchResult = options.find((option) => option.name === fieldValue.name)
-      if (searchResult) return searchResult.name
+      if (!!searchResult) {
+        return searchResult.name
+      }
     }
 
     return PLACEHOLDER.TEMPLATE
