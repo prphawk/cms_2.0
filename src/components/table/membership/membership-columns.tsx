@@ -17,14 +17,16 @@ import DataTableColumnHeader, {
 } from '~/components/table/data-table-column-header'
 import Link from 'next/link'
 import { Routes } from '~/constants/routes'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge } from '~/components/badge'
 import { CommitteeWithMembersDataType, MembershipWithEmployeeDataType } from '~/types'
 import { Observations, Ordinance } from '../colums'
 
 export const getMembershipColumns = (
   onChangeMembership: (membership: MembershipWithEmployeeDataType) => void,
-  onDeactivateMembership: (membership: MembershipWithEmployeeDataType) => void,
+  onDeactivateMembership: (
+    membership: MembershipWithEmployeeDataType,
+    reactivate?: boolean
+  ) => void,
   onDeleteMembership: (membership: MembershipWithEmployeeDataType) => void,
   committee: CommitteeWithMembersDataType
 ): ColumnDef<MembershipWithEmployeeDataType>[] => [
@@ -116,7 +118,9 @@ export const getMembershipColumns = (
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const role = row.original.role
+      const membership = row.original
+      const role = membership.role
+
       return (
         <div className="flex min-w-[64px]">
           <div className="ml-auto px-4">
@@ -138,24 +142,29 @@ export const getMembershipColumns = (
                 ) : (
                   <></>
                 )}
-                <DropdownMenuItem onClick={() => onChangeMembership(row.original)}>
+                <DropdownMenuItem onClick={() => onChangeMembership(membership)}>
                   Editar participação
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  danger
-                  disabled={!row.original.is_active}
-                  onClick={() => onDeactivateMembership(row.original)}
-                >
-                  Encerrar participação
-                </DropdownMenuItem>
-                {!row.original.is_active && (
+                {membership.is_active ? (
+                  <DropdownMenuItem danger onClick={() => onDeactivateMembership(membership)}>
+                    Encerrar participação
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    reactivate
+                    onClick={() => onDeactivateMembership(membership, true)}
+                  >
+                    Reativar participação
+                  </DropdownMenuItem>
+                )}
+                {!membership.is_active && (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       danger
                       disabled={!!row.original.is_active}
-                      onClick={() => onDeleteMembership(row.original)}
+                      onClick={() => onDeleteMembership(membership)}
                     >
                       Deletar participação
                     </DropdownMenuItem>

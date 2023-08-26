@@ -198,8 +198,15 @@ export default function CommitteeMembership() {
     setSelectedMembership({ ...membership })
   }
 
-  const onDeactivateMembership = (membership: MembershipWithEmployeeDataType) => {
-    handleOpenDialog(DialogsEnum.alert_deactivate)
+  const onDeactivateMembership = async (
+    membership: MembershipWithEmployeeDataType,
+    reactivate?: boolean
+  ) => {
+    if (reactivate) {
+      // const result = await utils.membership.getActiveMembership(membership)
+      handleOpenDialog(DialogsEnum.alert_reactivate)
+      // result ? DialogsEnum.alert_reactivate_denied :
+    } else handleOpenDialog(DialogsEnum.alert_deactivate)
     setSelectedMembership({ ...membership })
   }
 
@@ -207,6 +214,7 @@ export default function CommitteeMembership() {
     handleOpenDialog(DialogsEnum.alert_delete_membership)
     setSelectedMembership({ ...membership })
   }
+
   const handleDeleteMembership = () => {
     if (selectedMembership) deleteMembership.mutate({ id: selectedMembership.id })
     setSelectedMembership(undefined)
@@ -228,8 +236,9 @@ export default function CommitteeMembership() {
     deactivateCommittee.mutate({ id: param_id })
   }
 
-  const handleDeactivateMembership = () => {
-    if (selectedMembership) deactivateMembership.mutate({ id: selectedMembership.id })
+  const handleDeactivateMembership = (reactivate?: boolean) => {
+    if (selectedMembership)
+      deactivateMembership.mutate({ id: selectedMembership.id, is_active: reactivate })
   }
 
   const propsActions = {
@@ -325,6 +334,16 @@ export default function CommitteeMembership() {
               }
               handleOpenDialog={handleOpenDialog}
               handleContinue={handleDeactivateMembership}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_reactivate}
+              description={
+                <>
+                  Esta ação irá <strong>reativar</strong> a participação. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={() => handleDeactivateMembership(true)}
             />
           </>
         )}

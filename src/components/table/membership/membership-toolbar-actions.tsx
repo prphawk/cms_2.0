@@ -10,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { MyHeaders } from '~/constants/headers'
 import { CommitteeWithMembersDataType } from '~/types'
 
 export default function MembershipTableToolbarActions(props: {

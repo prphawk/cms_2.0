@@ -4,6 +4,8 @@ export enum DialogsEnum {
   membership,
   template,
   alert_succession,
+  alert_reactivate,
+  alert_reactivate_denied,
   alert_deactivate,
   alert_deactivate_employee,
   alert_delete_committee,

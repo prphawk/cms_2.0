@@ -6,12 +6,14 @@ import { DateSchema } from '~/schemas'
 import { _toDateFromForm } from '~/utils/string'
 import { MembershipFormSchema } from '~/schemas/membership'
 import { getDatesQuery } from '../queries'
+import { Membership } from '@prisma/client'
 
 export const _deleteMembershipsByCommittee = async (committee_id: number) => {
   return prisma.membership.deleteMany({
     where: { committee: { id: committee_id } }
   })
 }
+
 export const _deactivateMembershipsByCommittee = async (committee_id: number) => {
   return await prisma.membership.updateMany({
     where: { committee: { id: committee_id } },
@@ -126,14 +128,14 @@ export const membershipRouter = createTRPCRouter({
   deactivate: protectedProcedure
     .input(
       z.object({
-        id: z.number()
+        id: z.number(),
+        is_active: z.boolean().optional()
       })
     )
     .mutation(({ ctx, input }) => {
-      const { id } = input
       return ctx.prisma.membership.update({
-        where: { id },
-        data: { is_active: false }
+        where: { id: input.id },
+        data: { is_active: !!input.is_active }
       })
     }),
 
@@ -205,6 +207,23 @@ export const membershipRouter = createTRPCRouter({
       })
       return result.map((e) => {
         return input?.filterFormat ? { label: e.role, value: e.role } : e.role
+      })
+    }),
+
+  getActiveMembership: protectedProcedure
+    .input(
+      z.object({
+        committee_id: z.number(),
+        employee_id: z.number()
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return prisma.membership.findFirst({
+        where: {
+          is_active: true,
+          committee_id: input.committee_id,
+          employee_id: input.employee_id
+        }
       })
     })
 })
