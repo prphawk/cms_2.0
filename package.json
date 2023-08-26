@@ -5,13 +5,14 @@
   "scripts": {
     "build": "next build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "dev": "next dev",
+    "connect": "pscale connect cms-db development --port 3307",
+    "dev": "pscale connect cms-db development --port 3307 --execute-protocol 'mysql' --execute next dev",
     "postinstall": "npx prisma generate",
     "dbpush": "npx prisma validate && npx prisma db push",
     "studio": "npx prisma studio",
     "start": "next start",
-    "seed": " npx prisma db seed",
-    "import": " node prisma/import.js"
+    "seed": "npx prisma db seed",
+    "import": "node scripts/import.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
