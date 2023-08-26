@@ -1,43 +1,43 @@
-# Create T3 App
+# Committee Management System (2.0!)
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
 
-## What's next? How do I make an app with this?
+- [Documentation](https://create.t3.gg/)
+- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
-
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Featuring
 
 - [Next.js](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
 - [Prisma](https://prisma.io)
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [React Hook Form](https://react-hook-form.com/)
+- [Zod](https://zod.dev/)
+- [Nodemailer](https://nodemailer.com/)
+- [Nodemailer](https://nodemailer.com/)
 
-## Learn More
+## Deploy
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+- [Vercel](https://vercel.com/)
+- [PlanetScale](https://planetscale.com/)
+- [Axiom](https://axiom.co/)
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## See more
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+- https://next-auth.js.org/getting-started/client
+- https://www.prisma.io/docs/concepts/components/prisma-schema/relations/relation-mode#indexes
+- https://www.prisma.io/docs/guides/database/planetscale#differences-to-consider
+- https://tanstack.com/table/v8/docs/api/features/pagination
+- https://next-auth.js.org/providers/email
+- https://next-auth.js.org/configuration/options#session
+- https://trpc.io/docs/client/nextjs/ssg
 
-## How do I deploy this?
+## ER Diagram
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
-
-## References
-
-https://next-auth.js.org/getting-started/client
-https://www.prisma.io/docs/concepts/components/prisma-schema/relations/relation-mode#indexes
-https://www.prisma.io/docs/guides/database/planetscale#differences-to-consider
-https://tanstack.com/table/v8/docs/api/features/pagination
-https://next-auth.js.org/providers/email
-https://next-auth.js.org/configuration/options#session
-https://trpc.io/docs/client/nextjs/ssg
-
-`npx prisma db seed`
+You can use the [bierner.markdown-mermaid](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) extension to visualize your mermaid diagram on VSCode
 
 ```mermaid
 erDiagram
