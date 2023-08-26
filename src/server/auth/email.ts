@@ -136,7 +136,7 @@ function electionHTML(committees: Committee[]) {
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
 function electionText(committees: Committee[]) {
   const strArr = committees.map((c) => `- ${c.name} (${_toLocaleExtendedString(c.end_date)})`)
-  return `Atenção! Os seguintes mandatos estão para acabar:\n\n ${strArr.join('\n')}\n\n
+  return `Atenção! Os seguintes mandatos precisam de novas eleições:\n\n ${strArr.join('\n')}\n\n
   — Committee Management System 2.0 (Feedback? Contate Mayra Cademartori <${
     process.env.EMAIL_DEVELOPER
   }>)
