@@ -17,7 +17,6 @@ To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the fo
 - [React Hook Form](https://react-hook-form.com/)
 - [Zod](https://zod.dev/)
 - [Nodemailer](https://nodemailer.com/)
-- [Nodemailer](https://nodemailer.com/)
 
 ## Deploy
 
