@@ -118,7 +118,7 @@ function electionHTML(committees: Committee[]) {
       CMS 2<span style="color:#fa7b7f">.</span>0
       </h1>
       <hr style="border: #999999 1px solid">
-      <p style="color:#303030;">Atenção! Os seguintes mandatos estão para acabar: ${strArr.join(
+      <p style="color:#303030;">Atenção! Os seguintes mandatos precisam de novas eleições: ${strArr.join(
         ''
       )}</p>
       <div style="font-size: 16px; color:#404040;">
