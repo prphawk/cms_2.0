@@ -1,4 +1,4 @@
-import { Template, Committee } from '@prisma/client'
+import { Committee } from '@prisma/client'
 import { Theme } from 'next-auth/core/types'
 import { SendVerificationRequestParams } from 'next-auth/providers'
 import { createTransport } from 'nodemailer'

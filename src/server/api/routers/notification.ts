@@ -1,6 +1,72 @@
+import { Notification } from '@prisma/client'
 import { z } from 'zod'
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc'
+import { sendImminentElectionNotification } from '~/server/auth/email'
 import { prisma } from '~/server/db'
+import { _addDays, _subDays } from '~/utils/string'
+
+const _updateLastSent = (notifications: Notification[]) => {
+  const now = new Date()
+  const ids = notifications.map((t) => t.id)
+  return prisma.notification.updateMany({
+    where: {
+      id: {
+        in: ids
+      }
+    },
+    data: {
+      lastSentOn: now
+    }
+  })
+}
+
+const _getUsersForNotifications = () => {
+  const now = new Date()
+  const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30)
+  const XDaysFromNow = _addDays(now, Number(process.env.DAYS) || 30)
+  return prisma.user.findMany({
+    where: {
+      email: {
+        not: null
+      },
+      notifications: {
+        some: { isOn: true }
+      }
+    },
+    include: {
+      notifications: {
+        include: { committee: true },
+        where: {
+          AND: [
+            { isOn: true },
+            {
+              OR: [
+                {
+                  lastSentOn: {
+                    lt: XDaysBeforeNow
+                  }
+                },
+                {
+                  lastSentOn: {
+                    equals: null
+                  }
+                }
+              ]
+            },
+            {
+              committee: {
+                is_active: true,
+                end_date: {
+                  lt: XDaysFromNow
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  })
+}
 
 export const _createNotification = async (
   committee_id: number,
@@ -94,5 +160,18 @@ export const notificationRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       return _deleteManyNofifications(input.committee_id)
+    }),
+
+  sendNotifications: publicProcedure.mutation(async ({ ctx }) => {
+    const usersWithNotifs = await _getUsersForNotifications()
+    const promises = usersWithNotifs.map(async (u) => {
+      const committees = u.notifications.map((n) => n.committee)
+      if (committees.length) {
+        console.log(`Sending ${committees.length} e-mails to user...`)
+        await sendImminentElectionNotification(u.email!, committees)
+        return _updateLastSent(u.notifications)
+      }
     })
+    return promises
+  })
 })

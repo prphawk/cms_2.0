@@ -9,69 +9,6 @@ export const _getTemplateByName = async (name: string) => {
   return await prisma.template.findFirst({ where: { name } })
 }
 
-export const updateLastSent = (notifications: Notification[]) => {
-  const now = new Date()
-  const ids = notifications.map((t) => t.id)
-  return prisma.notification.updateMany({
-    where: {
-      id: {
-        in: ids
-      }
-    },
-    data: {
-      lastSentOn: now
-    }
-  })
-}
-
-export const getUsersForNotifications = () => {
-  const now = new Date()
-  const XDaysBeforeNow = _subDays(now, Number(process.env.DAYS) || 30)
-  const XDaysFromNow = _addDays(now, Number(process.env.DAYS) || 30)
-  return prisma.user.findMany({
-    where: {
-      email: {
-        not: null
-      },
-      notifications: {
-        some: { isOn: true }
-      }
-    },
-    include: {
-      notifications: {
-        include: { committee: true },
-        where: {
-          AND: [
-            { isOn: true },
-            {
-              OR: [
-                {
-                  lastSentOn: {
-                    lt: XDaysBeforeNow
-                  }
-                },
-                {
-                  lastSentOn: {
-                    equals: null
-                  }
-                }
-              ]
-            },
-            {
-              committee: {
-                is_active: true,
-                end_date: {
-                  lt: XDaysFromNow
-                }
-              }
-            }
-          ]
-        }
-      }
-    }
-  })
-}
-
 export const templateRouter = createTRPCRouter({
   getOne: protectedProcedure
     .input(
