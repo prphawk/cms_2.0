@@ -99,18 +99,19 @@ export const templateRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        committee_ids: z.number().array(),
+        committee_ids: z.number().array().optional(),
         name: z.string()
       })
     )
     .mutation(({ ctx, input }) => {
+      const commArr = input.committee_ids?.map((c: number) => {
+        return { id: c }
+      })
       return ctx.prisma.template.create({
         data: {
           name: input.name,
           committees: {
-            connect: input.committee_ids.map((c: number) => {
-              return { id: c }
-            })
+            connect: commArr
           }
         }
       })
@@ -158,5 +159,13 @@ export const templateRouter = createTRPCRouter({
           }
         }
       })
+    }),
+
+  delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
+    return ctx.prisma.template.delete({
+      where: {
+        id: input.id
+      }
     })
+  })
 })

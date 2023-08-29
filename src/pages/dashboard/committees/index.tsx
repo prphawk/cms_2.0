@@ -190,9 +190,7 @@ export default function Committees() {
             onDeleteCommittee
           )}
           tableFilters={<TableToolbarFilter filters={propsFilters} />}
-          tableActions={
-            <CommitteesTableToolbarActions handleCreateCommittee={handleCreateCommittee} />
-          }
+          tableActions={<CommitteesTableToolbarActions onCreateCommittee={handleCreateCommittee} />}
         />
         <CommitteeDialog
           open={openDialog === DialogsEnum.committee}

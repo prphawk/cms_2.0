@@ -21,6 +21,9 @@ import { z } from 'zod'
 import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 import { CreateTemplateFormSchema } from '~/schemas'
+import { AlertDialog } from '~/components/dialogs/alert-dialog'
+import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions'
+import TemplatesTableToolbarActions from '~/components/table/templates/template-toolbar-actions'
 
 export default function TemplatePage() {
   const router = useRouter()
@@ -35,7 +38,19 @@ export default function TemplatePage() {
 
   const { data, isLoading } = api.template.getAllWithNotifs.useQuery()
 
+  const createTemplate = api.template.create.useMutation({
+    onSuccess() {
+      utils.template.getAllWithNotifs.invalidate()
+    }
+  })
+
   const updateTemplate = api.template.update.useMutation({
+    onSuccess() {
+      utils.template.getAllWithNotifs.invalidate()
+    }
+  })
+
+  const deleteTemplate = api.template.delete.useMutation({
     onSuccess() {
       utils.template.getAllWithNotifs.invalidate()
     }
@@ -67,14 +82,30 @@ export default function TemplatePage() {
     handleOpenDialog(DialogsEnum.succession)
   }
 
+  const onCreateTemplate = () => {
+    setSelectedTemplate(undefined)
+    handleOpenDialog(DialogsEnum.template)
+  }
+
   const onEditTemplate = (template: TemplateWithCommitteeCountAndNotifDataType) => {
     setSelectedTemplate(template)
     handleOpenDialog(DialogsEnum.template)
   }
 
+  const onDeleteTemplate = (template: TemplateWithCommitteeCountAndNotifDataType) => {
+    setSelectedTemplate(template)
+    handleOpenDialog(DialogsEnum.alert_delete_template)
+  }
+
+  const handleDeleteTemplate = () => {
+    if (selectedTemplate) deleteTemplate.mutate({ id: selectedTemplate.id })
+    setSelectedTemplate(undefined)
+  }
+
   const handleSaveTemplate = (templateSchema: z.infer<typeof CreateTemplateFormSchema>) => {
     if (selectedTemplate)
       updateTemplate.mutate({ id: selectedTemplate.id, name: templateSchema.name })
+    else createTemplate.mutate({ name: templateSchema.name })
   }
 
   return (
@@ -87,11 +118,13 @@ export default function TemplatePage() {
               globalFilter={filter}
               onChangeGlobalFilter={(value) => setFilter(value)}
               data={data as any}
+              tableActions={<TemplatesTableToolbarActions onCreateTemplate={onCreateTemplate} />}
               columns={getTemplateColumns(
                 handleChangeNotifValue,
                 handleViewCommittee,
                 handleCommitteeSuccession,
-                onEditTemplate
+                onEditTemplate,
+                onDeleteTemplate
               )}
             />
             <TemplateDialog
@@ -107,6 +140,17 @@ export default function TemplatePage() {
                 committeeId={selectedTemplate.committee.id}
               />
             )}
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_delete_template}
+              description={
+                <>
+                  Esta ação irá <strong>deletar</strong> o {MyHeaders.TEMPLATE.toLowerCase()}. Esta
+                  ação não pode ser revertida. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeleteTemplate}
+            />
           </>
         )}
       </ContentLayout>
@@ -114,14 +158,17 @@ export default function TemplatePage() {
   )
 }
 
-export const TemplateDetails = (props: { isLoading?: boolean } & PropsWithChildren) => {
+export const TemplateDetails = (props: { isLoading?: boolean }) => {
   return (
     <Accordion className="mb-6" type="single" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>
           <TitleLayout>{props.isLoading ? 'Carregando' : MyHeaders.TEMPLATES}</TitleLayout>
         </AccordionTrigger>
-        <AccordionContent className="tracking-wide">{props.children}</AccordionContent>
+        <AccordionContent className="tracking-wide">
+          Coleção de {MyHeaders.TEMPLATES.toLowerCase()} (modelos de comissões permanentes) e seus
+          mandatos.
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
   )
