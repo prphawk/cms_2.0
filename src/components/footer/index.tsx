@@ -8,7 +8,7 @@ export const Footer = () => {
             Feedback? Contate{' '}
             <a
               target="_blank"
-              href="mailto:mayra.cademartori@gmail.com"
+              href={`mailto:${process.env.EMAIL_DEVELOPER}`}
               className="font-semibold hover:underline"
             >
               Mayra Cademartori

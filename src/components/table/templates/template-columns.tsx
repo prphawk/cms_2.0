@@ -116,7 +116,7 @@ export const getTemplateColumns = (
               <HelpCircleIcon className="ml-2 h-4 w-4" />
             </TooltipTrigger>
             <TooltipContent>
-              Receber notificação por email {process.env.DAYS} dias antes do mandato ativo expirar
+              Receber notificação por email 30 dias antes do mandato ativo expirar
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
