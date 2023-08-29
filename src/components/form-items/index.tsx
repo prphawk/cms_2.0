@@ -155,10 +155,9 @@ export const EmployeeSelectFormItem = (props: {
 
   const { data, isLoading } = api.employee.getOptions.useQuery(
     {
-      committee_id: props.committee_id,
-      membership_id: props.membership_id
-    },
-    { refetchOnMount: 'always' }
+      committee_id: props.committee_id
+    }
+    //{ refetchOnMount: 'always' } //TODO: ARRUMAR alternativa
   )
 
   useEffect(() => {

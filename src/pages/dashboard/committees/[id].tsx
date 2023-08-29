@@ -97,7 +97,6 @@ export default function CommitteeMembership() {
       utils.committee.getOne.cancel()
     },
     onSettled() {
-      // utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
       utils.committee.getOne.invalidate()
     }
   })

@@ -30,6 +30,7 @@ import { MyDialog, MyDialogClose } from './my-dialog'
 import { DialogsEnum } from '~/constants/enums'
 import { PLACEHOLDER } from '~/constants/placeholders'
 import { MembershipFormSchema, MembershipFormSchemaEffect } from '~/schemas/membership'
+import { api } from '~/utils/api'
 
 export default function MembershipDialog(props: {
   open: boolean
@@ -60,8 +61,13 @@ export default function MembershipDialog(props: {
     resolver: zodResolver(MembershipFormSchemaEffect)
   })
 
+  const utils = api.useContext()
+
   useEffect(() => {
-    if (props.open) form.reset(myDefaultValues() as any)
+    if (props.open) {
+      form.reset(myDefaultValues() as any)
+      utils.employee.getOptions.refetch()
+    }
   }, [props.open, props.member])
 
   function onSubmit(membershipSchema: z.infer<typeof MembershipFormSchema>) {
@@ -92,13 +98,10 @@ export default function MembershipDialog(props: {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3" id="formMembership">
             <div className="grid grid-cols-2 items-baseline justify-between gap-x-4">
-              {/* {props.members?.map((e, index) => ( */}
               <EmployeeSelectFormItem
                 fieldName="employee"
                 form={form}
                 committee_id={props.committee.id}
-                membership_id={props.member?.id}
-                //disabled={props.member?.employee.id !== undefined}
               />
               <RoleSelectFormItem form={form} fieldName="role" />
             </div>
