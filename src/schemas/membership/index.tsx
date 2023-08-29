@@ -24,10 +24,10 @@ export const MembershipFormSchema = z.object({
   end_date: z.coerce.date().optional(),
   observations: z.string().optional(),
   ordinance: z.string().optional(),
-  is_active: z.boolean()
+  is_active: z.boolean().optional()
 })
 
-export const MembershipSchemaEffect = MembershipFormSchema.refine(
+export const MembershipFormSchemaEffect = MembershipFormSchema.refine(
   (data) => (data.begin_date || 0) < (data.end_date || new Date()),
   {
     message: `${MembershipHeaders.END_DATE} não pode ocorrer antes de ${MembershipHeaders.BEGIN_DATE}.`,
@@ -38,6 +38,6 @@ export const MembershipSchemaEffect = MembershipFormSchema.refine(
   path: ['employee']
 })
 
-export const MembershipArraySchema = z.object({
-  members: z.array(MembershipSchemaEffect)
+export const MembershipFormArraySchema = z.object({
+  members: z.array(MembershipFormSchemaEffect)
 })
