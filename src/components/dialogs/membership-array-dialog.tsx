@@ -25,14 +25,14 @@ import {
   RoleSelectFormItem
 } from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
-import { MembershipArraySchema } from '~/schemas/membership'
+import { MembershipFormArraySchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { PLACEHOLDER } from '~/constants/placeholders'
 
 export default function MembershipArrayDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
-  handleSave: (data: z.infer<typeof MembershipArraySchema>) => void
+  handleSave: (data: z.infer<typeof MembershipFormArraySchema>) => void
   committee?: Committee
   members: (Membership & { employee: Employee })[]
 }) {
@@ -66,21 +66,25 @@ export default function MembershipArrayDialog(props: {
     }
   }
 
-  const form = useForm<z.infer<typeof MembershipArraySchema>>({
-    resolver: zodResolver(MembershipArraySchema),
-    mode: 'onChange'
+  const form = useForm<z.infer<typeof MembershipFormArraySchema>>({
+    resolver: zodResolver(MembershipFormArraySchema)
   })
 
   useEffect(() => {
     if (props.open) form.reset(myDefaultValues() as any)
   }, [props.open, props.members])
 
+  useEffect(() => {
+    console.log(form.formState.errors)
+  }, [form.formState])
+
   const fieldArray = useFieldArray({
     name: 'members', // unique name for your Field Array
     control: form.control // control props comes from useForm (optional: if you are using FormContext)
   })
 
-  function onSubmit(data: z.infer<typeof MembershipArraySchema>) {
+  function onSubmit(data: z.infer<typeof MembershipFormArraySchema>) {
+    console.log(data)
     props.handleSave(data)
     onClose()
   }

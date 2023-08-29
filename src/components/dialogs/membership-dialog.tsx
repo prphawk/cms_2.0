@@ -29,7 +29,7 @@ import {
 import { MyDialog, MyDialogClose } from './my-dialog'
 import { DialogsEnum } from '~/constants/enums'
 import { PLACEHOLDER } from '~/constants/placeholders'
-import { MembershipFormSchema, MembershipSchemaEffect } from '~/schemas/membership'
+import { MembershipFormSchema, MembershipFormSchemaEffect } from '~/schemas/membership'
 
 export default function MembershipDialog(props: {
   open: boolean
@@ -56,8 +56,8 @@ export default function MembershipDialog(props: {
     }
   }
 
-  const form = useForm<z.infer<typeof MembershipSchemaEffect>>({
-    resolver: zodResolver(MembershipSchemaEffect)
+  const form = useForm<z.infer<typeof MembershipFormSchemaEffect>>({
+    resolver: zodResolver(MembershipFormSchemaEffect)
   })
 
   useEffect(() => {

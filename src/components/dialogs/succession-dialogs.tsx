@@ -8,7 +8,7 @@ import CommitteeDialog from './committee-dialog'
 import MembershipArrayDialog from './membership-array-dialog'
 import { AlertDialog } from './alert-dialog'
 import { CommitteeFormSchema } from '~/schemas/committee'
-import { MembershipArraySchema } from '~/schemas/membership'
+import { MembershipFormArraySchema } from '~/schemas/membership'
 import { DialogsEnum } from '~/constants/enums'
 import { MyHeaders } from '~/constants/headers'
 
@@ -64,7 +64,7 @@ export default function SuccessionDialogs(props: {
     props.handleOpenDialog(DialogsEnum.succession2nd)
   }
 
-  const handleSave2nd = (data2nd: z.infer<typeof MembershipArraySchema>) => {
+  const handleSave2nd = (data2nd: z.infer<typeof MembershipFormArraySchema>) => {
     const readySuccessionData = {
       old_committee_id: props.committeeId,
       ...successionData,

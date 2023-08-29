@@ -5,7 +5,7 @@ import { prisma } from '~/server/db'
 import { _getTemplateByName } from './template'
 import { Prisma } from '@prisma/client'
 import { CommitteeFormSchema } from '~/schemas/committee'
-import { MembershipArraySchema } from '~/schemas/membership'
+import { MembershipFormArraySchema } from '~/schemas/membership'
 import { FilterSchema, DateSchema, TemplateSchema } from '~/schemas'
 import { _deleteManyNofifications, _notificationsSuccession } from './notification'
 import { _toDateFromForm } from '~/utils/string'
@@ -127,7 +127,7 @@ export const committeeRouter = createTRPCRouter({
 
   succession: protectedProcedure
     .input(
-      CommitteeFormSchema.merge(MembershipArraySchema)
+      CommitteeFormSchema.merge(MembershipFormArraySchema)
         .merge(TemplateSchema)
         .merge(
           z.object({
