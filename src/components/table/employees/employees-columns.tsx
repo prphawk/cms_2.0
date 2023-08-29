@@ -31,6 +31,9 @@ export const getEmployeesColumns = (
   ) => void,
   onDeactivateEmployee: (
     membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
+  ) => void,
+  onDeleteMembership: (
+    membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
   ) => void
 ): ColumnDef<MembershipWithEmployeeCommitteeAndMembershipCountDataType>[] => [
   {
@@ -160,8 +163,8 @@ export const getEmployeesColumns = (
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const role = row.original.role
-      const template_id = row.original.committee.template_id
+      const membership = row.original
+      const template_id = membership.committee.template_id
       return (
         <div className="flex min-w-[64px]">
           <div className="ml-auto px-4">
@@ -179,31 +182,39 @@ export const getEmployeesColumns = (
                 </DropdownMenuItem>
                 {template_id ? (
                   <DropdownMenuItem>
-                    <Link href={`${Routes.TEMPLATES}/${template_id}/${role}`}>
-                      {`Ver histórico de "${role}"`}
+                    <Link href={`${Routes.TEMPLATES}/${template_id}/${membership.role}`}>
+                      {`Ver histórico de "${membership.role}"`}
                     </Link>
                   </DropdownMenuItem>
                 ) : (
                   <></>
                 )}
-                <DropdownMenuItem onClick={() => onEditEmployee(row.original)}>
+                <DropdownMenuItem onClick={() => onEditEmployee(membership)}>
                   Editar {MembershipHeaders.MEMBER.toLowerCase()}
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   danger
-                  disabled={!row.original.is_active}
-                  onClick={() => onDeactivateMembership(row.original)}
+                  disabled={!membership.is_active}
+                  onClick={() => onDeactivateMembership(membership)}
                 >
                   Desativar {MyHeaders.MEMBERSHIP.toLowerCase()}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   danger
-                  disabled={!row.original.employee.is_active}
-                  onClick={() => onDeactivateEmployee(row.original)}
+                  disabled={!membership.employee.is_active}
+                  onClick={() => onDeactivateEmployee(membership)}
                 >
                   Desativar {MyHeaders.EMPLOYEE.toLowerCase()}
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  danger
+                  disabled={membership.is_active}
+                  onClick={() => onDeleteMembership(membership)}
+                >
+                  Deletar {MyHeaders.MEMBERSHIP.toLowerCase()}
+                </DropdownMenuItem>
+
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

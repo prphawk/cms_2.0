@@ -161,7 +161,14 @@ export default function Employees() {
       utils.membership.getAll.invalidate() //TODO ver aquele negócio de mudar o resultado da chamada pra so mudar o status dessa comissão
     }
   })
+
   const deactivateMembership = api.membership.deactivate.useMutation({
+    onSuccess() {
+      utils.membership.getAll.invalidate()
+    }
+  })
+
+  const deleteMembership = api.membership.delete.useMutation({
     onSuccess() {
       utils.membership.getAll.invalidate()
     }
@@ -179,6 +186,17 @@ export default function Employees() {
     if (selectedMembership)
       updateEmployee.mutate({ id: selectedMembership.employee.id, name: employeeSchema.name })
     else createEmployee.mutate({ name: employeeSchema.name })
+  }
+
+  const onDeleteMembership = (
+    membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
+  ) => {
+    setSelectedMembership(membership)
+    handleOpenDialog(DialogsEnum.alert_delete_membership)
+  }
+
+  const handleDeleteMembership = () => {
+    if (selectedMembership) deleteMembership.mutate({ id: selectedMembership.id })
   }
 
   return (
@@ -202,7 +220,8 @@ export default function Employees() {
                 handleViewCommittee,
                 onEditEmployee,
                 onDeactivateMembership,
-                onDeactivateEmployee
+                onDeactivateEmployee,
+                onDeleteMembership
               )}
               tableFilters={<TableToolbarFilter filters={propsFilters} />}
             />
@@ -223,6 +242,17 @@ export default function Employees() {
               }
               handleOpenDialog={handleOpenDialog}
               handleContinue={handleDeactivateEmployee}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_delete_membership}
+              description={
+                <>
+                  Esta ação irá <strong>deletar</strong> esta participação. Esta ação não pode ser
+                  revertida. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeleteMembership}
             />
             <AlertDialog
               open={openDialog == DialogsEnum.alert_deactivate}
@@ -252,7 +282,9 @@ const EmployeesTableTitle = ({
         <AccordionTrigger>
           <TitleLayout>{MyHeaders.EMPLOYEES}</TitleLayout>
         </AccordionTrigger>
-        <AccordionContent className="tracking-wide"></AccordionContent>
+        <AccordionContent className="tracking-wide">
+          Participações ativas e inativas de servidores públicos em mandatos.
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
   )
