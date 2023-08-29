@@ -7,15 +7,15 @@
     --foreground: 222.2 84% 4.9%;
 
     --gradient-1: #567be0;
-    --gradient-2: #a4708a;
+    --gradient-2: #a0728e;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
     --muted-foreground-page: 0 0% 80%;
 
-    --top-navigation-background: #2f34339f;
-    --bottom-background: #2f343396;
-    --table-background: #2f343396;
+    --top-navigation-background: #3e4e72;
+    --table-background: #2f313496;
+    --bottom-background: #433e4ec2;
     --switch-background: #808080;
 
     --popover: 0 0% 100%;
