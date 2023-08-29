@@ -241,7 +241,7 @@ export default function CommitteeMembership() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="committee my-6 mb-auto min-h-[89vh]">
+      <ContentLayout className="committee my-6 mb-auto">
         {committeeData && (
           <>
             <CommitteesTableTitle data={committeeData} />

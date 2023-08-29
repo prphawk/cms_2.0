@@ -60,7 +60,7 @@ export default function TemplateRoleHistory() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="role my-6 mb-auto min-h-[89vh]">
+      <ContentLayout className="role my-6 mb-auto">
         {data && (
           <>
             <TemplateHistoryTableTitle {...{ template_id, role }} />

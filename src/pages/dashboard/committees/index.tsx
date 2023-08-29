@@ -175,7 +175,7 @@ export default function Committees() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="committees my-6 mb-auto min-h-[89vh]">
+      <ContentLayout className="committees my-6 mb-auto">
         <CommitteeTableTitle />
         <DataTable
           globalFilter={filter}
