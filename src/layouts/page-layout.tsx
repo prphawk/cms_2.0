@@ -4,7 +4,7 @@ import LoadingLayout from './loading-layout'
 
 export default function PageLayout(props: PropsWithChildren) {
   return (
-    <main className="flex min-h-screen flex-col items-center  justify-center bg-gradient-to-b from-[--gradient-1] to-[--gradient-2] px-4 pb-6">
+    <main className="relative flex min-h-screen flex-col items-center  justify-center bg-gradient-to-b from-[--gradient-1] to-[--gradient-2] px-4 pb-6">
       {props.children}
     </main>
   )
