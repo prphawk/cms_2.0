@@ -15,37 +15,37 @@ import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useEffect } from 'react'
-import { CommitteeHeaders } from '~/constants/headers'
+import { MembershipHeaders } from '~/constants/headers'
 import React from 'react'
 import { CommonFormItem } from '../form-items'
 import { MyDialog, MyDialogClose } from './my-dialog'
 import { DialogsEnum } from '~/constants/enums'
-import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
-import { CreateTemplateFormSchema } from '~/schemas'
+import { CreateEmployeeFormSchema } from '~/schemas'
 import { PLACEHOLDER } from '~/constants/placeholders'
+import { Employee } from '@prisma/client'
 
-export default function TemplateDialog(props: {
+export default function EmployeeDialog(props: {
   open: boolean
   handleOpenDialog: (dialogEnum: DialogsEnum) => void
-  template?: TemplateWithCommitteeCountAndNotifDataType
-  handleSave: (templateSchema: z.infer<typeof CreateTemplateFormSchema>) => void
+  employee?: Employee
+  handleSave: (employeeSchema: z.infer<typeof CreateEmployeeFormSchema>) => void
 }) {
   const myDefaultValues = () => {
     return {
-      name: props.template?.name || ''
+      name: props.employee?.name || ''
     }
   }
 
-  const form = useForm<z.infer<typeof CreateTemplateFormSchema>>({
-    resolver: zodResolver(CreateTemplateFormSchema)
+  const form = useForm<z.infer<typeof CreateEmployeeFormSchema>>({
+    resolver: zodResolver(CreateEmployeeFormSchema)
   })
 
   useEffect(() => {
     if (props.open) form.reset(myDefaultValues() as any)
   }, [props.open])
 
-  function onSubmit(templateSchema: z.infer<typeof CreateTemplateFormSchema>) {
-    props.handleSave(templateSchema)
+  function onSubmit(employeeSchema: z.infer<typeof CreateEmployeeFormSchema>) {
+    props.handleSave(employeeSchema)
     onClose()
   }
 
@@ -59,12 +59,12 @@ export default function TemplateDialog(props: {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {props.template ? 'Editar' : 'Criar'} {CommitteeHeaders.TEMPLATE}
+            {props.employee ? 'Editar' : 'Criar'} {MembershipHeaders.MEMBER}
           </DialogTitle>
           <DialogDescription>
-            {props.template && (
+            {props.employee && (
               <>
-                Ao editar, os dados anteriores do {CommitteeHeaders.TEMPLATE.toLowerCase()} serão{' '}
+                Ao editar, os dados anteriores do(a) {MembershipHeaders.MEMBER.toLowerCase()} serão{' '}
                 <strong>descartados</strong>.
               </>
             )}
@@ -77,8 +77,8 @@ export default function TemplateDialog(props: {
               required
               form={form}
               fieldName="name"
-              label={CommitteeHeaders.TEMPLATE_NAME}
-              placeholder={PLACEHOLDER.COMMITTEE}
+              label={MembershipHeaders.EMPLOYEE_NAME}
+              placeholder={PLACEHOLDER.MEMBER}
             />
 
             <DialogFooter>

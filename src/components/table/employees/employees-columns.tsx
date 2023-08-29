@@ -17,7 +17,6 @@ import DataTableColumnHeader, {
 } from '~/components/table/data-table-column-header'
 import Link from 'next/link'
 import { Routes } from '~/constants/routes'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge } from '~/components/badge'
 import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
 import { Observations, Ordinance } from '../colums'
@@ -26,6 +25,7 @@ export const getEmployeesColumns = (
   handleViewCommittee: (
     membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
   ) => void,
+  onEditEmployee: (membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType) => void,
   onDeactivateMembership: (
     membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
   ) => void,
@@ -36,7 +36,7 @@ export const getEmployeesColumns = (
   {
     accessorKey: 'employee.name',
     accessorFn: (row) => row.employee.name,
-    id: MembershipHeaders.NAME,
+    id: MembershipHeaders.MEMBER,
     header: ({ column, table }) => (
       <DataTableColumnHeader
         column={column}
@@ -175,7 +175,7 @@ export const getEmployeesColumns = (
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
                 <DropdownMenuItem onClick={() => handleViewCommittee(row.original)}>
-                  Ver {MyHeaders.COMMITTEE.toLowerCase()}
+                  Ver {MyHeaders.INSTANCE.toLowerCase()}
                 </DropdownMenuItem>
                 {template_id ? (
                   <DropdownMenuItem>
@@ -186,6 +186,9 @@ export const getEmployeesColumns = (
                 ) : (
                   <></>
                 )}
+                <DropdownMenuItem onClick={() => onEditEmployee(row.original)}>
+                  Editar {MembershipHeaders.MEMBER.toLowerCase()}
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   danger

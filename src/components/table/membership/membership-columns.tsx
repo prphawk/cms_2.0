@@ -31,7 +31,7 @@ export const getMembershipColumns = (
   {
     accessorKey: 'employee.name',
     accessorFn: (row) => row.employee.name,
-    id: MembershipHeaders.NAME,
+    id: MembershipHeaders.MEMBER,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string

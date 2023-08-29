@@ -22,8 +22,7 @@ import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
 import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 import { CreateTemplateFormSchema } from '~/schemas'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
-import CommitteesTableToolbarActions from '~/components/table/committees/committees-toolbar-actions'
-import TemplatesTableToolbarActions from '~/components/table/templates/template-toolbar-actions'
+import TableToolbarCreateButton from '~/components/table/data-table-toolbar-create-button'
 
 export default function TemplatePage() {
   const router = useRouter()
@@ -55,6 +54,7 @@ export default function TemplatePage() {
       utils.template.getAllWithNotifs.invalidate()
     }
   })
+
   const updateNotification = api.notification.update.useMutation({})
   const createNotification = api.notification.create.useMutation({})
 
@@ -118,7 +118,9 @@ export default function TemplatePage() {
               globalFilter={filter}
               onChangeGlobalFilter={(value) => setFilter(value)}
               data={data as any}
-              tableActions={<TemplatesTableToolbarActions onCreateTemplate={onCreateTemplate} />}
+              tableActions={
+                <TableToolbarCreateButton onCreate={onCreateTemplate} label={MyHeaders.TEMPLATE} />
+              }
               columns={getTemplateColumns(
                 handleChangeNotifValue,
                 handleViewCommittee,

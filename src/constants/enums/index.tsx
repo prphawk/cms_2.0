@@ -3,6 +3,7 @@ export enum DialogsEnum {
   committee,
   membership,
   template,
+  employee,
   alert_succession,
   alert_deactivate,
   alert_deactivate_employee,

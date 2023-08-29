@@ -30,7 +30,8 @@ export class CommitteeHeaders {
   public static TEMPLATE_NAME = 'Nome'
 }
 export class MembershipHeaders {
-  public static NAME = 'Servidor(a)'
+  public static MEMBER = 'Servidor(a)'
+  public static EMPLOYEE_NAME = 'Nome'
   public static ROLE = 'Cargo'
   public static ORDINANCE = 'Portaria'
   public static BEGIN_DATE = 'Data de Início'
