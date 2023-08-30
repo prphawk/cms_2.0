@@ -19,7 +19,7 @@ import Link from 'next/link'
 import { Routes } from '~/constants/routes'
 import { IconBadge, InactiveBadge, MyTooltip } from '~/components/badge'
 import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
-import { MembershipTooltipValue, Observations, Ordinance } from '../colums'
+import { EmployeeTooltipValue, MembershipTooltipValue, Observations, Ordinance } from '../colums'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const getEmployeesColumns = (
@@ -54,21 +54,7 @@ export const getEmployeesColumns = (
 
       return (
         <div className="flex w-[240px] flex-row">
-          <MyTooltip
-            tooltip={
-              <div className="text-xs">
-                <span className="font-semibold">{value}</span>
-                {is_inactive && <IconBadge>Servidor(a) Desativado</IconBadge>}
-              </div>
-            }
-          >
-            <div className="flex flex-row truncate">
-              <strong className="truncate">{value}</strong>
-              <span>
-                <div>{is_inactive && <InactiveBadge />}</div>
-              </span>
-            </div>
-          </MyTooltip>
+          <EmployeeTooltipValue {...{value, is_inactive}} />
         </div>
       )
     }

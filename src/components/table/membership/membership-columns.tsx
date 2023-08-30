@@ -20,7 +20,7 @@ import { Routes } from '~/constants/routes'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge, InactiveBadge } from '~/components/badge'
 import { CommitteeWithMembersDataType, MembershipWithEmployeeDataType } from '~/types'
-import { Observations, Ordinance } from '../colums'
+import { MembershipTooltipValue, Observations, Ordinance } from '../colums'
 
 export const getMembershipColumns = (
   onChangeMembership: (membership: MembershipWithEmployeeDataType) => void,
@@ -39,24 +39,7 @@ export const getMembershipColumns = (
 
       return (
         <div className="flex w-[240px] flex-row">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-row truncate">
-                  <strong className="truncate">{value}</strong>
-                  <span>
-                    <div>{is_inactive && <InactiveBadge />}</div>
-                  </span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <div className="text-xs ">
-                  <span className="font-semibold">{value}</span>
-                  {is_inactive && <IconBadge>Participação Encerrada</IconBadge>}
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <MembershipTooltipValue {...{ value, is_inactive }} />
         </div>
       )
     }

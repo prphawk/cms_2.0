@@ -19,7 +19,7 @@ import DataTableColumnHeader, {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge, InactiveBadge, TemporaryBadge } from '~/components/badge'
 import { CountDataType, CommitteeWithMembershipCountDataType } from '~/types'
-import { Observations, Ordinance } from '../colums'
+import { CommitteeTooltipValue, Observations, Ordinance } from '../colums'
 
 export const getCommitteesColumns = (
   onViewCommittee: (com: Committee) => void,
@@ -39,31 +39,7 @@ export const getCommitteesColumns = (
 
       return (
         <div className="flex w-[250px] flex-row">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-row truncate">
-                  <strong className="truncate">{value}</strong>
-                  <span>
-                    <div>
-                      {is_temporary && <TemporaryBadge />}
-                      {is_inactive && <InactiveBadge />}
-                    </div>
-                  </span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <div className="text-xs">
-                  <span className="font-semibold">{value}</span>
-                  {is_temporary ? (
-                    <IconBadge>Mandato Temporário</IconBadge>
-                  ) : (
-                    is_inactive && <IconBadge>Mandato Encerrado</IconBadge>
-                  )}
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <CommitteeTooltipValue {...{value, is_inactive, is_temporary}} />
         </div>
       )
     }

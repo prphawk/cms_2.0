@@ -30,7 +30,7 @@ export const TemporaryBadge = (props: { className?: string; label?: string; larg
   )
 }
 
-export const MyTooltip = (props: { tooltip: JSX.Element } & PropsWithChildren) => (
+export const MyTooltip = (props: { tooltip: JSX.Element | string } & PropsWithChildren) => (
   <div>
     <TooltipProvider>
       <Tooltip>
