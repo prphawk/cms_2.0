@@ -1,8 +1,8 @@
 import { Committee } from '@prisma/client'
-import { ColumnDef, filterFns, sortingFns } from '@tanstack/react-table'
-import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
+import { ColumnDef } from '@tanstack/react-table'
+import { CommitteeHeaders } from '~/constants/headers'
 import { _isDateComing, _sortStringDate, _toDate, _toLocaleString } from '~/utils/string'
-import { XIcon, HourglassIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
+import { MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -17,7 +17,7 @@ import DataTableColumnHeader, {
   EndDateBadge
 } from '~/components/table/data-table-column-header'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { IconBadge } from '~/components/badge'
+import { IconBadge, InactiveBadge, TemporaryBadge } from '~/components/badge'
 import { CountDataType, CommitteeWithMembershipCountDataType } from '~/types'
 import { Observations, Ordinance } from '../colums'
 
@@ -52,16 +52,8 @@ export const getCommitteesColumns = (
 
           <span>
             <div className="flex flex-row">
-              {is_temporary && (
-                <IconBadge>
-                  <HourglassIcon className="h-3 w-3 text-white" />
-                </IconBadge>
-              )}
-              {is_inactive && (
-                <IconBadge>
-                  <XIcon className="h-3 w-3 text-white" />
-                </IconBadge>
-              )}
+              {is_temporary && <TemporaryBadge />}
+              {is_inactive && <InactiveBadge />}
             </div>
           </span>
         </div>

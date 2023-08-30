@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { XIcon } from 'lucide-react'
+import { HourglassIcon, XIcon } from 'lucide-react'
 import { ReactNode } from 'react'
 import { _toLocaleString, _isDateComing } from '~/utils/string'
 
@@ -12,10 +12,17 @@ export const IconBadge = ({ children, className }: { children: ReactNode; classN
   )
 }
 
-export const InactiveIcon = () => {
+export const InactiveBadge = ({ className }: { className?: string }) => {
   return (
-     <IconBadge>
-             <XIcon className="h-3 w-3 text-white" />
-           </IconBadge>
+    <IconBadge>
+      <XIcon className={cn('h-3 w-3 text-white', className)} />
+    </IconBadge>
+  )
+}
+export const TemporaryBadge = ({ className }: { className?: string }) => {
+  return (
+    <IconBadge>
+      <HourglassIcon className={cn('h-3 w-3 text-white', className)} />
+    </IconBadge>
   )
 }

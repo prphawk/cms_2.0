@@ -17,7 +17,7 @@ import DataTableColumnHeader, {
 } from '~/components/table/data-table-column-header'
 import Link from 'next/link'
 import { Routes } from '~/constants/routes'
-import { IconBadge } from '~/components/badge'
+import { IconBadge, InactiveBadge } from '~/components/badge'
 import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
 import { Observations, Ordinance } from '../colums'
 
@@ -54,11 +54,7 @@ export const getEmployeesColumns = (
       return (
         <div className="flex w-[240px] flex-row">
           <strong className="truncate">{value}</strong>
-          {is_inactive && (
-            <IconBadge>
-              <XIcon className="h-3 w-3 text-white" />
-            </IconBadge>
-          )}
+          {is_inactive && <InactiveBadge />}
         </div>
       )
     }
@@ -86,11 +82,7 @@ export const getEmployeesColumns = (
       return (
         <div className="flex max-w-[200px] flex-row truncate">
           {value}
-          {is_inactive && (
-            <IconBadge>
-              <XIcon className="h-3 w-3 text-white" />
-            </IconBadge>
-          )}
+          {is_inactive && <InactiveBadge />}
         </div>
       )
     }
@@ -214,7 +206,6 @@ export const getEmployeesColumns = (
                 >
                   Deletar {MyHeaders.MEMBERSHIP.toLowerCase()}
                 </DropdownMenuItem>
-
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

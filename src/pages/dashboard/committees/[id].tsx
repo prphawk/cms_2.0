@@ -31,8 +31,7 @@ import SuccessionDialogs from '~/components/dialogs/succession-dialogs'
 import { CommitteeFormSchema } from '~/schemas/committee'
 import { DialogsEnum } from '~/constants/enums'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
-import { HourglassIcon, XIcon } from 'lucide-react'
-import { IconBadge } from '~/components/badge'
+import { InactiveBadge, TemporaryBadge } from '~/components/badge'
 import {
   CommitteeWithOptionalTemplateDataType,
   FilterStateDatesType,
@@ -345,16 +344,8 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
           <TitleLayout>
             {data?.name}
             <span className="ml-1">
-              {!data.template_id && (
-                <IconBadge>
-                  <HourglassIcon className="h-4 w-4" />
-                </IconBadge>
-              )}
-              {!data.is_active && (
-                <IconBadge>
-                  <XIcon className="h-4 w-4 " />
-                </IconBadge>
-              )}
+              {!data.template_id && <TemporaryBadge className="h-4 w-4" />}
+              {!data.is_active && <InactiveBadge className="h-4 w-4" />}
             </span>
           </TitleLayout>
         </AccordionTrigger>

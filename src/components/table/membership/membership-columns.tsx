@@ -18,7 +18,7 @@ import DataTableColumnHeader, {
 import Link from 'next/link'
 import { Routes } from '~/constants/routes'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { IconBadge } from '~/components/badge'
+import { IconBadge, InactiveBadge } from '~/components/badge'
 import { CommitteeWithMembersDataType, MembershipWithEmployeeDataType } from '~/types'
 import { Observations, Ordinance } from '../colums'
 
@@ -40,11 +40,7 @@ export const getMembershipColumns = (
       return (
         <div className="flex w-[240px] flex-row">
           <strong className="truncate">{value}</strong>
-          {is_inactive && (
-            <IconBadge>
-              <XIcon className="h-3 w-3 text-white" />
-            </IconBadge>
-          )}
+          {is_inactive && <InactiveBadge />}
         </div>
       )
     }
