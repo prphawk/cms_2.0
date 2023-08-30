@@ -155,7 +155,11 @@ export default function CommitteeMembership() {
 
   const propsFilters: IFilter[] = [
     {
-      ...filterAProps(),
+      ...filterAProps({
+        sufix: 'Participação',
+        active_label: 'Ativa',
+        inactive_label: 'Encerrada'
+      }),
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
         handleChangeComplementaryFilters(LS.MEMBERSHIP_A, 'is_active', setFilterA, labels)
@@ -344,8 +348,8 @@ const CommitteesTableTitle = ({ data }: { data: CommitteeWithOptionalTemplateDat
           <TitleLayout>
             {data?.name}
             <span className="ml-1">
-              {!data.template_id && <TemporaryBadge className="h-4 w-4" />}
-              {!data.is_active && <InactiveBadge className="h-4 w-4" />}
+              {!data.template_id && <TemporaryBadge large label="Temporário" />}
+              {!data.is_active && <InactiveBadge large label="Encerrado" />}
             </span>
           </TitleLayout>
         </AccordionTrigger>

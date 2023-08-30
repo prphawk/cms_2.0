@@ -1,4 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { IconBadge, InactiveBadge, MyTooltip } from '~/components/badge'
 
 export const Ordinance = (value: string) => {
   return <div className="truncate">{value || '-'}</div>
@@ -14,5 +15,45 @@ export const Observations = (value: string) => {
         {value && <TooltipContent>{value}</TooltipContent>}
       </Tooltip>
     </TooltipProvider>
+  )
+}
+
+export const MembershipTooltipValue = (props: { value: string; is_inactive: boolean }) => {
+  return (
+    <MyTooltip
+      tooltip={
+        <div className="text-xs">
+          <span className="font-semibold">{props.value}</span>
+          {props.is_inactive && <IconBadge>Participação Encerrada</IconBadge>}
+        </div>
+      }
+    >
+      <div className="flex flex-row truncate">
+        <span className="truncate">{props.value}</span>
+        <span>
+          <div>{props.is_inactive && <InactiveBadge />}</div>
+        </span>
+      </div>
+    </MyTooltip>
+  )
+}
+
+export const EmployeeTooltipValue = (props: { value: string; is_inactive: boolean }) => {
+  return (
+    <MyTooltip
+      tooltip={
+        <div className="text-xs">
+          <strong className="font-semibold">{props.value}</strong>
+          {props.is_inactive && <IconBadge>Servidor(a) Desativado</IconBadge>}
+        </div>
+      }
+    >
+      <div className="flex flex-row truncate">
+        <strong className="truncate">{props.value}</strong>
+        <span>
+          <div>{props.is_inactive && <InactiveBadge />}</div>
+        </span>
+      </div>
+    </MyTooltip>
   )
 }

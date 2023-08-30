@@ -16,9 +16,9 @@ import DataTableColumnHeader, {
   EndDateBadge
 } from '~/components/table/data-table-column-header'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { IconBadge, InactiveBadge } from '~/components/badge'
+import { IconBadge, InactiveBadge, MyTooltip } from '~/components/badge'
 import { MembershipWithEmployeeAndCommitteeDataType } from '~/types'
-import { Observations, Ordinance } from '../colums'
+import { EmployeeTooltipValue, Observations, Ordinance } from '../colums'
 
 export const getTemplateRoleHistoryColumns = (
   handleViewCommittee: (committee_id: number) => void
@@ -34,8 +34,7 @@ export const getTemplateRoleHistoryColumns = (
 
       return (
         <div className="flex w-[240px] flex-row">
-          <strong className="truncate">{value}</strong>
-          {is_inactive && <InactiveBadge />}
+          <EmployeeTooltipValue {...{ value, is_inactive }} />
         </div>
       )
     }
@@ -51,17 +50,21 @@ export const getTemplateRoleHistoryColumns = (
 
       return (
         <div className="flex max-w-[250px] flex-row">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="truncate">{value}</div>
-              </TooltipTrigger>
-              <TooltipContent>
-                {is_inactive ? 'Participação encerrada em ' + value : value}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          {is_inactive && <InactiveBadge />}
+          <MyTooltip
+            tooltip={
+              <div className="text-xs">
+                <span className="font-semibold">{value}</span>
+                {is_inactive && <IconBadge>Participação Encerrada</IconBadge>}
+              </div>
+            }
+          >
+            <div className="flex flex-row truncate">
+              <span className="truncate">{value}</span>
+              <span>
+                <div>{is_inactive && <InactiveBadge />}</div>
+              </span>
+            </div>
+          </MyTooltip>
         </div>
       )
     }

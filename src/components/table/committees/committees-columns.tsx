@@ -1,6 +1,6 @@
 import { Committee } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
-import { CommitteeHeaders } from '~/constants/headers'
+import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import { _isDateComing, _sortStringDate, _toDate, _toLocaleString } from '~/utils/string'
 import { MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -42,20 +42,28 @@ export const getCommitteesColumns = (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="truncate">
+                <div className="flex flex-row truncate">
                   <strong className="truncate">{value}</strong>
+                  <span>
+                    <div>
+                      {is_temporary && <TemporaryBadge />}
+                      {is_inactive && <InactiveBadge />}
+                    </div>
+                  </span>
                 </div>
               </TooltipTrigger>
-              <TooltipContent>{value}</TooltipContent>
+              <TooltipContent>
+                <div className="text-xs">
+                  <span className="font-semibold">{value}</span>
+                  {is_temporary ? (
+                    <IconBadge>Mandato Temporário</IconBadge>
+                  ) : (
+                    is_inactive && <IconBadge>Mandato Encerrado</IconBadge>
+                  )}
+                </div>
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
-          <span>
-            <div className="flex flex-row">
-              {is_temporary && <TemporaryBadge />}
-              {is_inactive && <InactiveBadge />}
-            </div>
-          </span>
         </div>
       )
     }

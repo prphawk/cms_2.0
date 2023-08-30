@@ -39,8 +39,24 @@ export const getMembershipColumns = (
 
       return (
         <div className="flex w-[240px] flex-row">
-          <strong className="truncate">{value}</strong>
-          {is_inactive && <InactiveBadge />}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex flex-row truncate">
+                  <strong className="truncate">{value}</strong>
+                  <span>
+                    <div>{is_inactive && <InactiveBadge />}</div>
+                  </span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="text-xs ">
+                  <span className="font-semibold">{value}</span>
+                  {is_inactive && <IconBadge>Participação Encerrada</IconBadge>}
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       )
     }

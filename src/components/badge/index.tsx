@@ -1,7 +1,8 @@
 import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { HourglassIcon, XIcon } from 'lucide-react'
-import { ReactNode } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 import { _toLocaleString, _isDateComing } from '~/utils/string'
 
 export const IconBadge = ({ children, className }: { children: ReactNode; className?: string }) => {
@@ -12,17 +13,30 @@ export const IconBadge = ({ children, className }: { children: ReactNode; classN
   )
 }
 
-export const InactiveBadge = ({ className }: { className?: string }) => {
+export const InactiveBadge = (props: { className?: string; label?: string; large?: boolean }) => {
   return (
-    <IconBadge>
-      <XIcon className={cn('h-3 w-3 text-white', className)} />
+    <IconBadge className={cn(props.className)}>
+      <XIcon className={cn('h-3 w-3 text-white', props.large && 'h-4 w-4')} />
+      {props.label && <span className="m-[2px] text-xs">{props.label}</span>}
     </IconBadge>
   )
 }
-export const TemporaryBadge = ({ className }: { className?: string }) => {
+export const TemporaryBadge = (props: { className?: string; label?: string; large?: boolean }) => {
   return (
-    <IconBadge>
-      <HourglassIcon className={cn('h-3 w-3 text-white', className)} />
+    <IconBadge className={props.className}>
+      <HourglassIcon className={cn('h-3 w-3 text-white', props.large && 'h-4 w-4')} />
+      {props.label && <span className="m-[2px] text-xs ">{props.label}</span>}
     </IconBadge>
   )
 }
+
+export const MyTooltip = (props: { tooltip: JSX.Element } & PropsWithChildren) => (
+  <div>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>{props.children}</TooltipTrigger>
+        <TooltipContent>{props.tooltip}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  </div>
+)
