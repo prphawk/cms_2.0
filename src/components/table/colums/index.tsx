@@ -18,20 +18,28 @@ export const Observations = (value: string) => {
   )
 }
 
-export const CommitteeTooltipValue = (props: { value: string; is_inactive: boolean; is_temporary: boolean }) => {
+export const CommitteeTooltipValue = (props: {
+  value: string
+  is_inactive: boolean
+  is_temporary: boolean
+}) => {
   return (
     <MyTooltip
       tooltip={
         <div className="text-xs">
-          <span className="font-semibold">{props.value}</span>
-          {props.is_temporary && <IconBadge>Mandato Temporário</IconBadge>}
-          {props.is_inactive && <IconBadge>Mandato Encerrado</IconBadge>}
+          <span className="font-normal">{props.value}</span>
+          {props.is_temporary && (
+            <IconBadge className="border-gray-300">Mandato Temporário</IconBadge>
+          )}
+          {props.is_inactive && (
+            <IconBadge className="border-gray-300">Mandato Encerrado</IconBadge>
+          )}
         </div>
       }
     >
       <div className="flex flex-row truncate">
-        <span className="truncate">{props.value}</span>
-        <span>
+        <strong className="truncate">{props.value}</strong>
+        <span className="flex flex-row ">
           <div>{props.is_temporary && <TemporaryBadge />}</div>
           <div>{props.is_inactive && <InactiveBadge />}</div>
         </span>
@@ -44,8 +52,10 @@ export const MembershipTooltipValue = (props: { value: string; is_inactive: bool
     <MyTooltip
       tooltip={
         <div className="text-xs">
-          <span className="font-normal border-gray-600">{props.value}</span>
-          {props.is_inactive && <IconBadge>Participação Encerrada</IconBadge>}
+          <span className="font-normal">{props.value}</span>
+          {props.is_inactive && (
+            <IconBadge className="border-gray-300">Participação Encerrada</IconBadge>
+          )}
         </div>
       }
     >
@@ -64,8 +74,10 @@ export const EmployeeTooltipValue = (props: { value: string; is_inactive: boolea
     <MyTooltip
       tooltip={
         <div className="text-xs">
-          <strong className="font-semibold">{props.value}</strong>
-          {props.is_inactive && <IconBadge>Servidor(a) Desativado</IconBadge>}
+          <strong className="font-normal">{props.value}</strong>
+          {props.is_inactive && (
+            <IconBadge className="border-gray-300">Servidor(a) Desativado</IconBadge>
+          )}
         </div>
       }
     >

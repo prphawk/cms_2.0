@@ -1,9 +1,11 @@
 export const Footer = () => {
   return (
-    <div className="mt-7 flex w-full items-center justify-center">
+    <div className="mt-6 flex w-full items-center justify-center">
       <div
+        //        //  text-shadow: 1px 1px 1px #03030350;
+
         style={{ boxShadow: ' 0 4px 6px 1px rgb(0 0 0 / 0.3), 0 2px 4px 2px rgb(0 0 0 / 0.1)' }}
-        className="absolute bottom-0 flex h-[20px] w-full flex-row items-center bg-[--bottom-background] py-4 shadow-lg"
+        className="absolute bottom-0 flex h-[20px] w-full flex-row items-center bg-[--bottom-background] py-[14px] shadow-lg"
       >
         <div className="container flex flex-row text-xs tracking-wider text-white">
           <span>

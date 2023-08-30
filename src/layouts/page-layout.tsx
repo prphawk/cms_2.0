@@ -15,6 +15,7 @@ export function ContentLayout(
 ) {
   return (
     <div
+      style={{ boxShadow: ' 0 0, 0 0px 1px 1px rgb(0 0 0 / 0.1)' }}
       className={cn(
         'my-shadow container h-full rounded-xl bg-[--table-background] text-white',
         props.className
