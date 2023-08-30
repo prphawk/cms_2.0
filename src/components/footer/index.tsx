@@ -19,7 +19,7 @@ export const Footer = () => {
           </span>
           <span className="ml-auto ">
             <span className="font-semibold">Committee Management System</span>{' '}
-            <span className="mx-1 py-[2px]">|</span> Versão 2.1.1
+            <span className="mx-1 py-[2px]">|</span> Versão 2.8.0
           </span>
         </div>
       </div>
