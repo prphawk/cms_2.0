@@ -1,5 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { IconBadge, InactiveBadge, MyTooltip } from '~/components/badge'
+import { IconBadge, InactiveBadge, MyTooltip, TemporaryBadge } from '~/components/badge'
 
 export const Ordinance = (value: string) => {
   return <div className="truncate">{value || '-'}</div>
@@ -18,12 +18,33 @@ export const Observations = (value: string) => {
   )
 }
 
-export const MembershipTooltipValue = (props: { value: string; is_inactive: boolean }) => {
+export const CommitteeTooltipValue = (props: { value: string; is_inactive: boolean; is_temporary: boolean }) => {
   return (
     <MyTooltip
       tooltip={
         <div className="text-xs">
           <span className="font-semibold">{props.value}</span>
+          {props.is_temporary && <IconBadge>Mandato Temporário</IconBadge>}
+          {props.is_inactive && <IconBadge>Mandato Encerrado</IconBadge>}
+        </div>
+      }
+    >
+      <div className="flex flex-row truncate">
+        <span className="truncate">{props.value}</span>
+        <span>
+          <div>{props.is_temporary && <TemporaryBadge />}</div>
+          <div>{props.is_inactive && <InactiveBadge />}</div>
+        </span>
+      </div>
+    </MyTooltip>
+  )
+}
+export const MembershipTooltipValue = (props: { value: string; is_inactive: boolean }) => {
+  return (
+    <MyTooltip
+      tooltip={
+        <div className="text-xs">
+          <span className="font-normal border-gray-600">{props.value}</span>
           {props.is_inactive && <IconBadge>Participação Encerrada</IconBadge>}
         </div>
       }

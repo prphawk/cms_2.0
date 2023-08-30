@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
+import { MyTooltip } from '~/components/badge'
 
 export const getTemplateColumns = (
   handleChangeNotifValue: (
@@ -38,7 +39,13 @@ export const getTemplateColumns = (
       const value = row.getValue(column.id) as string
       return (
         <div className="flex w-[240px] flex-row">
-          <strong className="truncate">{value}</strong>
+          <MyTooltip tooltip={
+          <div className="text-xs">
+          <span className="font-semibold">{value}</span>
+          </div>
+        }>
+            <strong className="truncate">{value}</strong>
+          </MyTooltip>
         </div>
       )
     }

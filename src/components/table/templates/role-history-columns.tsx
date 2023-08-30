@@ -18,7 +18,7 @@ import DataTableColumnHeader, {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { IconBadge, InactiveBadge, MyTooltip } from '~/components/badge'
 import { MembershipWithEmployeeAndCommitteeDataType } from '~/types'
-import { EmployeeTooltipValue, Observations, Ordinance } from '../colums'
+import { EmployeeTooltipValue, MembershipTooltipValue, Observations, Ordinance } from '../colums'
 
 export const getTemplateRoleHistoryColumns = (
   handleViewCommittee: (committee_id: number) => void
@@ -50,21 +50,7 @@ export const getTemplateRoleHistoryColumns = (
 
       return (
         <div className="flex max-w-[250px] flex-row">
-          <MyTooltip
-            tooltip={
-              <div className="text-xs">
-                <span className="font-semibold">{value}</span>
-                {is_inactive && <IconBadge>Participação Encerrada</IconBadge>}
-              </div>
-            }
-          >
-            <div className="flex flex-row truncate">
-              <span className="truncate">{value}</span>
-              <span>
-                <div>{is_inactive && <InactiveBadge />}</div>
-              </span>
-            </div>
-          </MyTooltip>
+          <MembershipTooltipValue {...{value ,is_inactive}} />
         </div>
       )
     }
