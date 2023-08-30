@@ -1,5 +1,11 @@
 # Committee Management System (2.0!)
 
+I'm running it on Ubuntu WSL 1 (gotta be 1, Next.JS's fast refresh doesn't work on 2).
+
+To access MySQL DB on PlanetScale, first install MySQL and then follow the instructions to install the PlanetScale CLI on your machine. Login and setup your production and development databases.
+
+Then, run `npm i` and `npm run dev` and I believe you'll be ready to go!
+
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
 
@@ -18,7 +24,7 @@ To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the fo
 - [Zod](https://zod.dev/)
 - [Nodemailer](https://nodemailer.com/)
 
-## Deploy
+## Deploy & Connect
 
 - [Vercel](https://vercel.com/)
 - [PlanetScale](https://planetscale.com/)
@@ -36,7 +42,7 @@ To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the fo
 
 ## ER Diagram
 
-You can use the [bierner.markdown-mermaid](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) extension to visualize your mermaid diagram on VSCode
+Recommend [bierner.markdown-mermaid](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) extension to visualize your mermaid diagram on VSCode
 
 ```mermaid
 erDiagram
