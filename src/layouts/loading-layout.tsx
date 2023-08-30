@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react'
 import { TextLayout } from './text-layout'
+import { PLACEHOLDER } from '~/constants/placeholders'
 
 export default function LoadingLayout(props: PropsWithChildren & { isLoading?: boolean }) {
   // You can add any UI inside Loading, including a Skeleton.
@@ -12,4 +13,6 @@ export default function LoadingLayout(props: PropsWithChildren & { isLoading?: b
   )
 }
 
-export const LoadingElement = () => <TextLayout className="m-auto">Carregando...</TextLayout>
+export const LoadingElement = () => (
+  <TextLayout className="m-auto">{PLACEHOLDER.LOADING}</TextLayout>
+)

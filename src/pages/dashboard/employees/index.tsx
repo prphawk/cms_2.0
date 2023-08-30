@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import AuthenticatedPage from '~/components/authenticated-page'
 import { AlertDialog } from '~/components/dialogs/alert-dialog'
+import EmployeeDialog from '~/components/dialogs/employee-dialog'
 import {
   FilterStateType,
   filterAProps,
@@ -19,14 +20,16 @@ import {
 } from '~/components/filters'
 import { DataTable } from '~/components/table/data-table'
 import { IFilter, IFilterOptions, TableToolbarFilter } from '~/components/table/data-table-toolbar'
+import TableToolbarCreateButton from '~/components/table/data-table-toolbar-create-button'
 import { getEmployeesColumns } from '~/components/table/employees/employees-columns'
 import { DialogsEnum } from '~/constants/enums'
-import { MyHeaders } from '~/constants/headers'
+import { MembershipHeaders, MyHeaders } from '~/constants/headers'
 import { LS } from '~/constants/local_storage'
 import { Routes } from '~/constants/routes'
 import { ContentLayout } from '~/layouts/page-layout'
 import { TitleLayout } from '~/layouts/text-layout'
 import ErrorPage from '~/pages/500'
+import { CreateEmployeeFormSchema } from '~/schemas'
 import {
   FilterStateDatesType,
   MembershipWithEmployeeCommitteeAndMembershipCountDataType
@@ -53,8 +56,6 @@ export default function Employees() {
     end_date: undefined
   })
 
-  const { data: roleOptions } = api.membership.getRoleOptions.useQuery({ filterFormat: true })
-
   const handleChangeActiveFiltersC = (values?: string[]) => {
     setFilterC(!values?.length ? undefined : values)
   }
@@ -62,6 +63,8 @@ export default function Employees() {
   const handleChangeActiveFiltersD = (values: FilterStateDatesType) => {
     setFilterD({ ...values })
   }
+
+  const { data: roleOptions } = api.membership.getRoleOptions.useQuery({ filterFormat: true })
 
   const propsFilters: IFilter[] = [
     {
@@ -109,8 +112,28 @@ export default function Employees() {
     dates: filterD
   })
 
+  const createEmployee = api.employee.create.useMutation({})
+
+  const updateEmployee = api.employee.update.useMutation({
+    onSuccess() {
+      utils.membership.getAll.invalidate()
+    }
+  })
+
   if (isError) {
     return <ErrorPage />
+  }
+
+  const onCreateEmployee = () => {
+    setSelectedMembership(undefined)
+    handleOpenDialog(DialogsEnum.employee)
+  }
+
+  const onEditEmployee = (
+    membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
+  ) => {
+    setSelectedMembership(membership)
+    handleOpenDialog(DialogsEnum.employee)
   }
 
   const handleViewCommittee = (
@@ -138,7 +161,14 @@ export default function Employees() {
       utils.membership.getAll.invalidate() //TODO ver aquele negócio de mudar o resultado da chamada pra so mudar o status dessa comissão
     }
   })
+
   const deactivateMembership = api.membership.deactivate.useMutation({
+    onSuccess() {
+      utils.membership.getAll.invalidate()
+    }
+  })
+
+  const deleteMembership = api.membership.delete.useMutation({
     onSuccess() {
       utils.membership.getAll.invalidate()
     }
@@ -152,9 +182,26 @@ export default function Employees() {
     if (selectedMembership) deactivateEmployee.mutate({ id: selectedMembership.employee_id })
   }
 
+  const handleSaveEmployee = (employeeSchema: z.infer<typeof CreateEmployeeFormSchema>) => {
+    if (selectedMembership)
+      updateEmployee.mutate({ id: selectedMembership.employee.id, name: employeeSchema.name })
+    else createEmployee.mutate({ name: employeeSchema.name })
+  }
+
+  const onDeleteMembership = (
+    membership: MembershipWithEmployeeCommitteeAndMembershipCountDataType
+  ) => {
+    setSelectedMembership(membership)
+    handleOpenDialog(DialogsEnum.alert_delete_membership)
+  }
+
+  const handleDeleteMembership = () => {
+    if (selectedMembership) deleteMembership.mutate({ id: selectedMembership.id })
+  }
+
   return (
     <AuthenticatedPage>
-      <ContentLayout className="employees my-6 mb-auto min-h-[89vh]">
+      <ContentLayout className="employees my-6 mb-auto">
         {data && (
           <>
             <EmployeesTableTitle data={data} />
@@ -163,12 +210,26 @@ export default function Employees() {
               isLoading={isLoading}
               globalFilter={filter}
               onChangeGlobalFilter={(value) => setFilter(value)}
+              tableActions={
+                <TableToolbarCreateButton
+                  onCreate={onCreateEmployee}
+                  label={MembershipHeaders.MEMBER}
+                />
+              }
               columns={getEmployeesColumns(
                 handleViewCommittee,
+                onEditEmployee,
                 onDeactivateMembership,
-                onDeactivateEmployee
+                onDeactivateEmployee,
+                onDeleteMembership
               )}
               tableFilters={<TableToolbarFilter filters={propsFilters} />}
+            />
+            <EmployeeDialog
+              open={openDialog == DialogsEnum.employee}
+              handleOpenDialog={handleOpenDialog}
+              handleSave={handleSaveEmployee}
+              employee={selectedMembership?.employee}
             />
             <AlertDialog
               open={openDialog == DialogsEnum.alert_deactivate_employee}
@@ -181,6 +242,17 @@ export default function Employees() {
               }
               handleOpenDialog={handleOpenDialog}
               handleContinue={handleDeactivateEmployee}
+            />
+            <AlertDialog
+              open={openDialog == DialogsEnum.alert_delete_membership}
+              description={
+                <>
+                  Esta ação irá <strong>deletar</strong> esta participação. Esta ação não pode ser
+                  revertida. Deseja continuar?
+                </>
+              }
+              handleOpenDialog={handleOpenDialog}
+              handleContinue={handleDeleteMembership}
             />
             <AlertDialog
               open={openDialog == DialogsEnum.alert_deactivate}
@@ -210,7 +282,9 @@ const EmployeesTableTitle = ({
         <AccordionTrigger>
           <TitleLayout>{MyHeaders.EMPLOYEES}</TitleLayout>
         </AccordionTrigger>
-        <AccordionContent className="tracking-wide"></AccordionContent>
+        <AccordionContent className="tracking-wide">
+          Participações ativas e inativas de servidores públicos em mandatos.
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
   )

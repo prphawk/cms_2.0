@@ -18,7 +18,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Separator } from '@/components/ui/separator'
 import { TemplateWithCommitteeCountAndNotifDataType } from '~/types'
 
 export const getTemplateColumns = (
@@ -28,7 +27,8 @@ export const getTemplateColumns = (
   ) => void,
   handleViewCommittee: (committee_id: number) => void,
   handleCommitteeSuccession: (template: TemplateWithCommitteeCountAndNotifDataType) => void,
-  onEditTemplate: (template: TemplateWithCommitteeCountAndNotifDataType) => void
+  onEditTemplate: (template: TemplateWithCommitteeCountAndNotifDataType) => void,
+  onDeleteTemplate: (template: TemplateWithCommitteeCountAndNotifDataType) => void
 ): ColumnDef<TemplateWithCommitteeCountAndNotifDataType>[] => [
   {
     accessorKey: 'name',
@@ -66,7 +66,7 @@ export const getTemplateColumns = (
 
       return (
         <div className="flex max-w-[280px] flex-row">
-          <div className="truncate">{value}º mandato</div>
+          <div className="truncate">{!Number(value) ? '-' : `${value}º mandato`}</div>
         </div>
       )
     }
@@ -81,7 +81,7 @@ export const getTemplateColumns = (
     cell: ({ row, column }) => {
       const value = row.getValue(column.id) as string
 
-      return row.original?.committee ? <DateColumn value={value}></DateColumn> : <></>
+      return row.original?.committee ? <DateColumn value={value}></DateColumn> : <>-</>
     }
   },
   {
@@ -98,7 +98,7 @@ export const getTemplateColumns = (
           <EndDateBadge value={value} isActive={row.original?.committee?.is_active} />
         </DateColumn>
       ) : (
-        <></>
+        <>-</>
       )
     }
   },
@@ -116,7 +116,7 @@ export const getTemplateColumns = (
               <HelpCircleIcon className="ml-2 h-4 w-4" />
             </TooltipTrigger>
             <TooltipContent>
-              Receber notificação por email {process.env.DAYS} dias antes do mandato ativo expirar
+              Receber notificação por email 30 dias antes do mandato ativo expirar
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -141,42 +141,55 @@ export const getTemplateColumns = (
     enableHiding: false,
     id: 'actions',
     cell: ({ row }) => {
-      const committee = row.original.committee
+      const template = row.original
+      const committee = template.committee
       return (
-        <div className="flex min-w-[64px]">
-          {committee && (
-            <div className="ml-auto px-4">
-              <Button
-                onClick={() => handleViewCommittee(committee.id)}
-                variant="ghost"
-                className="h-8 w-8 p-0"
-              >
-                <span className="sr-only">Ver detalhes</span>
-                <Users2Icon className="h-4 w-4" />
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Abrir menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                  <DropdownMenuItem onClick={() => handleViewCommittee(committee.id)}>
-                    Ver mandato atual
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleCommitteeSuccession(row.original)}>
-                    Suceder mandato atual
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onEditTemplate(row.original)}>
-                    Editar {MyHeaders.TEMPLATE.toLowerCase()}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          )}
+        <div className="flex min-w-[96px]">
+          <div className="ml-auto px-4">
+            <Button
+              disabled={!committee}
+              onClick={() => handleViewCommittee(committee?.id!)}
+              variant="ghost"
+              className="h-8 w-8 p-0"
+            >
+              <span className="sr-only">Ver detalhes</span>
+              <Users2Icon className="h-4 w-4" />
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Abrir menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuItem
+                  disabled={!committee}
+                  onClick={() => handleViewCommittee(committee?.id!)}
+                >
+                  Ver mandato atual
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={!committee}
+                  onClick={() => handleCommitteeSuccession(template)}
+                >
+                  Suceder mandato atual
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onEditTemplate(template)}>
+                  Editar {MyHeaders.TEMPLATE.toLowerCase()}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  danger
+                  disabled={!!template._count.committees}
+                  onClick={() => onDeleteTemplate(template)}
+                >
+                  Deletar {MyHeaders.TEMPLATE.toLowerCase()}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       )
     }

@@ -97,7 +97,6 @@ export default function CommitteeMembership() {
       utils.committee.getOne.cancel()
     },
     onSettled() {
-      // utils.employee.getOptions.invalidate() //TODO caso tenha criado um novo servidor no processo, atualiza a lista de opções do diálogo
       utils.committee.getOne.invalidate()
     }
   })
@@ -242,7 +241,7 @@ export default function CommitteeMembership() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="committee my-6 mb-auto min-h-[89vh]">
+      <ContentLayout className="committee my-6 mb-auto">
         {committeeData && (
           <>
             <CommitteesTableTitle data={committeeData} />

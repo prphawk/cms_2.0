@@ -175,7 +175,7 @@ export default function Committees() {
 
   return (
     <AuthenticatedPage>
-      <ContentLayout className="committees my-6 mb-auto min-h-[89vh]">
+      <ContentLayout className="committees my-6 mb-auto">
         <CommitteeTableTitle />
         <DataTable
           globalFilter={filter}
@@ -190,9 +190,7 @@ export default function Committees() {
             onDeleteCommittee
           )}
           tableFilters={<TableToolbarFilter filters={propsFilters} />}
-          tableActions={
-            <CommitteesTableToolbarActions handleCreateCommittee={handleCreateCommittee} />
-          }
+          tableActions={<CommitteesTableToolbarActions onCreateCommittee={handleCreateCommittee} />}
         />
         <CommitteeDialog
           open={openDialog === DialogsEnum.committee}

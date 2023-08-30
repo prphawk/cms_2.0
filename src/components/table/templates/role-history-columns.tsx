@@ -26,7 +26,7 @@ export const getTemplateRoleHistoryColumns = (
   {
     accessorKey: 'employee.name',
     accessorFn: (row) => row.employee.name,
-    id: MembershipHeaders.NAME,
+    id: MembershipHeaders.MEMBER,
     header: ({ column }) => <DataTableColumnHeader column={column} title={column.id} />,
     cell: ({ row }) => {
       const value = row.original.employee?.name as string

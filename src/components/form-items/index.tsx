@@ -155,10 +155,9 @@ export const EmployeeSelectFormItem = (props: {
 
   const { data, isLoading } = api.employee.getOptions.useQuery(
     {
-      committee_id: props.committee_id,
-      membership_id: props.membership_id
-    },
-    { refetchOnMount: 'always' }
+      committee_id: props.committee_id
+    }
+    //{ refetchOnMount: 'always' } //TODO: ARRUMAR alternativa
   )
 
   useEffect(() => {
@@ -217,7 +216,7 @@ export const EmployeeSelectFormItem = (props: {
         <FormItem className="flex w-full flex-col">
           {!props.hideLabel && (
             <MyLabel required className="pb-1">
-              {MembershipHeaders.NAME}
+              {MembershipHeaders.MEMBER}
             </MyLabel>
           )}
           <Popover>
@@ -246,7 +245,7 @@ export const EmployeeSelectFormItem = (props: {
             <PopoverContent className={cn('offset h-[310px] w-[226px] p-0', props.className)}>
               <Command isLoading={isLoading}>
                 <CommandInput
-                  placeholder={`Digite seu/sua ${MembershipHeaders.NAME}...`}
+                  placeholder={`Digite seu/sua ${MembershipHeaders.MEMBER}...`}
                   className="h-9"
                   onValueChange={handleChangeSearchValue}
                 />
@@ -254,7 +253,7 @@ export const EmployeeSelectFormItem = (props: {
                   {searchValue && (
                     <Button className="w-full" variant="ghost" onClick={handleClickCreateOption}>
                       <div className="w-full truncate">
-                        Criar {MembershipHeaders.NAME.toLowerCase()} "{searchValue}"?
+                        Criar {MembershipHeaders.MEMBER.toLowerCase()} "{searchValue}"?
                       </div>
                     </Button>
                   )}

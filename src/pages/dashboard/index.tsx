@@ -41,9 +41,9 @@ export default function Home() {
           <div className=" flex h-[80vh] flex-col items-center gap-y-4 border-2 border-solid border-[#ffffff4f] py-[8vh]">
             <div className="my-[6vh]">
               <CMS className="text-[48px]" />
-              <hr className="mx-3 mt-1 border-[#ffffff4f]" />
+              <hr className="mx-4 mt-1 border-[#ffffff4f]" />
             </div>
-            <div className="mb-4 mt-auto grid grid-cols-2 p-4 pt-4">
+            <div className="mb-4 mt-auto grid grid-cols-2 p-4 pt-8">
               {components.map((component) => (
                 <ListItem
                   key={component.title}

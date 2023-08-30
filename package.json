@@ -1,7 +1,6 @@
 {
   "name": "cms_2.0",
   "version": "0.1.0",
-  "sysVersion": "2.1.1",
   "private": true,
   "scripts": {
     "build": "next build",

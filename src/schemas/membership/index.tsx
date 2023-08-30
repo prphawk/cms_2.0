@@ -5,12 +5,12 @@ export const EmployeeFormSchema = z.object(
   {
     id: z.number().optional(),
     name: z
-      .string({ required_error: `${MembershipHeaders.NAME} é obrigatório` })
+      .string({ required_error: `${MembershipHeaders.MEMBER} é obrigatório` })
       .trim()
-      .min(1, { message: `${MembershipHeaders.NAME} é obrigatório` }),
+      .min(1, { message: `${MembershipHeaders.MEMBER} é obrigatório` }),
     committees: z.object({ committee_id: z.number() }).array().optional()
   },
-  { required_error: `${MembershipHeaders.NAME} é obrigatório` }
+  { required_error: `${MembershipHeaders.MEMBER} é obrigatório` }
 )
 
 export const MembershipFormSchema = z.object({
