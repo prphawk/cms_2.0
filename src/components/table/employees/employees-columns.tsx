@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { EmployeeHeaders, MembershipHeaders, MyHeaders } from '~/constants/headers'
 import { _sortStringDate, _toLocaleString } from '~/utils/string'
-import { XIcon, MoreHorizontal } from 'lucide-react'
+import { MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -17,9 +17,10 @@ import DataTableColumnHeader, {
 } from '~/components/table/data-table-column-header'
 import Link from 'next/link'
 import { Routes } from '~/constants/routes'
-import { IconBadge } from '~/components/badge'
+import { IconBadge, InactiveBadge, MyTooltip } from '~/components/badge'
 import { MembershipWithEmployeeCommitteeAndMembershipCountDataType } from '~/types'
-import { Observations, Ordinance } from '../colums'
+import { EmployeeTooltipValue, MembershipTooltipValue, Observations, Ordinance } from '../colums'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const getEmployeesColumns = (
   handleViewCommittee: (
@@ -53,12 +54,7 @@ export const getEmployeesColumns = (
 
       return (
         <div className="flex w-[240px] flex-row">
-          <strong className="truncate">{value}</strong>
-          {is_inactive && (
-            <IconBadge>
-              <XIcon className="h-3 w-3 text-white" />
-            </IconBadge>
-          )}
+          <EmployeeTooltipValue {...{ value, is_inactive }} />
         </div>
       )
     }
@@ -85,12 +81,7 @@ export const getEmployeesColumns = (
 
       return (
         <div className="flex max-w-[200px] flex-row truncate">
-          {value}
-          {is_inactive && (
-            <IconBadge>
-              <XIcon className="h-3 w-3 text-white" />
-            </IconBadge>
-          )}
+          <MembershipTooltipValue {...{ value, is_inactive }} />
         </div>
       )
     }
@@ -192,20 +183,20 @@ export const getEmployeesColumns = (
                 <DropdownMenuItem onClick={() => onEditEmployee(membership)}>
                   Editar {MembershipHeaders.MEMBER.toLowerCase()}
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  danger
                   disabled={!membership.is_active}
                   onClick={() => onDeactivateMembership(membership)}
                 >
                   Desativar {MyHeaders.MEMBERSHIP.toLowerCase()}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  danger
                   disabled={!membership.employee.is_active}
                   onClick={() => onDeactivateEmployee(membership)}
                 >
                   Desativar {MyHeaders.EMPLOYEE.toLowerCase()}
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   danger
@@ -214,7 +205,6 @@ export const getEmployeesColumns = (
                 >
                   Deletar {MyHeaders.MEMBERSHIP.toLowerCase()}
                 </DropdownMenuItem>
-
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

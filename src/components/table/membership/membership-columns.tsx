@@ -18,9 +18,9 @@ import DataTableColumnHeader, {
 import Link from 'next/link'
 import { Routes } from '~/constants/routes'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { IconBadge } from '~/components/badge'
+import { IconBadge, InactiveBadge } from '~/components/badge'
 import { CommitteeWithMembersDataType, MembershipWithEmployeeDataType } from '~/types'
-import { Observations, Ordinance } from '../colums'
+import { MembershipTooltipValue, Observations, Ordinance } from '../colums'
 
 export const getMembershipColumns = (
   onChangeMembership: (membership: MembershipWithEmployeeDataType) => void,
@@ -39,12 +39,7 @@ export const getMembershipColumns = (
 
       return (
         <div className="flex w-[240px] flex-row">
-          <strong className="truncate">{value}</strong>
-          {is_inactive && (
-            <IconBadge>
-              <XIcon className="h-3 w-3 text-white" />
-            </IconBadge>
-          )}
+          <MembershipTooltipValue {...{ value, is_inactive }} />
         </div>
       )
     }
@@ -143,24 +138,20 @@ export const getMembershipColumns = (
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  danger
                   disabled={!row.original.is_active}
                   onClick={() => onDeactivateMembership(row.original)}
                 >
                   Encerrar participação
                 </DropdownMenuItem>
-                {!row.original.is_active && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      danger
-                      disabled={!!row.original.is_active}
-                      onClick={() => onDeleteMembership(row.original)}
-                    >
-                      Deletar participação
-                    </DropdownMenuItem>
-                  </>
-                )}
+
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  danger
+                  disabled={!!row.original.is_active}
+                  onClick={() => onDeleteMembership(row.original)}
+                >
+                  Deletar participação
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

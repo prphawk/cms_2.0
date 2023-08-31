@@ -16,9 +16,9 @@ import DataTableColumnHeader, {
   EndDateBadge
 } from '~/components/table/data-table-column-header'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { IconBadge } from '~/components/badge'
+import { IconBadge, InactiveBadge, MyTooltip } from '~/components/badge'
 import { MembershipWithEmployeeAndCommitteeDataType } from '~/types'
-import { Observations, Ordinance } from '../colums'
+import { EmployeeTooltipValue, MembershipTooltipValue, Observations, Ordinance } from '../colums'
 
 export const getTemplateRoleHistoryColumns = (
   handleViewCommittee: (committee_id: number) => void
@@ -34,12 +34,7 @@ export const getTemplateRoleHistoryColumns = (
 
       return (
         <div className="flex w-[240px] flex-row">
-          <strong className="truncate">{value}</strong>
-          {is_inactive && (
-            <IconBadge>
-              <XIcon className="h-3 w-3 text-white" />
-            </IconBadge>
-          )}
+          <EmployeeTooltipValue {...{ value, is_inactive }} />
         </div>
       )
     }
@@ -55,21 +50,7 @@ export const getTemplateRoleHistoryColumns = (
 
       return (
         <div className="flex max-w-[250px] flex-row">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="truncate">{value}</div>
-              </TooltipTrigger>
-              <TooltipContent>
-                {is_inactive ? 'Participação encerrada em ' + value : value}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          {is_inactive && (
-            <IconBadge>
-              <XIcon className="h-3 w-3" />
-            </IconBadge>
-          )}
+          <MembershipTooltipValue {...{value ,is_inactive}} />
         </div>
       )
     }

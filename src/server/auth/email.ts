@@ -115,7 +115,7 @@ function electionHTML(committees: Committee[]) {
 
   return `<body style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color:#303030;">
       <h1 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; color:#404040">
-      CMS 2<span style="color:#d07f9c">.</span>0
+      CMS 2<span style="color:#d98ba1">.</span>0
       </h1>
       <hr style="border: #999999 1px solid">
       <p style="color:#303030;">Atenção! Os seguintes mandatos precisam de novas eleições: ${strArr.join(

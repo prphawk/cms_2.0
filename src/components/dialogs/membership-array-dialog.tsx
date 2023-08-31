@@ -9,7 +9,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { Form } from '@/components/ui/form'
-import { MinusIcon, PlusIcon, SaveIcon, XIcon } from 'lucide-react'
+import { MinusIcon, PlusIcon, SaveIcon } from 'lucide-react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { _addYears, _toLocaleString, _toString } from '~/utils/string'
 import { zodResolver } from '@hookform/resolvers/zod'

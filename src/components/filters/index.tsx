@@ -13,12 +13,16 @@ export type FilterStateType =
     }
   | undefined
 
-export const filterAProps = (sufix?: string) => {
+export const filterAProps = (props: {
+  sufix?: string
+  active_label: string
+  inactive_label: string
+}) => {
   return {
-    title: 'Status' + (sufix ? ` de ${sufix}` : ''),
+    title: 'Status' + (props.sufix ? ` de ${props.sufix}` : ''),
     options: [
-      { label: 'Ativo(a)', value: 'is_active' },
-      { label: 'Inativo(a)', value: 'is_inactive', icon: XIcon }
+      { label: props.active_label, value: 'is_active' },
+      { label: props.inactive_label, value: 'is_inactive', icon: XIcon }
     ]
   }
 }

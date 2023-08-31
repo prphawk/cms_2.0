@@ -1,8 +1,8 @@
 import { Committee } from '@prisma/client'
-import { ColumnDef, filterFns, sortingFns } from '@tanstack/react-table'
+import { ColumnDef } from '@tanstack/react-table'
 import { CommitteeHeaders, MyHeaders } from '~/constants/headers'
 import { _isDateComing, _sortStringDate, _toDate, _toLocaleString } from '~/utils/string'
-import { XIcon, HourglassIcon, MoreHorizontal, Users2Icon } from 'lucide-react'
+import { MoreHorizontal, Users2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -17,9 +17,9 @@ import DataTableColumnHeader, {
   EndDateBadge
 } from '~/components/table/data-table-column-header'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { IconBadge } from '~/components/badge'
+import { IconBadge, InactiveBadge, TemporaryBadge } from '~/components/badge'
 import { CountDataType, CommitteeWithMembershipCountDataType } from '~/types'
-import { Observations, Ordinance } from '../colums'
+import { CommitteeTooltipValue, Observations, Ordinance } from '../colums'
 
 export const getCommitteesColumns = (
   onViewCommittee: (com: Committee) => void,
@@ -39,31 +39,7 @@ export const getCommitteesColumns = (
 
       return (
         <div className="flex w-[250px] flex-row">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="truncate">
-                  <strong className="truncate">{value}</strong>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>{value}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <span>
-            <div className="flex flex-row">
-              {is_temporary && (
-                <IconBadge>
-                  <HourglassIcon className="h-3 w-3 text-white" />
-                </IconBadge>
-              )}
-              {is_inactive && (
-                <IconBadge>
-                  <XIcon className="h-3 w-3 text-white" />
-                </IconBadge>
-              )}
-            </div>
-          </span>
+          <CommitteeTooltipValue {...{ value, is_inactive, is_temporary }} />
         </div>
       )
     }
@@ -180,24 +156,20 @@ export const getCommitteesColumns = (
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  danger
                   disabled={!committee.is_active}
                   onClick={() => onDeactivateCommittee(committee)}
                 >
                   Encerrar mandato
                 </DropdownMenuItem>
-                {!committee.is_active && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      danger
-                      disabled={!!committee.is_active}
-                      onClick={() => onDeleteCommittee(committee)}
-                    >
-                      Deletar mandato
-                    </DropdownMenuItem>
-                  </>
-                )}
+
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  danger
+                  disabled={!!committee.is_active}
+                  onClick={() => onDeleteCommittee(committee)}
+                >
+                  Deletar mandato
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

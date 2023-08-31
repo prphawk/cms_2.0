@@ -68,13 +68,21 @@ export default function Employees() {
 
   const propsFilters: IFilter[] = [
     {
-      ...filterAProps(`${MyHeaders.EMPLOYEE}`),
+      ...filterAProps({
+        sufix: MyHeaders.EMPLOYEE,
+        active_label: 'Ativo(a)',
+        inactive_label: 'Inativo(a)'
+      }),
       activeFilters: filterAE?.labels,
       handleChangeActiveFilters: (labels) =>
         handleChangeComplementaryFilters(LS.EMPLOYEE_AE, 'is_active', setFilterAE, labels)
     },
     {
-      ...filterAProps(`${MyHeaders.MEMBERSHIP}`),
+      ...filterAProps({
+        sufix: 'Participação',
+        active_label: 'Ativa',
+        inactive_label: 'Encerrada'
+      }),
       activeFilters: filterAM?.labels,
       handleChangeActiveFilters: (labels) =>
         handleChangeComplementaryFilters(LS.EMPLOYEE_AM, 'is_active', setFilterAM, labels)
