@@ -39,11 +39,13 @@ export const getTemplateColumns = (
       const value = row.getValue(column.id) as string
       return (
         <div className="flex w-[240px] flex-row">
-          <MyTooltip tooltip={
-          <div className="text-xs">
-          <span className="font-semibold">{value}</span>
-          </div>
-        }>
+          <MyTooltip
+            tooltip={
+              <div className="text-xs">
+                <span className="font-semibold">{value}</span>
+              </div>
+            }
+          >
             <strong className="truncate">{value}</strong>
           </MyTooltip>
         </div>
@@ -186,6 +188,7 @@ export const getTemplateColumns = (
                 <DropdownMenuItem onClick={() => onEditTemplate(template)}>
                   Editar {MyHeaders.TEMPLATE.toLowerCase()}
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   danger

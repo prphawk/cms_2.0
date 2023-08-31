@@ -77,24 +77,20 @@ const ActionsMenuButton = (props: {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          danger
           disabled={!props.committee.is_active}
           onClick={props.onDeactivateCommittee}
         >
           Encerrar mandato
         </DropdownMenuItem>
-        {!props.committee.is_active && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              danger
-              disabled={!!props.committee.is_active}
-              onClick={() => props.onDeleteCommittee()}
-            >
-              Deletar mandato
-            </DropdownMenuItem>
-          </>
-        )}
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          danger
+          disabled={!!props.committee.is_active}
+          onClick={() => props.onDeleteCommittee()}
+        >
+          Deletar mandato
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

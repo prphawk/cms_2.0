@@ -39,7 +39,7 @@ export const getCommitteesColumns = (
 
       return (
         <div className="flex w-[250px] flex-row">
-          <CommitteeTooltipValue {...{value, is_inactive, is_temporary}} />
+          <CommitteeTooltipValue {...{ value, is_inactive, is_temporary }} />
         </div>
       )
     }
@@ -156,24 +156,20 @@ export const getCommitteesColumns = (
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  danger
                   disabled={!committee.is_active}
                   onClick={() => onDeactivateCommittee(committee)}
                 >
                   Encerrar mandato
                 </DropdownMenuItem>
-                {!committee.is_active && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      danger
-                      disabled={!!committee.is_active}
-                      onClick={() => onDeleteCommittee(committee)}
-                    >
-                      Deletar mandato
-                    </DropdownMenuItem>
-                  </>
-                )}
+
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  danger
+                  disabled={!!committee.is_active}
+                  onClick={() => onDeleteCommittee(committee)}
+                >
+                  Deletar mandato
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

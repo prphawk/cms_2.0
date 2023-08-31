@@ -138,24 +138,20 @@ export const getMembershipColumns = (
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  danger
                   disabled={!row.original.is_active}
                   onClick={() => onDeactivateMembership(row.original)}
                 >
                   Encerrar participação
                 </DropdownMenuItem>
-                {!row.original.is_active && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      danger
-                      disabled={!!row.original.is_active}
-                      onClick={() => onDeleteMembership(row.original)}
-                    >
-                      Deletar participação
-                    </DropdownMenuItem>
-                  </>
-                )}
+
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  danger
+                  disabled={!!row.original.is_active}
+                  onClick={() => onDeleteMembership(row.original)}
+                >
+                  Deletar participação
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

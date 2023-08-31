@@ -54,7 +54,7 @@ export const getEmployeesColumns = (
 
       return (
         <div className="flex w-[240px] flex-row">
-          <EmployeeTooltipValue {...{value, is_inactive}} />
+          <EmployeeTooltipValue {...{ value, is_inactive }} />
         </div>
       )
     }
@@ -183,20 +183,20 @@ export const getEmployeesColumns = (
                 <DropdownMenuItem onClick={() => onEditEmployee(membership)}>
                   Editar {MembershipHeaders.MEMBER.toLowerCase()}
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  danger
                   disabled={!membership.is_active}
                   onClick={() => onDeactivateMembership(membership)}
                 >
                   Desativar {MyHeaders.MEMBERSHIP.toLowerCase()}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  danger
                   disabled={!membership.employee.is_active}
                   onClick={() => onDeactivateEmployee(membership)}
                 >
                   Desativar {MyHeaders.EMPLOYEE.toLowerCase()}
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   danger
