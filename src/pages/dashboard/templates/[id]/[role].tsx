@@ -4,7 +4,6 @@ import { ContentLayout } from '~/layouts/page-layout'
 import { api } from '~/utils/api'
 import { _isNumeric, _toLocaleString } from '~/utils/string'
 import { DataTable } from '~/components/table/data-table'
-import { CommitteeHeaders, MembershipHeaders, MyHeaders } from '~/constants/headers'
 import { getTemplateRoleHistoryColumns } from '~/components/table/templates/role-history-columns'
 import {
   Accordion,
@@ -86,10 +85,11 @@ const TemplateHistoryTableTitle = (props: { template_id: number; role: string })
     <HistoryDetails
       isLoading={isLoading}
       title={`${data?.name}: ${props.role}`}
-    >{`Histórico de participações de cargo "${props.role}" através de todos mandatos de ${data?.name}`}</HistoryDetails>
+    >{`Histórico de participações de cargo "${props.role}" através de todos mandatos de "${data?.name}"`}</HistoryDetails>
   )
 }
-//TODO arrumar essa historia aqui
+
+//TODO arrumar essa historia aqui, refatorar como componente maybe
 export const HistoryDetails = (
   props: { title: string; isLoading?: boolean } & PropsWithChildren
 ) => {

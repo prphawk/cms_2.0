@@ -133,6 +133,7 @@ function electionHTML(committees: Committee[]) {
       </body>`
 }
 
+//TODO refactor string used on both functions
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
 function electionText(committees: Committee[]) {
   const strArr = committees.map((c) => `- ${c.name} (${_toLocaleExtendedString(c.end_date)})`)

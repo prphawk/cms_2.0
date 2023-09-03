@@ -38,17 +38,17 @@ export const getTemplateColumns = (
     cell: ({ column, row }) => {
       const value = row.getValue(column.id) as string
       return (
-        <div className="flex w-[240px] flex-row">
-          <MyTooltip
-            tooltip={
-              <div className="text-xs">
-                <span className="font-semibold">{value}</span>
-              </div>
-            }
-          >
+        <MyTooltip
+          tooltip={
+            <div className="text-xs">
+              <span className="font-semibold">{value}</span>
+            </div>
+          }
+        >
+          <div className="flex max-w-[260px] flex-row truncate">
             <strong className="truncate">{value}</strong>
-          </MyTooltip>
-        </div>
+          </div>
+        </MyTooltip>
       )
     }
   },
@@ -124,8 +124,8 @@ export const getTemplateColumns = (
             <TooltipTrigger asChild>
               <HelpCircleIcon className="ml-2 h-4 w-4" />
             </TooltipTrigger>
-            <TooltipContent>
-              Receber notificação por email 30 dias antes do mandato ativo expirar
+            <TooltipContent className="max-w-[37ch]">
+              Receba notificações por email 30 dias antes do mandato ativo expirar
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
