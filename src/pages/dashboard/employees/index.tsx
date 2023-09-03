@@ -291,7 +291,7 @@ const EmployeesTableTitle = ({
           <TitleLayout>{MyHeaders.EMPLOYEES}</TitleLayout>
         </AccordionTrigger>
         <AccordionContent className="tracking-wide">
-          Participações ativas e inativas de servidores públicos em mandatos.
+          Servidores e suas participações em comissões.
         </AccordionContent>
       </AccordionItem>
     </Accordion>

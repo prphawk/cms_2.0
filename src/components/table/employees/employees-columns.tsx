@@ -188,7 +188,7 @@ export const getEmployeesColumns = (
                   disabled={!membership.is_active}
                   onClick={() => onDeactivateMembership(membership)}
                 >
-                  Desativar {MyHeaders.MEMBERSHIP.toLowerCase()}
+                  Encerrar {MyHeaders.MEMBERSHIP.toLowerCase()}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   disabled={!membership.employee.is_active}

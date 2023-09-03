@@ -377,8 +377,13 @@ const TemplateTooltip = () => {
         <TooltipTrigger asChild>
           <HelpCircleIcon className="ml-1 h-4 w-4 p-[2px]" />
         </TooltipTrigger>
-        <TooltipContent className="max-w-[52ch] bg-black text-center text-white">
-          {`Mandatos de comissões regimentais (permanentes) devem ser incluidos em seu ${MyHeaders.TEMPLATE.toLowerCase()}.`}
+        <TooltipContent className="max-w-[58ch] bg-black text-center text-white">
+          <div>
+            Ao criar um mandato de comissão permanente, é necessário selecionar (ou criar) seu tipo
+            regimental correspondente para que o mandato faça parte do histórico de sua comissão.
+            <br />
+            Comissões temporárias não têm tipo regimental/histórico.
+          </div>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
