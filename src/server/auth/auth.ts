@@ -42,19 +42,19 @@ export const authOptions: NextAuthOptions = {
         id: user.id
       }
     }),
-    // async signIn({ user, account, profile, email, credentials }) {
-    //   const isAllowedToSignIn =
-    //     user.email &&
-    //     (user.email === process.env.EMAIL_DEVELOPER || user.email.endsWith('@ufrgs.br'))
-    //   if (isAllowedToSignIn) {
-    //     return true
-    //   } else {
-    //     // Return false to display a default error message
-    //     return false
-    //     // Or you can return a URL to redirect to:
-    //     // return '/unauthorized'
-    //   }
-    // },
+    async signIn({ user, account, profile, email, credentials }) {
+      const isAllowedToSignIn =
+        user.email &&
+        (user.email === process.env.EMAIL_DEVELOPER || user.email === '00301639@ufrgs.br')
+      if (isAllowedToSignIn) {
+        return true
+      } else {
+        // Return false to display a default error message
+        return false
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    },
     async redirect() {
       return Routes.AUTHENTICATED
     }
