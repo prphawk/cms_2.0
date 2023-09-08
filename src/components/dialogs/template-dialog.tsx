@@ -78,7 +78,7 @@ export default function TemplateDialog(props: {
               form={form}
               fieldName="name"
               label={CommitteeHeaders.TEMPLATE_NAME}
-              placeholder={PLACEHOLDER.COMMITTEE}
+              placeholder={PLACEHOLDER.TEMPLATE}
             />
 
             <DialogFooter>

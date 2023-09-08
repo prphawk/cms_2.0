@@ -150,7 +150,7 @@ export const membershipRouter = createTRPCRouter({
 
       return ctx.prisma.membership.findMany({
         where: {
-          committee: { template_id: template_id },
+          committee: { template_id },
           role,
           ...getDatesQuery(input.dates)
         },

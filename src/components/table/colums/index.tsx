@@ -28,12 +28,8 @@ export const CommitteeTooltipValue = (props: {
       tooltip={
         <div className="text-xs">
           <span className="font-normal">{props.value}</span>
-          {props.is_temporary && (
-            <IconBadge className="border-gray-300">Mandato Temporário</IconBadge>
-          )}
-          {props.is_inactive && (
-            <IconBadge className="border-gray-300">Mandato Encerrado</IconBadge>
-          )}
+          {props.is_temporary && <IconBadge className="border-gray-300">Temporária</IconBadge>}
+          {props.is_inactive && <IconBadge className="border-gray-300">Encerrada</IconBadge>}
         </div>
       }
     >

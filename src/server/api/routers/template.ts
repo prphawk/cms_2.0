@@ -138,28 +138,28 @@ export const templateRouter = createTRPCRouter({
       })
     }),
 
-  getRoleHistory: protectedProcedure
-    .input(
-      z.object({
-        role: z.string(),
-        template_id: z.number()
-      })
-    )
-    .query(({ ctx, input }) => {
-      const { role, template_id } = input
+  // getRoleHistory: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       role: z.string(),
+  //       template_id: z.number()
+  //     })
+  //   )
+  //   .query(({ ctx, input }) => {
+  //     const { role, template_id } = input
 
-      return ctx.prisma.template.findUnique({
-        where: {
-          id: template_id
-        },
-        include: {
-          committees: {
-            where: { members: { every: { role } } },
-            include: { members: true }
-          }
-        }
-      })
-    }),
+  //     return ctx.prisma.template.findUnique({
+  //       where: {
+  //         id: template_id
+  //       },
+  //       include: {
+  //         committees: {
+  //           where: { members: { every: { role } } },
+  //           include: { members: true }
+  //         }
+  //       }
+  //     })
+  //   }),
 
   delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ ctx, input }) => {
     return ctx.prisma.template.delete({

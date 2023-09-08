@@ -82,7 +82,7 @@ export default function Committees() {
 
   const propsFilters: IFilter[] = [
     {
-      ...filterAProps({ sufix: 'Mandato', active_label: 'Ativo', inactive_label: 'Encerrado' }),
+      ...filterAProps({ sufix: 'Órgão', active_label: 'Ativo', inactive_label: 'Encerrado' }),
       activeFilters: filterA?.labels,
       handleChangeActiveFilters: (labels) =>
         handleChangeComplementaryFilters(LS.COMMITTEE_A, 'is_active', setFilterA, labels)

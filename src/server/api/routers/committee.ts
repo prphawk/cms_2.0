@@ -45,12 +45,12 @@ export const committeeRouter = createTRPCRouter({
         },
         include: {
           members: {
-            include: { employee: true },
             where: {
               is_active: input.is_active,
               role: { in: input.roles },
               ...getDatesQuery(input.dates)
-            }
+            },
+            include: { employee: true }
           },
           template: true
         }

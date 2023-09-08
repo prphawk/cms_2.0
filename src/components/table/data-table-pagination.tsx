@@ -29,7 +29,7 @@ export default function DataTablePagination<TData>({ table }: { table: TableType
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top" className="min-w-[4rem]">
-              {[10, 25, 40, 65, 90].map((pageSize) => (
+              {[10, 20, 40, 60, 100].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
