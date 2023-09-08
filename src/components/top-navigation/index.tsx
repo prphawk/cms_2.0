@@ -50,7 +50,7 @@ export const TopNavigation = () => {
 export const CMS = ({ className }: { className?: string }) => {
   return (
     <h1 className={cn('mx-4 font-extrabold', className)}>
-      CMS 2<span className="text-[#e18d8d]">.</span>0
+      CMS 2<span className="text-[#d68989]">.</span>0
     </h1>
   )
 }
